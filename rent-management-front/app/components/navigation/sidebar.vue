@@ -1,7 +1,7 @@
 <template>
     <aside class="main-sidebar">
         <div class="sidebar-header">
-            <h3 class="">Rent Management</h3>
+            <h3 class="">Calim</h3>
         </div>
 
         <div class="sidebar-menu">
