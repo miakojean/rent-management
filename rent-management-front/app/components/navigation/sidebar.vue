@@ -62,11 +62,11 @@ export default {
 .main-sidebar {
     width: 250px;
     padding: 1rem;
-    border-right: 1px solid #ddd;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow-y: auto;
+    background: white;
 }
 
 .logo-section {
@@ -86,6 +86,7 @@ export default {
 
 .sidebar-menu ul {
     display: flex;
+    align-items:normal;
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem 0rem;

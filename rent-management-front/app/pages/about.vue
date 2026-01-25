@@ -7,7 +7,15 @@
         </header>
 
         <main class="main-area">
-            <indexSection/>
+            <p>Welcome to the Rent Management application...</p>
+            <p>Features include:</p>
+            <ul>
+                <li>Property Listings</li>
+                <li>Tenant Management</li>
+                <li>Payment Tracking</li>
+                <li>Maintenance Requests</li>
+                <li>Reporting and Analytics</li>
+            </ul>
         </main>
 
         <footer class="footer-area">
@@ -19,12 +27,10 @@
 <script lang="ts">
 import headerContent from '../components/headers/headerContent.vue';
 import sidebar from '../components/navigation/sidebar.vue';
-import indexSection from '../components/sections/indexSection.vue';
 export default {
     components:{
         sidebar,
-        headerContent,
-        indexSection
+        headerContent
     }
 }
 
