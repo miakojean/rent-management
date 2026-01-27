@@ -52,7 +52,7 @@ export default {
     background-color: white;
     color: #333;
     padding: 1rem;
-    margin: 8px;
+    margin: 2px 8px;
     border-radius: 12px;
 }
 

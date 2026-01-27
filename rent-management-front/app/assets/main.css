@@ -1,11 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
+
+:root{
+    --primary-color: #4F46E5;
+    --primary-color-dark: #2f69ba;
+    --secondary-color: #6B7280;
+    --background-color: #F9FAFB;
+    --text-color: #111827;
+    --card-background: #FFFFFF;
+    --border-color: #E5E7EB;
+}
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Zalando Sans SemiExpanded', sans-serif;
 }
 
 main{

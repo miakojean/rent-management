@@ -7,17 +7,21 @@
     >
         <span v-if="isloading" class="loading-spinner"></span>
         {{ btn_label }}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+
     </button>
 </template>
 
 <script lang="ts">
 export default {
-    name: "MainButton",
+    name: "moreButton",
 
     props: {
         btn_label: {
             type: String,
-            default: "main button"
+            default: "clients"
         },
         isloading: {
             type: Boolean,
@@ -51,7 +55,7 @@ export default {
     color: white;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 1.5rem;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;

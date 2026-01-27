@@ -1,10 +1,19 @@
 <template>
     <section class="main__section">
         <!-- Content for the index section goes here -->
-        <div class="first__content flex flex-col gap-4">
-            <h2>Une idée sur vos chiffres</h2>
+        <div class="first__content flex flex-col gap-8">
+            <div class="title__section">
+                <h2>Une idée sur vos chiffres</h2>
+            </div>
             <div class="cards__section">
-                <revenueCard/>
+                <revenueCard v-for="i in 3"/>
+            </div>
+            <div class="last__operations flex flex-col gap-8">
+                <!-- Placeholder for last operations content -->
+                <div class="title__section">
+                    <h2>Une idée sur vos chiffres</h2>
+                </div>
+                <operationsList/>
             </div>
         </div>
     </section>
@@ -12,10 +21,12 @@
 
 <script lang="ts">
 import revenueCard from '../cards/revenueCard.vue';
+import operationsList from '../lists/operationsList.vue';
 export default {
     name: "IndexSection",
     components: {
-        revenueCard
+        revenueCard,
+        operationsList
     }
 }
 </script>
@@ -33,5 +44,10 @@ export default {
     font-size: large;
     font-weight: 700;
     color: #215083;
+}
+
+.cards__section{
+    display: flex;
+    gap: 1rem;
 }
 </style>

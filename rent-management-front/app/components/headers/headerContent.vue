@@ -1,22 +1,34 @@
 <template>
-  <div class="header__content w-full flex items-center justify-between">
+  <div class="header__content">
     <div class="header__title">
-        <h3>Mon tableau de bord</h3>
+      <h3>Mon tableau de bord</h3>
     </div>
-    <div class="tools__framer"></div>
+    <div class="tools__framer">
+      <moreButton btn_label="Nouveau clients"/>
+    </div>
   </div>
 </template>
 
 <script>
+import moreButton from '../buttons/moreButton.vue';
 export default {
-
+  components: {
+    moreButton
+  } 
 }
 </script>
 
 <style scoped>
+.header__content{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .header__title h3{
-    font-size: medium;
-    font-weight: 600;
-    color: #215083;
+  font-size: medium;
+  font-weight: 600;
+  color: #215083;
 }
 </style>

@@ -29,7 +29,7 @@ export default {
 .revenue__cards{
     width: 300px;
     height: 150px;
-    background-color: #fff;
+    background-color: #759ddb;
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -48,7 +48,7 @@ export default {
 .card__header h4 {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #215083;
+    color: #fff;
 }
 
 .figures {
