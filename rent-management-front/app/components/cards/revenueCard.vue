@@ -43,6 +43,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    color: #fff;
 }
 
 .card__header h4 {

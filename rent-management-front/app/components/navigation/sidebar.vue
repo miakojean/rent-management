@@ -109,6 +109,11 @@ export default {
     color: #215083;
 }
 
+.sidebar-menu {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
 .sidebar-menu ul {
     display: flex;
     align-items:normal;
@@ -137,5 +142,13 @@ export default {
     background-color: #d2deec;
     color: #215083;
     border-bottom: #215083 1px solid;
+}
+
+.sidebar-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d2deec;
+    display: flex;
+    justify-content: center;
 }
 </style>
