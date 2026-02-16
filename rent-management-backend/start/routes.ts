@@ -11,6 +11,9 @@ import router from '@adonisjs/core/services/router'
 import User from '#models/user'
 
 
+const AuthController = ()=>import('#controllers/auth_controller')
+
+
 router.get('/', async () => {
   return {
     hello: 'world',
@@ -26,23 +29,44 @@ router.get('users', async ()=>{
   } catch (error) {
     return{
       error:'Une erreur a été rencontrée lors de la réccupération',
-      message: error.message
     }
   }
 })
 
-router.get('users/:id', async ({params})=>{
-  try{
+// routes.ts
+router.get('users/:id', async ({ params }) => {
+  try {
     const user = await User.find(params.id)
+    
+    if (!user) {
+      return {
+        error: 'Utilisateur non trouvé'
+      }
+    }
+    
+    // Sérialisation manuelle pour contrôler l'affichage
     return {
-      'message': 'Utilisateur récupéré avec success',
-      'user':user
+      message: 'Utilisateur récupéré avec succès',
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+        // password est intentionnellement omis
+      }
     }
   } catch (error) {
-    return  {
-      error: 'Une erreur a été rencontrée lors de la recup',
-      message: error.message
+    return {
+      error: 'Une erreur a été rencontrée lors de la récup',
     }
   }
 })
 
+router.group(() => {
+  
+  // Route d'inscription : POST /api/auth/register
+  router.post('register', [AuthController, 'register'])
+
+}).prefix('rent-manager/auth') // Préfixe pour organiser vos URL

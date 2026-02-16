@@ -1,0 +1,14 @@
+GET http://localhost:3333/users/1
+
+###
+###
+POST http://localhost:3333/rent-manager/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Jean",
+  "lastName": "Dupont",
+  "email": "jean.dupont@example.com",
+  "password": "superSecretPassword123",
+  "password_confirmation": "superSecretPassword123"
+}
