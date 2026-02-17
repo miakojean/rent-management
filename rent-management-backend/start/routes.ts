@@ -9,10 +9,12 @@
 
 import router from '@adonisjs/core/services/router'
 import User from '#models/user'
+import { middleware } from './kernel.js'
 
 
 const AuthController = ()=>import('#controllers/auth_controller')
 const SessionController = ()=>import('#controllers/session_controller')
+const PropertyController = ()=>import('#controllers/properties_controller')
 
 
 router.get('/', async () => {
@@ -65,22 +67,30 @@ router.get('users/:id', async ({ params }) => {
   }
 })
 
+// Authentication routes
+
 router.group(() => {
   
   // Route d'inscription : POST /api/auth/register
   router.post('register', [AuthController, 'register'])
 
-  // create a router for generating a token
-  router.post('/:id/tokens', async({params})=>{
-    const user = await User.findOrFail(params.id)
-    const token = await User.accessTokens.create(user, ['server:create', 'server:read'])
-
-    return{
-      type:'bearer',
-      value: token.value!.release(),
-    }
-  })
-
   router.post('login', [SessionController, 'store'])
 
 }).prefix('rent-manager/auth') // Préfixe pour organiser vos URL
+
+// About the rent management
+router.group(()=>{
+
+  // The dashboard index
+  router.get('/dashboard',()=>{
+    return {
+      dashboard: 'Bienvenu'
+    }
+  })
+
+  // Create a new property
+  router.post('properties', [PropertyController, 'store'])
+
+}).prefix('rent-management').use(middleware.auth(
+  {guards: ['api']}
+))

@@ -13,6 +13,7 @@ The user opens his `account`. He adds his `properties`, define the monthly rent 
 The first model is `Account` and it's defined by the differents fields:
 -   `first_name`
 -   `last_name`
+-   `username`
 -   `email`
 -   `password`
 -   `confirmed_password`
@@ -28,3 +29,5 @@ The first model is `Account` and it's defined by the differents fields:
     }
 
 ```
+Let's work to the next models; that consist in add the property.
+
