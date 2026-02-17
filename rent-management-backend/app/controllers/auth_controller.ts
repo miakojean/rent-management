@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { registerValidator } from '#validators/auth'
+import HttpExceptionHandler from '#exceptions/handler'
 
 export default class AuthController {
   
@@ -20,5 +21,6 @@ export default class AuthController {
             user: user
         })
     }
+
 
 }
