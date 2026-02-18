@@ -84,7 +84,7 @@ router.group(()=>{
   // The dashboard index
   router.get('/dashboard',()=>{
     return {
-      dashboard: 'Bienvenu'
+      dashboard: 'Bienvenue au pays mon mon fils'
     }
   })
 
