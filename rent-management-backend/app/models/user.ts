@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 
@@ -9,6 +9,18 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
+
+// ==================== TYPES D'UTILISATEURS ====================
+export const UserTypes = {
+  ADMIN: 'admin',
+  PROPRIETAIRE: 'proprietaire',
+  LOCATAIRE: 'locataire',
+  // GESTIONNAIRE: 'gestionnaire', // si tu as des agences/gestionnaires
+} as const
+
+export type UserType = typeof UserTypes[keyof typeof UserTypes]
+
+// ============================================================
 
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
@@ -20,6 +32,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare lastName: string
 
+  /** Nom complet calculé (très pratique dans les vues) */
+  @computed()
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`.trim()
+  }
+
   @column()
   declare email: string
 
@@ -29,17 +47,30 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
+  /** Type d'utilisateur → essentiel pour la gestion locative */
+  @column()
+  declare type: UserType
+
+  /** Téléphone (très important en Côte d'Ivoire) */
+  @column()
+  declare phoneNumber: string | null
+
+  /** Photo de profil (optionnel mais sympa) */
+  @column()
+  declare avatarUrl: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime
 
+  // Tokens d'accès (configuration officielle AdonisJS)
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',
     prefix: 'oat_',
     table: 'auth_access_tokens',
-    type:'auth_token',
-    tokenSecretLength:40
+    type: 'auth_token',
+    tokenSecretLength: 40,
   })
 }
