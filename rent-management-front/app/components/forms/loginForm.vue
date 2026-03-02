@@ -22,12 +22,14 @@
             :required="true"
             type="password"
         />
-        <div class="remember-content">
+        <div class="remember-content flex items-center gap-4">
             <p>
                 Se souvenir de moi
             </p>
+            <BaseCheckbox/>
         </div>
         <mainButton type="button" btn_label="connexion"/>
+        <p>Pas un compte? <span>Ouvrir un compte</span></p>
     </form>
 </template>
 
@@ -35,30 +37,40 @@
 import { ref } from 'vue';
 import BaseInput from '../input/BaseInput.vue';
 import mainButton from '../buttons/mainButton.vue';
+import BaseCheckbox from '../input/BaseCheckbox.vue';
+import { useAuthStore } from '#imports';
 
 interface LoginForm {
     email: string; 
     password: string;
 }
 
-const user = ref<LoginForm>({
-  email: '',
-  password: '' // Correction: Utiliser 'password' au lieu de 'name'
-});
-
 interface FormErrors {
   email?: string;
   password?: string;
 }
+
+const authStore = useAuthStore();
+
+const user = ref<LoginForm>({
+  email: '',
+  password: '' // Correction: Utiliser 'password' au lieu de 'name'
+});
 
 const errors = ref<FormErrors>({
   email: 'Format email invalide'
 });
 
 // Ajout: Fonction de soumission manquante
-const submitForm = () => {
-  console.log('Formulaire soumis:', user.value);
-  // Logique de soumission ici
+const submitForm = async () => {
+  try {
+    await authStore.login(user.value);
+    console.log("Connexion réussie", user.value)
+    // Redirection ou message de succès
+  } catch (err) {
+    // err contient le message d'erreur
+    // On peut le parser pour remplir errors.email ou errors.password
+  }
 };
 </script>
 
@@ -72,4 +84,8 @@ const submitForm = () => {
     gap: 0.5rem;
 }
 
+span{
+    font-weight: 600;
+    color: var(--primary-color);
+}
 </style>

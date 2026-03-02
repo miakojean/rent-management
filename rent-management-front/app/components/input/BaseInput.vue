@@ -45,63 +45,52 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue';
-
-// On désactive l'héritage automatique des attributs sur la racine
-// pour les appliquer manuellement sur la balise <input> via v-bind="$attrs"
-defineOptions({
-  inheritAttrs: false
-});
-
-const props = defineProps({
-  /** Valeur liée via v-model */
-  modelValue: {
-    type: [String, Number],
-    default: ''
+<script>
+export default {
+  name: 'BaseInput',
+  inheritAttrs: false,
+  props: {
+    modelValue: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    errorMessage: {
+      type: String,
+      default: ''
+    },
+    hint: {
+      type: String,
+      default: ''
+    },
+    id: {
+      type: String,
+      default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    required: {
+      type: Boolean,
+      default: false
+    }
   },
-  /** Libellé du champ */
-  label: {
-    type: String,
-    default: ''
+  emits: ['update:modelValue', 'blur'],
+  computed: {
+    // Génère un ID unique si l'utilisateur n'en fournit pas
+    inputId() {
+      return this.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    }
   },
-  /** Message d'erreur (active le style rouge) */
-  errorMessage: {
-    type: String,
-    default: ''
-  },
-  /** Texte d'aide en gris sous le champ */
-  hint: {
-    type: String,
-    default: ''
-  },
-  /** ID unique (généré aléatoirement si non fourni) */
-  id: {
-    type: String,
-    default: null
-  },
-  /** État désactivé */
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  /** Affiche une astérisque si true */
-  required: {
-    type: Boolean,
-    default: false
+  methods: {
+    handleInput(event) {
+      this.$emit('update:modelValue', event.target.value);
+    }
   }
-});
-
-const emit = defineEmits(['update:modelValue', 'blur']);
-
-// Génération d'un ID unique si l'utilisateur n'en fournit pas
-// (Essentiel pour lier le label à l'input pour les lecteurs d'écran)
-const inputId = computed(() => {
-  return props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
-});
-
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value);
 };
 </script>
 

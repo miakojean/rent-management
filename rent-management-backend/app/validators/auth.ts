@@ -32,7 +32,7 @@ export const registerValidator = vine.compile(
       .string()
       .trim()
       .minLength(8)
-      .confirmed({ confirmationField: 'password_confirmation' }),
+      .confirmed({ confirmationField: 'passwordConfirmation' }),
 
     phone: vine.string().trim().regex(/^\+?\d[\d\s()-]{8,18}$/).optional(),
     address: vine.string().trim().maxLength(255).optional(),

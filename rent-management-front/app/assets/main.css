@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
 
 :root{
-    --primary-color: #4F46E5;
-    --primary-color-dark: #2f69ba;
+    --primary-color: #168994;
+    --primary-color-dark: #0D5C63;
     --secondary-color: #6B7280;
     --background-color: #F9FAFB;
     --text-color: #111827;
@@ -16,9 +16,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Zalando Sans SemiExpanded', sans-serif;
+    font-family: "Instrument Sans", sans-serif;
 }
 
 main{
     padding:1rem;
 }
+

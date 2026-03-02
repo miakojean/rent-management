@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { api } from "~/services/api";
-import { ref, reactive } from "vue";
+import { ref, reactive,computed } from "vue";
 
 export interface User {
     id?:number,

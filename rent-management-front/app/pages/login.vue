@@ -1,6 +1,9 @@
 <template>
-    <div class="login-page-container">
+    <div class="login-page-container grid-cols-2 gap-4">
         <loginForm></loginForm>
+        <div class="">
+            <h1>Bienvenu sur calim, Prenez en main la gestion de vos bien immobiliers</h1>
+        </div>
     </div>
 </template>
 
