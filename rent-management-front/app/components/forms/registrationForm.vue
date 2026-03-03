@@ -3,17 +3,34 @@
         <h3>
             Mettez de l'ordre dans votre gestion
         </h3>
+        <p>Entrer vos détails et finalisons <span>votre inscription</span></p>
+        <stepper/>
         <form action="">
-            <div class="step w-full flex flex-col gap-4"
-                v-if="step == 1"
-            >
-                <h4>
-                    Je m'enregistre en tant que
-                </h4>
+            <div class="step w-full flex flex-col gap-6" v-if="step == 1">
+                <h4>Je m'enregistre en tant que</h4>
 
-                <BaseCheckbox label="propriétaire"/>
-                <BaseCheckbox label="Agence immobilière"/>
-                <mainButton type="button" btn_label="suivant"/>
+                <BaseCheckbox 
+                    label="propriétaire" 
+                    :modelValue="user.type === 'propriétaire'"
+                    @update:modelValue="selectType('propriétaire')"
+                />
+                
+                <BaseCheckbox 
+                    label="Agence immobilière"
+                    :modelValue="user.type === 'agence'"
+                    @update:modelValue="selectType('agence')"
+                />
+
+                <mainButton 
+                    type="button" 
+                    btn_label="suivant" 
+                    :disabled="isStepOneInvalid"
+                    @handleClick="step = 2" 
+                />
+                <p>
+                    En poursuivant vous acceptez 
+                    <span> les conditions d'utilisations votre inscription</span>
+                </p>
             </div>
             <div class="step w-full flex flex-col gap-4"
                 v-if="step == 2"
@@ -43,6 +60,7 @@ import BaseInput from '../input/BaseInput.vue';
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import { useAuthStore } from '#imports';
 import mainButton from '../buttons/mainButton.vue';
+import stepper from '../tools/stepper.vue';
 
 // state
 
@@ -74,10 +92,25 @@ const user = ref<RegistrationForm>({
 const authStore = useAuthStore();
 
 const step = ref<number>(1);
+const active = ref<boolean>(false);
 
 // Getter
 
 // Action
+const isStepOneInvalid = computed(() => {
+    return user.value.type === "";
+});
+
+// 3. Fonction pour sélectionner le type
+const selectType = (selectedType: string) => {
+    // Si on clique sur ce qui est déjà sélectionné, on vide la valeur (désélection)
+    // Sinon, on applique la nouvelle valeur
+    if (user.value.type === selectedType) {
+        user.value.type = "";
+    } else {
+        user.value.type = selectedType;
+    }
+};
 </script>
 
 <style scoped>

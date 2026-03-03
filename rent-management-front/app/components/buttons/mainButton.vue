@@ -68,7 +68,7 @@ export default {
 }
 
 .main-button:disabled {
-    background-color: var(--primary-color);
+    background-color: var(--border-color);
     cursor: not-allowed;
     opacity: 0.7;
 }
