@@ -9,6 +9,7 @@
         </h3>
         
         <BaseInput 
+            id="email"
             v-model="user.email"
             label="Adresse Email"
             type="email"
@@ -16,6 +17,7 @@
             :required=true
         />
         <BaseInput 
+            id="password"
             v-model="user.password"
             label="Mot de passe"
             placeholder="votre mot de passe"
@@ -28,7 +30,10 @@
             </p>
             <BaseCheckbox/>
         </div>
-        <mainButton type="button" btn_label="connexion"/>
+        <div class="error--message">
+            <p class="error">{{ authStore.error }}</p>
+        </div>
+        <mainButton type="submit" btn_label="connexion"/>
         <p>Pas un compte? <span>Ouvrir un compte</span></p>
     </form>
 </template>
@@ -81,11 +86,15 @@ const submitForm = async () => {
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 span{
     font-weight: 600;
     color: var(--primary-color);
+}
+
+.error{
+    color: var(--error-color);
 }
 </style>

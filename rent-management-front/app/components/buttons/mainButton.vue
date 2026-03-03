@@ -2,10 +2,9 @@
     <button 
         :disabled="isloading || disabled" 
         @click="handleClick"
-        :class="{ 'loading': isloading }"
         class="main-button"
     >
-        <span v-if="isloading" class="loading-spinner"></span>
+        <span v-if="isloading" class="loading loading-spinner loading-md"></span>
         {{ btn_label }}
     </button>
 </template>
@@ -69,13 +68,13 @@ export default {
 }
 
 .main-button:disabled {
-    background-color: #ccc;
+    background-color: var(--primary-color);
     cursor: not-allowed;
     opacity: 0.7;
 }
 
 .main-button.loading {
-    background-color: var(--primary-color-light);
+    background-color: var(--primary-color);
 }
 
 .loading-spinner {

@@ -10,6 +10,7 @@
     --text-color: #111827;
     --card-background: #FFFFFF;
     --border-color: #E5E7EB;
+    --error-color: red;
 }
 
 *{

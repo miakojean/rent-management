@@ -54,6 +54,8 @@ export const useAuthStore = defineStore('auth', ()=>{
             return response.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors de l\'inscription';
+            //debugging
+            console.log(error.value);
             throw error.value;
         } finally {
             isLoading.value = false;
@@ -83,6 +85,8 @@ export const useAuthStore = defineStore('auth', ()=>{
             return response.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors de la connexion';
+            // debugging
+            console.log("error message", error.value)
             throw error.value;
         } finally {
             isLoading.value = false;

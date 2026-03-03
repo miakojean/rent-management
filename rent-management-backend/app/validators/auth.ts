@@ -57,4 +57,7 @@ const messagesProvider = new SimpleMessagesProvider({
   'type.enum': 'Type utilisateur invalide',
 })
 
-registerValidator.messagesProvider = messagesProvider
+registerValidator.messagesProvider = messagesProvider 
+
+// schema pour la connexion:
+
