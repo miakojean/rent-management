@@ -1,10 +1,25 @@
 <template>
   <ul class="steps">
-    <li class="step step-teal">Étape 1</li>
-    <li class="step">Étape 2</li>
-    <li class="step">Étape 3</li>
+    <li 
+      v-for="step in steps" 
+      class="step"
+      :class="{ 'step-teal': step.isActive }"
+    >
+      {{ step.name }}
+    </li>
   </ul>
 </template>
+
+<script>
+export default {
+  props: {
+    steps: {
+      type: Array,
+      required: true // ou default: () => [] si vous voulez un fallback vide
+    }
+  }
+}
+</script>
 
 <style scoped>
 /* Définir la couleur pour le cercle et la ligne */
