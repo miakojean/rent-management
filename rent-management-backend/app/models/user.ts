@@ -72,4 +72,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
     type: 'auth_token',
     tokenSecretLength: 40,
   })
+
+  static refreshTokens = DbAccessTokensProvider.forModel(User, {
+    prefix: 'rt_',
+    table: 'jwt_refresh_tokens',
+    type: 'jwt_refresh_token',
+    tokenSecretLength: 40,
+  })
 }
