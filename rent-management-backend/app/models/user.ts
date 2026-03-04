@@ -14,8 +14,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 export const UserTypes = {
   ADMIN: 'admin',
   PROPRIETAIRE: 'proprietaire',
-  LOCATAIRE: 'locataire',
-  // GESTIONNAIRE: 'gestionnaire', // si tu as des agences/gestionnaires
+  GESTIONNAIRE: 'gestionnaire', // si tu as des agences/gestionnaires
 } as const
 
 export type UserType = typeof UserTypes[keyof typeof UserTypes]
@@ -56,8 +55,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare phoneNumber: string | null
 
   /** Photo de profil (optionnel mais sympa) */
-  @column()
-  declare avatarUrl: string | null
+  // @column()
+  // declare avatarUrl: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

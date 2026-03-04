@@ -1,16 +1,17 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import User from '#models/user' // Assure-toi que le chemin est correct selon ta version
+import User from '#models/user'
+import LocationUnity from '#models/location_unity'
 
 export const PropertyTypes = {
-  APARTMENT: 'appartement',
   HOUSE: 'villa',
-  STUDIO: 'studio',
-  COMMERCIAL: 'commercial',
+  COMMUNITY_COURT: 'cour commune',
+  BUILDING: 'immeuble',
+  OTHER: 'autre',
 } as const
 
-// Extraction des valeurs pour le type (crée: 'apartment' | 'house' | ...)
+// Extraction des valeurs pour le type (crée: 'villa' | 'cour commune' | 'immeuble' | 'autre')
 export type PropertyType = typeof PropertyTypes[keyof typeof PropertyTypes]
 
 export default class Property extends BaseModel {
@@ -33,18 +34,6 @@ export default class Property extends BaseModel {
   @column()
   declare type: PropertyType
 
-  @column()
-  declare surface: number // En m²
-
-  @column()
-  declare rooms: number
-
-  @column()
-  declare bedrooms: number
-
-  @column()
-  declare floor: number | null // Étage (null si maison)
-
   // --- Localisation ---
   @column()
   declare address: string
@@ -53,17 +42,13 @@ export default class Property extends BaseModel {
   declare city: string
 
   @column()
-  declare zipCode: string
+  declare country: string
 
-  // --- Financier & Statut ---
-  @column()
-  declare price: number // Loyer ou Prix de vente
+  // @column()
+  // declare zipCode: string
 
-  @column()
-  declare status: 'available' | 'rented' | 'sold' | 'maintenance'
-
-  @column.dateTime()
-  declare availableFrom: DateTime | null
+  // @column.dateTime()
+  // declare availableFrom: DateTime | null
 
   // --- Timestamps ---
   @column.dateTime({ autoCreate: true })
@@ -78,7 +63,7 @@ export default class Property extends BaseModel {
   @belongsTo(() => User)
   declare owner: BelongsTo<typeof User>
 
-  // Relation : Une propriété a plusieurs Photos
-  //@hasMany(() => Photo)
-  //declare photos: HasMany<typeof Photo>
+  // Relation : Une propriété a plusieurs unités de location
+  @hasMany(() => LocationUnity)
+  declare locationUnities: HasMany<typeof LocationUnity>
 }

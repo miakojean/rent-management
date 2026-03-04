@@ -10,27 +10,26 @@ export default class extends BaseSchema {
 
       // Clé étrangère vers users
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.index('user_id')
 
       // Informations générales
       table.string('title').notNullable()
       table.text('description').nullable()
 
       // Détails physiques
-      table.string('type').notNullable() // 'appartement', 'villa', etc.
-      table.integer('surface').notNullable()
-      table.integer('rooms').notNullable()
-      table.integer('bedrooms').notNullable()
-      table.integer('floor').nullable() // Étage (nullable pour les maisons)
+      table.enum('type', ['villa', 'cour commune', 'immeuble', 'autre']).notNullable()
 
+      
       // Localisation
       table.string('address').notNullable()
       table.string('city').notNullable()
-      table.string('zip_code', 10).notNullable() // Limite à 10 caractères max
+      table.string('country').notNullable()
+      // table.string('zip_code', 10).notNullable() // Limite à 10 caractères max
 
       // Financier & Statut
-      table.integer('price').notNullable() // Prix en centimes ou euros
-      table.enu('status', ['available', 'rented', 'sold', 'maintenance']).defaultTo('available')
-      table.timestamp('available_from').nullable()
+      // table.integer('price').notNullable() // Prix en centimes ou euros
+      // table.enu('status', ['available', 'rented', 'sold', 'maintenance']).defaultTo('available')
+      // table.timestamp('available_from').nullable()
 
       // Timestamps
       table.timestamp('created_at').notNullable()
