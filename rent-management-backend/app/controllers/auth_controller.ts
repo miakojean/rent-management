@@ -1,34 +1,57 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { registerValidator } from '#validators/auth'
-import logger from '@adonisjs/core/services/logger'
+import { loginValidator, registerValidator } from '#validators/auth'
 
 export default class AuthController {
   
-    async register({ request, response }: HttpContext) {
-        try {
-            // 1. Validation (Si ça échoue, ça part direct au catch ou à l'exception handler)
-            const payload = await request.validateUsing(registerValidator)
+  /**
+   * Inscription d'un nouvel utilisateur
+   */
+  async register({ request, response }: HttpContext) {
+    // 1. Validation (Si ça échoue, Adonis s'occupe de la réponse 422)
+    const payload = await request.validateUsing(registerValidator)
 
-            // 2. Création (On le met DANS le try pour catcher les erreurs DB)
-            const user = await User.create(payload)
+    // 2. Création (On laisse l'Exception Handler global gérer les erreurs 500)
+    const user = await User.create(payload)
 
-            // 3. Réponse de succès
-            return response.created({
-                message: 'Compte créé avec succès',
-                user: user
-            })
+    return response.created({
+      message: 'Compte créé avec succès',
+      user: user.serialize()
+    })
+  }
 
-        } catch (error) {
-            // On log l'erreur pour le debug en console
-            logger.error({ err: error }, 'Erreur lors de la création du compte')
+  /**
+   * Connexion et génération du token
+   */
+  async login({ request, response, auth }: HttpContext) {
+    const { email, password } = await request.validateUsing(loginValidator)
 
-            // Important : On répond au client, sinon la requête reste "pendue"
-            return response.internalServerError({
-                message: 'Une erreur est survenue lors de l\'inscription',
-                // En dev, tu peux ajouter error.message pour aider, mais pas en prod !
-                error: process.env.NODE_ENV === 'development' ? error.message : undefined
-            })
-        }
-    }
+    // Vérification des identifiants
+    const user = await User.verifyCredentials(email, password)
+
+    // Génération du token JWT
+    const token = await auth.use('jwt').generate(user)
+
+    return response.ok({
+      message: 'Connexion réussie',
+      user: user.serialize()
+    })
+  }
+
+  /**
+   * Rafraîchissement du token
+   */
+  async refreshToken({ auth, response }: HttpContext) {
+    // La méthode generateWithRefreshToken gère souvent la vérification du refresh token actuel
+    const token = await auth.use('jwt').generateWithRefreshToken()
+    return response.ok(token)
+  }
+
+  /**
+   * Déconnexion
+   */
+  async logout({ auth, response }: HttpContext) {
+    await auth.use('jwt').revoke()
+    return response.ok({ message: 'Logged out successfully' })
+  }
 }

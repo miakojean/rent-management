@@ -54,6 +54,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare phoneNumber: string | null
 
+  @column()
+  declare address: string | null
+
+  @column()
+  declare isActive: boolean
+
   /** Photo de profil (optionnel mais sympa) */
   // @column()
   // declare avatarUrl: string | null

@@ -14,7 +14,7 @@ interface JwtContent extends BaseJwtContent {
 }
 
 const authConfig = defineConfig({
-  default: 'api',
+  default: 'jwt',
   guards: {
     api: tokensGuard({
       provider: tokensUserProvider({
@@ -26,7 +26,7 @@ const authConfig = defineConfig({
     jwt: jwtGuard({
       tokenName:'user-token',
       // tokenExpiresIn can be a string or a number
-      tokenExpiresIn: '1h',
+      tokenExpiresIn: '1d',
       // Use cookies for the authentication
       useCookies:true,
       // secret is the secret used to sign the token, it can be optional, by default it uses the application key

@@ -13,7 +13,6 @@ import { middleware } from './kernel.js'
 
 
 const AuthController = ()=>import('#controllers/auth_controller')
-const SessionController = ()=>import('#controllers/session_controller')
 const PropertyController = ()=>import('#controllers/properties_controller')
 
 
@@ -67,14 +66,23 @@ router.get('users/:id', async ({ params }) => {
   }
 })
 
-// Authentication routes
+/* 
+  Authentication routes group
+*/
 
 router.group(() => {
   
   // Route d'inscription : POST /api/auth/register
   router.post('register', [AuthController, 'register'])
 
-  router.post('login', [SessionController, 'store'])
+  // Route de connexion : POST /api/auth/login
+  router.post('login', [AuthController, 'login'])
+
+  // Route de rafraichissement de token
+  router.post('refresh-token', [AuthController, 'refreshToken'])
+
+  // Route pour la déconnexion
+  router.post('logout', [AuthController, 'logout'])
 
 }).prefix('rent-manager/auth') // Préfixe pour organiser vos URL
 

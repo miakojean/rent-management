@@ -15,7 +15,7 @@ let's for the first one:
 Features à implémenter:
 
 Backend:
--   Création de compte (Jean Yves)
--   Authentification de compte avec jwt (access_token, refresh_tokens, cookies) (Jean Yves )
+-   Création de compte (Jean Yves) (Done)
+-   Authentification de compte avec jwt (access_token, refresh_tokens, cookies) (Jean Yves ) (En attente du crud des entités pour le test des fonctionnalités avec authentification)
 -   Figma (Jean Yves, Yvan)
 -   Gestion des controlleurs (Rokib)
