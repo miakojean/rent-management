@@ -14,6 +14,10 @@ import { middleware } from './kernel.js'
 
 const AuthController = ()=>import('#controllers/auth_controller')
 const PropertyController = ()=>import('#controllers/properties_controller')
+const OccupantsController = ()=>import('#controllers/occupants_controller')
+const LocationUnitiesController = ()=>import('#controllers/location_unities_controller')
+const BailsController = ()=>import('#controllers/bails_controller')
+const RentPaymentsController = ()=>import('#controllers/rent_payments_controller')
 
 
 router.get('/', async () => {
@@ -96,9 +100,40 @@ router.group(()=>{
     }
   })
 
-  // Create a new property
+  // Properties CRUD (protégé : uniquement les propriétés de l'utilisateur connecté)
+  router.get('properties', [PropertyController, 'index'])
+  router.get('properties/:id', [PropertyController, 'show'])
   router.post('properties', [PropertyController, 'store'])
+  router.put('properties/:id', [PropertyController, 'update'])
+  router.delete('properties/:id', [PropertyController, 'destroy'])
 
+  // Occupants CRUD
+  router.get('occupants', [OccupantsController, 'index'])
+  router.get('occupants/:id', [OccupantsController, 'show'])
+  router.post('occupants', [OccupantsController, 'store'])
+  router.put('occupants/:id', [OccupantsController, 'update'])
+  router.delete('occupants/:id', [OccupantsController, 'destroy'])
+
+  // Location unities CRUD
+  router.get('location-unities', [LocationUnitiesController, 'index'])
+  router.get('location-unities/:id', [LocationUnitiesController, 'show'])
+  router.post('location-unities', [LocationUnitiesController, 'store'])
+  router.put('location-unities/:id', [LocationUnitiesController, 'update'])
+  router.delete('location-unities/:id', [LocationUnitiesController, 'destroy'])
+
+  // Bails CRUD
+  router.get('bails', [BailsController, 'index'])
+  router.get('bails/:id', [BailsController, 'show'])
+  router.post('bails', [BailsController, 'store'])
+  router.put('bails/:id', [BailsController, 'update'])
+  router.delete('bails/:id', [BailsController, 'destroy'])
+
+  // Rent payments CRUD
+  router.get('rent-payments', [RentPaymentsController, 'index'])
+  router.get('rent-payments/:id', [RentPaymentsController, 'show'])
+  router.post('rent-payments', [RentPaymentsController, 'store'])
+  router.put('rent-payments/:id', [RentPaymentsController, 'update'])
+  router.delete('rent-payments/:id', [RentPaymentsController, 'destroy'])
 }).prefix('rent-management').use(middleware.auth(
   {guards: ['api']}
 ))

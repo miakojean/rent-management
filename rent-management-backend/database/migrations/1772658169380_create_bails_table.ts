@@ -5,7 +5,9 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      // table.increments('id')
+      // Use 'uuid' instead of 'increments'
+      table.uuid('id').primary().notNullable()
 
       table.integer('location_unity_id').unsigned().references('location_unities.id').notNullable()
       table.integer('occupant_id').unsigned().references('occupants.id').onDelete('CASCADE')

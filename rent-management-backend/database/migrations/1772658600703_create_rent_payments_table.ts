@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('bail_id').unsigned().references('bails.id').notNullable().onDelete('CASCADE')
+      table.uuid('bail_id').references('bails.id').notNullable().onDelete('CASCADE')
       table.index('bail_id')
       table.date('payment_date').notNullable()
       table.index('payment_date', 'rent_payments_payment_date_index')

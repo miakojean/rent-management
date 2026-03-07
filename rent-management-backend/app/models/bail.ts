@@ -1,15 +1,27 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import LocationUnity from '#models/location_unity'
 import Occupant from '#models/occupant'
 import RentPayment from '#models/rent_payment'
+import crypto from 'node:crypto'
 
 export default class Bail extends BaseModel {
   static table = 'bails'
 
+  // Clé primaire UUID (auto-générée avant création)
+  public static selfAssignPrimaryKey = true
+
   @column({ isPrimary: true })
-  declare id: number
+  declare id: string
+
+  // Génère l'UUID avant l'insertion
+  @beforeCreate()
+  public static async createUUID(bail: Bail) {
+    if (!bail.id) {
+      bail.id = crypto.randomUUID()
+    }
+  }
 
   @column()
   declare locationUnityId: number

@@ -10,7 +10,7 @@ export default class RentPayment extends BaseModel {
   declare id: number
 
   @column()
-  declare bailId: number
+  declare bailId: string
 
   @column.date()
   declare paymentDate: DateTime
