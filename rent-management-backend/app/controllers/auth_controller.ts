@@ -15,7 +15,7 @@ export default class AuthController {
     const user = await User.create(payload)
 
     return response.created({
-      message: 'Compte créé avec succès',
+      message: 'success',
       user: user.serialize()
     })
   }
