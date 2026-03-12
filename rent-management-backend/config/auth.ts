@@ -51,7 +51,7 @@ const authConfig = defineConfig({
       // ability to configure the cookies options
       cookie: {
         httpOnly: true,
-        secure: true,
+        secure: false,
       },
       // limit the abilities of the refresh token
       refreshTokenAbilities: ['refresh_token'],

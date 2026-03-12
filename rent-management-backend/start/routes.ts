@@ -94,7 +94,7 @@ router.group(() => {
 router.group(()=>{
 
   // The dashboard index
-  router.get('/dashboard',()=>{
+  router.get('/dashboard',()=>{ 
     return {
       dashboard: 'Bienvenue au pays mon mon fils'
     }
@@ -135,5 +135,5 @@ router.group(()=>{
   router.put('rent-payments/:id', [RentPaymentsController, 'update'])
   router.delete('rent-payments/:id', [RentPaymentsController, 'destroy'])
 }).prefix('rent-management').use(middleware.auth(
-  {guards: ['api']}
+  {guards: ['jwt']}
 ))

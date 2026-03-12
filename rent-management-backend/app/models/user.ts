@@ -72,7 +72,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   // Tokens d'accès (configuration officielle AdonisJS)
   static accessTokens = DbAccessTokensProvider.forModel(User, {
-    expiresIn: '30 days',
+    expiresIn: '1 days',
     prefix: 'oat_',
     table: 'auth_access_tokens',
     type: 'auth_token',
@@ -81,6 +81,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   static refreshTokens = DbAccessTokensProvider.forModel(User, {
     prefix: 'rt_',
+    expiresIn: '7 days',
     table: 'jwt_refresh_tokens',
     type: 'jwt_refresh_token',
     tokenSecretLength: 40,
