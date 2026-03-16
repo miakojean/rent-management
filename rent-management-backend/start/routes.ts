@@ -11,7 +11,7 @@ import router from '@adonisjs/core/services/router'
 import User from '#models/user'
 import { middleware } from './kernel.js'
 
-
+const DocsController = () => import('#controllers/docs_controller')
 const AuthController = ()=>import('#controllers/auth_controller')
 const PropertyController = ()=>import('#controllers/properties_controller')
 const OccupantsController = ()=>import('#controllers/occupants_controller')
@@ -25,6 +25,10 @@ router.get('/', async () => {
     hello: 'world',
   }
 })
+
+// Documentation OpenAPI / Swagger (spec générée par swagger-jsdoc, UI servie ici)
+router.get('/api-docs/spec', [DocsController, 'spec'])
+router.get('/api-docs', [DocsController, 'ui'])
 
 router.get('users', async ()=>{
   try{
