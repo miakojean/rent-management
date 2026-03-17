@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.increments('id')
 
       // Clé étrangère vers users
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE')
       table.index('user_id')
 
       // Informations générales
@@ -19,7 +19,7 @@ export default class extends BaseSchema {
       // Détails physiques
       table.enum('type', ['villa', 'cour commune', 'immeuble', 'autre']).notNullable()
 
-      
+
       // Localisation
       table.string('address').notNullable()
       table.string('city').notNullable()

@@ -17,6 +17,7 @@ Features à implémenter:
 Backend:
 -   Création de compte (Jean Yves) (Done)
 -   Authentification de compte avec jwt (access_token, refresh_tokens, cookies) (Jean Yves ) (En attente du crud des entités pour le test des fonctionnalités avec authentification) (Done)
+Complètement géré avec le jeudi 12 mars 2026;
 -   Figma (Jean Yves, Yvan)
 -   Gestion des controlleurs (Rokib) (Done)
 
@@ -42,11 +43,16 @@ On va partir sur uuid pour les id
 
 Pour les items, on va faire faire une sorte de tableau puis les options seront mis en dernière position.
 
-- Tester le crud et mise à jour des controlleurs;
-- Implementation de middleware;
-- Tester les requêtes avec authentification;
-- Migrations sur postgresql
+- Tester le crud et mise à jour des controlleurs; (A revoir)
+- Implementation de middleware; (A revoir)
+- Tester les requêtes avec authentification; (A revoir)
+- Migrations sur postgresql (Done)
 
+### Le mercredi 19 mars 2026
+
+Retravailler sur les points à revoir.
+- Bosser sur le refresh token de façon rigoureuse
+- Gérer les points à revoir.
 
 ## V2 de notre app
 

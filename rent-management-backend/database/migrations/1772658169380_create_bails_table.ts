@@ -9,13 +9,13 @@ export default class extends BaseSchema {
       // Use 'uuid' instead of 'increments'
       table.uuid('id').primary().notNullable()
 
-      table.integer('location_unity_id').unsigned().references('location_unities.id').notNullable()
-      table.integer('occupant_id').unsigned().references('occupants.id').onDelete('CASCADE')
+      table.uuid('location_unity_id').references('location_unities.id').notNullable()
+      table.uuid('occupant_id').references('occupants.id').onDelete('CASCADE')
       table.date('start_date').notNullable()
       table.index(['location_unity_id', 'occupant_id'], 'bails_location_unity_occupant_index')
       table.index('start_date', 'bails_start_date_index')
-      table.integer('price_per_month').notNullable()
-      table.integer('description').notNullable()
+      table.float('price_per_month').notNullable()
+      table.string('description').notNullable()
       table.float('security_deposit').notNullable()
 
       table.timestamp('created_at')

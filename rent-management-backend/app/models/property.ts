@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 import LocationUnity from '#models/location_unity'
+import { randomUUID } from 'node:crypto'
 
 export const PropertyTypes = {
   HOUSE: 'villa',
@@ -17,11 +18,16 @@ export type PropertyType = typeof PropertyTypes[keyof typeof PropertyTypes]
 export default class Property extends BaseModel {
   // --- Identifiants ---
   @column({ isPrimary: true })
-  declare id: number
+  declare id: string
+
+  @beforeCreate()
+  static assignUuid(property: Property) {
+    property.id = randomUUID()
+  }
 
   // --- Relations (Clés étrangères) ---
   @column()
-  declare userId: number // L'ID du propriétaire (Landlord)
+  declare userId: string // L'ID du propriétaire (Landlord)
 
   // --- Informations Générales ---
   @column()
@@ -58,7 +64,7 @@ export default class Property extends BaseModel {
   declare updatedAt: DateTime
 
   // --- Définition des Relations ---
-  
+
   // Relation : Une propriété appartient à un Utilisateur (Propriétaire)
   @belongsTo(() => User)
   declare owner: BelongsTo<typeof User>

@@ -5,13 +5,13 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      table.uuid('id').primary().defaultTo(this.db.rawQuery('gen_random_uuid()').toQuery())
 
       table.uuid('bail_id').references('bails.id').notNullable().onDelete('CASCADE')
       table.index('bail_id')
       table.date('payment_date').notNullable()
       table.index('payment_date', 'rent_payments_payment_date_index')
-      table.integer('amount_received').notNullable()
+      table.float('amount_received').notNullable()
       table.string('description').nullable()
 
       table.timestamp('created_at')

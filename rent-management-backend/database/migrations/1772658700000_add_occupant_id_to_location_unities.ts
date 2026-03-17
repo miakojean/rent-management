@@ -6,8 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
       table
-        .integer('occupant_id')
-        .unsigned()
+        .uuid('occupant_id')
         .references('occupants.id')
         .onDelete('SET NULL')
         .nullable()

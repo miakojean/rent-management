@@ -1,21 +1,27 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Property from '#models/property'
 import Occupant from '#models/occupant'
 import Bail from '#models/bail'
+import { randomUUID } from 'node:crypto'
 
 export default class LocationUnity extends BaseModel {
   static table = 'location_unities'
 
   @column({ isPrimary: true })
-  declare id: number
+  declare id: string
+
+  @beforeCreate()
+  static assignUuid(locationUnity: LocationUnity) {
+    locationUnity.id = randomUUID()
+  }
 
   @column()
-  declare propertyId: number
+  declare propertyId: string
 
   @column()
-  declare occupantId: number | null
+  declare occupantId: string | null
 
   @column()
   declare doorNumber: string
