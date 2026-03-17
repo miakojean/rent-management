@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       // Identifiant
-      table.uuid('property_id').primary()
+      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
 
       // Clé étrangère vers users
       table

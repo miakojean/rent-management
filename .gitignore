@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 # All file for testing api
 *.http
+
+# My keys
+*.pub
