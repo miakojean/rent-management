@@ -6,9 +6,10 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary()
+      
       table
         .uuid('property_id')
-        .references('id')
+        .references('property_id')
         .inTable('properties')
         .onDelete('CASCADE')
         .notNullable()

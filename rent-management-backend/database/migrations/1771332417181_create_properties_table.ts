@@ -6,10 +6,14 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       // Identifiant
-      table.increments('id')
+      table.uuid('property_id').primary()
 
       // Clé étrangère vers users
-      table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE')
+      table
+        .uuid('user_id')
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE')
       table.index('user_id')
 
       // Informations générales

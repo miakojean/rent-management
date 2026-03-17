@@ -27,7 +27,6 @@ Format de reponse
 
 https://docs.adonisjs.com/guides/basics/response 
 ```json
-
 {
     "status":null,
     "message":"",

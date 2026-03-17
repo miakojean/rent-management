@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary().defaultTo(this.db.rawQuery('gen_random_uuid()').toQuery())
+      table.uuid('id').primary()
 
       table.uuid('bail_id').references('bails.id').notNullable().onDelete('CASCADE')
       table.index('bail_id')

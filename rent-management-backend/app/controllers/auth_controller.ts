@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { loginValidator, registerValidator } from '#validators/auth'
+import { loginValidator, registerValidator, messagesProvider } from '#validators/auth'
 
 export default class AuthController {
   
@@ -9,7 +9,10 @@ export default class AuthController {
    */
   async register({ request, response }: HttpContext) {
     // 1. Validation (Si ça échoue, Adonis s'occupe de la réponse 422)
-    const payload = await request.validateUsing(registerValidator)
+    const payload = await request.validateUsing(
+      registerValidator,
+      {messagesProvider}
+    )
 
     // 2. Création (On laisse l'Exception Handler global gérer les erreurs 500)
     const user = await User.create(payload)

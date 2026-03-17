@@ -42,7 +42,7 @@ export const registerValidator = vine.compile(
   })
 )
 
-const messagesProvider = new SimpleMessagesProvider({
+export const messagesProvider = new SimpleMessagesProvider({
   'required': 'Le champ {{ field }} est requis',
   'string': 'Le champ {{ field }} doit être une chaîne de caractères',
   'email': "L'adresse email est invalide",
