@@ -1,13 +1,17 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import LocationUnity from '#models/location_unity'
+import Property from '#models/property'
 import { createLocationUnityValidator, updateLocationUnityValidator } from '#validators/location_unity'
 
 export default class LocationUnitiesController {
-  async index({ request, response }: HttpContext) {
+  async index({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const page = request.input('page', 1)
       const limit = request.input('limit', 10)
+
       const locationUnities = await LocationUnity.query()
+        .whereHas('property', (q) => q.where('user_id', user.id))
         .preload('property')
         .preload('occupant')
         .paginate(page, limit)
@@ -25,10 +29,13 @@ export default class LocationUnitiesController {
     }
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
+
       const locationUnity = await LocationUnity.query()
         .where('id', params.id)
+        .whereHas('property', (q) => q.where('user_id', user.id))
         .preload('property')
         .preload('occupant')
         .preload('bails')
@@ -54,9 +61,23 @@ export default class LocationUnitiesController {
     }
   }
 
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const data = await request.validateUsing(createLocationUnityValidator)
+
+      const property = await Property.query()
+        .where('id', data.propertyId)
+        .where('user_id', user.id)
+        .first()
+
+      if (!property) {
+        return response.forbidden({
+          status: 'error',
+          message: 'Propriété introuvable ou vous n\'êtes pas autorisé à y créer des unités.',
+        })
+      }
+
       const locationUnity = await LocationUnity.create(data)
 
       return response.created({
@@ -80,9 +101,15 @@ export default class LocationUnitiesController {
     }
   }
 
-  async update({ params, request, response }: HttpContext) {
+  async update({ params, request, response, auth }: HttpContext) {
     try {
-      const locationUnity = await LocationUnity.find(params.id)
+      const user = auth.user!
+
+      const locationUnity = await LocationUnity.query()
+        .where('id', params.id)
+        .whereHas('property', (q) => q.where('user_id', user.id))
+        .first()
+
       if (!locationUnity) {
         return response.notFound({
           status: 'error',
@@ -115,9 +142,15 @@ export default class LocationUnitiesController {
     }
   }
 
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     try {
-      const locationUnity = await LocationUnity.find(params.id)
+      const user = auth.user!
+
+      const locationUnity = await LocationUnity.query()
+        .where('id', params.id)
+        .whereHas('property', (q) => q.where('user_id', user.id))
+        .first()
+
       if (!locationUnity) {
         return response.notFound({
           status: 'error',

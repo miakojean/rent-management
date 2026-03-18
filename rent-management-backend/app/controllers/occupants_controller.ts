@@ -3,11 +3,18 @@ import Occupant from '#models/occupant'
 import { createOccupantValidator, updateOccupantValidator } from '#validators/occupant'
 
 export default class OccupantsController {
-  async index({ request, response }: HttpContext) {
+  async index({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const page = request.input('page', 1)
       const limit = request.input('limit', 10)
-      const occupants = await Occupant.query().paginate(page, limit)
+
+      const occupants = await Occupant.query()
+        .whereHas('locationUnities', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
+        .preload('locationUnities')
+        .paginate(page, limit)
 
       return response.ok({
         status: 'success',
@@ -22,10 +29,15 @@ export default class OccupantsController {
     }
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
+
       const occupant = await Occupant.query()
         .where('id', params.id)
+        .whereHas('locationUnities', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
         .preload('locationUnities')
         .preload('bails')
         .first()
@@ -76,9 +88,17 @@ export default class OccupantsController {
     }
   }
 
-  async update({ params, request, response }: HttpContext) {
+  async update({ params, request, response, auth }: HttpContext) {
     try {
-      const occupant = await Occupant.find(params.id)
+      const user = auth.user!
+
+      const occupant = await Occupant.query()
+        .where('id', params.id)
+        .whereHas('locationUnities', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
+        .first()
+
       if (!occupant) {
         return response.notFound({
           status: 'error',
@@ -111,9 +131,17 @@ export default class OccupantsController {
     }
   }
 
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     try {
-      const occupant = await Occupant.find(params.id)
+      const user = auth.user!
+
+      const occupant = await Occupant.query()
+        .where('id', params.id)
+        .whereHas('locationUnities', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
+        .first()
+
       if (!occupant) {
         return response.notFound({
           status: 'error',

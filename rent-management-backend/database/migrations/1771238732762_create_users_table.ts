@@ -6,7 +6,6 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary()
-      // Utilisez snake_case ici pour correspondre au défaut d'Adonis
       table.string('first_name').notNullable()
       table.string('last_name').notNullable()
       table.string('email', 254).notNullable().unique()

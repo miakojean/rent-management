@@ -24,10 +24,10 @@ export default class Bail extends BaseModel {
   }
 
   @column()
-  declare locationUnityId: number
+  declare locationUnityId: string
 
   @column()
-  declare occupantId: number
+  declare occupantId: string
 
   @column.date()
   declare startDate: DateTime

@@ -5,8 +5,8 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
-      
+      table.uuid('id').primary()
+
       table
         .uuid('property_id')
         .references('id')
@@ -15,7 +15,6 @@ export default class extends BaseSchema {
         .notNullable()
       table.index('property_id')
 
-      // Details of the location unity
       table.string('door_number').notNullable()
       table.float('price_per_month').notNullable()
 

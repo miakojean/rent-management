@@ -1,13 +1,21 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import RentPayment from '#models/rent_payment'
+import Bail from '#models/bail'
 import { createRentPaymentValidator, updateRentPaymentValidator } from '#validators/rent_payment'
 
 export default class RentPaymentsController {
-  async index({ request, response }: HttpContext) {
+  async index({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const page = request.input('page', 1)
       const limit = request.input('limit', 10)
+
       const rentPayments = await RentPayment.query()
+        .whereHas('bail', (q) =>
+          q.whereHas('locationUnity', (l) =>
+            l.whereHas('property', (p) => p.where('user_id', user.id))
+          )
+        )
         .preload('bail')
         .paginate(page, limit)
 
@@ -24,10 +32,17 @@ export default class RentPaymentsController {
     }
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
+
       const rentPayment = await RentPayment.query()
         .where('id', params.id)
+        .whereHas('bail', (q) =>
+          q.whereHas('locationUnity', (l) =>
+            l.whereHas('property', (p) => p.where('user_id', user.id))
+          )
+        )
         .preload('bail')
         .first()
 
@@ -51,9 +66,25 @@ export default class RentPaymentsController {
     }
   }
 
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const data = await request.validateUsing(createRentPaymentValidator)
+
+      const bail = await Bail.query()
+        .where('id', data.bailId)
+        .whereHas('locationUnity', (l) =>
+          l.whereHas('property', (p) => p.where('user_id', user.id))
+        )
+        .first()
+
+      if (!bail) {
+        return response.forbidden({
+          status: 'error',
+          message: 'Bail introuvable ou vous n\'êtes pas autorisé à y enregistrer un paiement.',
+        })
+      }
+
       const rentPayment = await RentPayment.create(data)
 
       return response.created({
@@ -77,9 +108,19 @@ export default class RentPaymentsController {
     }
   }
 
-  async update({ params, request, response }: HttpContext) {
+  async update({ params, request, response, auth }: HttpContext) {
     try {
-      const rentPayment = await RentPayment.find(params.id)
+      const user = auth.user!
+
+      const rentPayment = await RentPayment.query()
+        .where('id', params.id)
+        .whereHas('bail', (q) =>
+          q.whereHas('locationUnity', (l) =>
+            l.whereHas('property', (p) => p.where('user_id', user.id))
+          )
+        )
+        .first()
+
       if (!rentPayment) {
         return response.notFound({
           status: 'error',
@@ -112,9 +153,19 @@ export default class RentPaymentsController {
     }
   }
 
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     try {
-      const rentPayment = await RentPayment.find(params.id)
+      const user = auth.user!
+
+      const rentPayment = await RentPayment.query()
+        .where('id', params.id)
+        .whereHas('bail', (q) =>
+          q.whereHas('locationUnity', (l) =>
+            l.whereHas('property', (p) => p.where('user_id', user.id))
+          )
+        )
+        .first()
+
       if (!rentPayment) {
         return response.notFound({
           status: 'error',

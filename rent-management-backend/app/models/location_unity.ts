@@ -8,13 +8,14 @@ import { randomUUID } from 'node:crypto'
 
 export default class LocationUnity extends BaseModel {
   static table = 'location_unities'
+  public static selfAssignPrimaryKey = true
 
   @column({ isPrimary: true })
   declare id: string
 
   @beforeCreate()
   static assignUuid(locationUnity: LocationUnity) {
-    locationUnity.id = randomUUID()
+    if (!locationUnity.id) locationUnity.id = randomUUID()
   }
 
   @column()
@@ -35,11 +36,9 @@ export default class LocationUnity extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  // --- Relations ---
   @belongsTo(() => Property)
   declare property: BelongsTo<typeof Property>
 
-  // Une unité de location appartient à un seul occupant
   @belongsTo(() => Occupant)
   declare occupant: BelongsTo<typeof Occupant>
 

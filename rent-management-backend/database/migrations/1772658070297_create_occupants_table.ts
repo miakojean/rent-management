@@ -14,7 +14,6 @@ export default class extends BaseSchema {
       table.string('nationality').nullable()
       table.string('img_document').nullable()
 
-
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

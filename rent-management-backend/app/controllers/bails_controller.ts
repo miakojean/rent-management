@@ -1,13 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Bail from '#models/bail'
+import LocationUnity from '#models/location_unity'
 import { createBailValidator, updateBailValidator } from '#validators/bail'
 
 export default class BailsController {
-  async index({ request, response }: HttpContext) {
+  async index({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const page = request.input('page', 1)
       const limit = request.input('limit', 10)
+
       const bails = await Bail.query()
+        .whereHas('locationUnity', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
         .preload('locationUnity')
         .preload('occupant')
         .paginate(page, limit)
@@ -25,10 +31,15 @@ export default class BailsController {
     }
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
+
       const bail = await Bail.query()
         .where('id', params.id)
+        .whereHas('locationUnity', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
         .preload('locationUnity')
         .preload('occupant')
         .preload('rentPayments')
@@ -54,9 +65,23 @@ export default class BailsController {
     }
   }
 
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, auth }: HttpContext) {
     try {
+      const user = auth.user!
       const data = await request.validateUsing(createBailValidator)
+
+      const locationUnity = await LocationUnity.query()
+        .where('id', data.locationUnityId)
+        .whereHas('property', (q) => q.where('user_id', user.id))
+        .first()
+
+      if (!locationUnity) {
+        return response.forbidden({
+          status: 'error',
+          message: 'Unité de location introuvable ou vous n\'êtes pas autorisé à y créer un bail.',
+        })
+      }
+
       const bail = await Bail.create(data)
 
       return response.created({
@@ -80,9 +105,17 @@ export default class BailsController {
     }
   }
 
-  async update({ params, request, response }: HttpContext) {
+  async update({ params, request, response, auth }: HttpContext) {
     try {
-      const bail = await Bail.find(params.id)
+      const user = auth.user!
+
+      const bail = await Bail.query()
+        .where('id', params.id)
+        .whereHas('locationUnity', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
+        .first()
+
       if (!bail) {
         return response.notFound({
           status: 'error',
@@ -115,9 +148,17 @@ export default class BailsController {
     }
   }
 
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     try {
-      const bail = await Bail.find(params.id)
+      const user = auth.user!
+
+      const bail = await Bail.query()
+        .where('id', params.id)
+        .whereHas('locationUnity', (q) =>
+          q.whereHas('property', (p) => p.where('user_id', user.id))
+        )
+        .first()
+
       if (!bail) {
         return response.notFound({
           status: 'error',

@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, beforeCreate, column, computed } from '@adonisjs/lucid/orm'
+import { BaseModel, column, computed, beforeCreate } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { randomUUID } from 'node:crypto'
@@ -15,7 +15,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 export const UserTypes = {
   ADMIN: 'admin',
   PROPRIETAIRE: 'proprietaire',
-  GESTIONNAIRE: 'gestionnaire', // si tu as des agences/gestionnaires
+  GESTIONNAIRE: 'gestionnaire',
 } as const
 
 export type UserType = typeof UserTypes[keyof typeof UserTypes]
@@ -23,21 +23,22 @@ export type UserType = typeof UserTypes[keyof typeof UserTypes]
 // ============================================================
 
 export default class User extends compose(BaseModel, AuthFinder) {
+  public static selfAssignPrimaryKey = true
+
   @column({ isPrimary: true })
   declare id: string
+
+  @beforeCreate()
+  static assignUuid(user: User) {
+    if (!user.id) user.id = randomUUID()
+  }
 
   @column()
   declare firstName: string
 
-  @beforeCreate()
-  static assignUuid(user: User) {
-    user.id = randomUUID()
-  }
-
   @column()
   declare lastName: string
 
-  /** Nom complet calculé (très pratique dans les vues) */
   @computed()
   get fullName() {
     return `${this.firstName} ${this.lastName}`.trim()
@@ -52,11 +53,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
-  /** Type d'utilisateur → essentiel pour la gestion locative */
   @column()
   declare type: UserType
 
-  /** Téléphone (très important en Côte d'Ivoire) */
   @column()
   declare phoneNumber: string | null
 
@@ -66,17 +65,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare isActive: boolean
 
-  /** Photo de profil (optionnel mais sympa) */
-  // @column()
-  // declare avatarUrl: string | null
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  // Tokens d'accès (configuration officielle AdonisJS)
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '1 days',
     prefix: 'oat_',
@@ -87,6 +81,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   static refreshTokens = DbAccessTokensProvider.forModel(User, {
     prefix: 'rt_',
+    expiresIn: '7 days',
     table: 'jwt_refresh_tokens',
     type: 'jwt_refresh_token',
     tokenSecretLength: 40,

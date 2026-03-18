@@ -138,6 +138,7 @@ router.group(()=>{
   router.post('rent-payments', [RentPaymentsController, 'store'])
   router.put('rent-payments/:id', [RentPaymentsController, 'update'])
   router.delete('rent-payments/:id', [RentPaymentsController, 'destroy'])
-}).prefix('rent-management').use(middleware.auth(
-  {guards: ['jwt']}
-))
+}).prefix('rent-management').use([
+  middleware.auth({ guards: ['jwt'] }),
+  middleware.activeUser(),
+])

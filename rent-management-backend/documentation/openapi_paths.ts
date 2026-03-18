@@ -49,7 +49,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         description: Utilisateur trouvé
@@ -354,7 +354,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         description: OK
@@ -382,7 +382,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     requestBody:
  *       content:
  *         application/json:
@@ -429,7 +429,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         description: Propriété supprimée
@@ -531,7 +531,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -553,7 +553,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     requestBody:
  *       content:
  *         application/json:
@@ -595,7 +595,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -650,8 +650,8 @@
  *             type: object
  *             required: [propertyId, doorNumber, pricePerMonth]
  *             properties:
- *               propertyId: { type: integer, minimum: 1 }
- *               occupantId: { type: integer, minimum: 1, description: Optionnel }
+ *               propertyId: { type: string, format: uuid }
+ *               occupantId: { type: string, format: uuid, description: Optionnel }
  *               doorNumber: { type: string, example: A1 }
  *               pricePerMonth: { type: number, minimum: 0.01 }
  *     responses:
@@ -688,7 +688,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -710,15 +710,15 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     requestBody:
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               propertyId: { type: integer, minimum: 1 }
- *               occupantId: { type: integer, nullable: true }
+ *               propertyId: { type: string, format: uuid }
+ *               occupantId: { type: string, format: uuid, nullable: true }
  *               doorNumber: { type: string }
  *               pricePerMonth: { type: number, minimum: 0.01 }
  *     responses:
@@ -750,7 +750,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -805,8 +805,8 @@
  *             type: object
  *             required: [locationUnityId, occupantId, startDate, pricePerMonth, description, securityDeposit]
  *             properties:
- *               locationUnityId: { type: integer, minimum: 1 }
- *               occupantId: { type: integer, minimum: 1 }
+ *               locationUnityId: { type: string, format: uuid }
+ *               occupantId: { type: string, format: uuid }
  *               startDate: { type: string, format: date, example: "2025-01-01" }
  *               pricePerMonth: { type: number, minimum: 0.01 }
  *               description: { type: number }
@@ -845,7 +845,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: string }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -867,15 +867,15 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: string }
+ *         schema: { type: string, format: uuid }
  *     requestBody:
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               locationUnityId: { type: integer, minimum: 1 }
- *               occupantId: { type: integer, minimum: 1 }
+ *               locationUnityId: { type: string, format: uuid }
+ *               occupantId: { type: string, format: uuid }
  *               startDate: { type: string, format: date }
  *               pricePerMonth: { type: number, minimum: 0.01 }
  *               description: { type: number }
@@ -909,7 +909,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: string }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -1002,7 +1002,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
@@ -1024,7 +1024,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     requestBody:
  *       content:
  *         application/json:
@@ -1064,7 +1064,7 @@
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: string, format: uuid }
  *     responses:
  *       200:
  *         content:
