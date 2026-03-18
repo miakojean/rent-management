@@ -53,6 +53,11 @@ Retravailler sur les points à revoir.
 - Bosser sur le refresh token de façon rigoureuse
 - Gérer les points à revoir.
 
+### Notre backend ne vérifie pas le token renseigné.
+
+Comment gérer ce problème?
+- Commencer par vérifier l'origine du token à travers un signature par exemple.
+
 ## V2 de notre app
 
 - On va créer un exécutable pour l'application
