@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "data": {
+    "id": "be9190cc-0001-4361-b8c4-76b6fe4c537c",
+    "userId": "941bbe81-eb06-41b3-a1de-52da0fb607e9",
+    "title": "Cour commune Château",
+    "description": "Un bel appartement de 3 chambres situé au centre-ville.",
+    "type": "cour commune",
+    "address": "123 Rue de la Paix, Paris",
+    "city": "Paris",
+    "country": "France",
+    "createdAt": "2026-03-18T21:45:47.325+00:00",
+    "updatedAt": "2026-03-18T21:45:47.325+00:00",
+    "owner": {
+      "id": "941bbe81-eb06-41b3-a1de-52da0fb607e9",
+      "firstName": "Jena",
+      "lastName": "Doe",
+      "email": "jenadoe@email.com",
+      "username": "Jenadoe",
+      "phoneNumber": null,
+      "address": null,
+      "type": "proprietaire",
+      "isActive": true,
+      "createdAt": "2026-03-17T20:47:21.820+00:00",
+      "updatedAt": "2026-03-17T20:47:21.820+00:00",
+      "fullName": "Jena Doe"
+    },
+    "locationUnities": []
+  }
+}

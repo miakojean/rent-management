@@ -1,3 +1,5 @@
+# BACKEND
+
 How to make our request workflow. 
 
 For the request we define CRUD (create, read, update, delete)
@@ -47,16 +49,31 @@ Pour les items, on va faire faire une sorte de tableau puis les options seront m
 - Tester les requêtes avec authentification; (A revoir)
 - Migrations sur postgresql (Done)
 
-### Le mercredi 19 mars 2026
+### Le mercredi 18 mars 2026
 
 Retravailler sur les points à revoir.
 - Bosser sur le refresh token de façon rigoureuse
 - Gérer les points à revoir.
 
+### Test du crud sur properties validé
+
 ### Notre backend ne vérifie pas le token renseigné.
 
 Comment gérer ce problème?
 - Commencer par vérifier l'origine du token à travers un signature par exemple.
+
+## Nos modèles
+
+- User
+- Property
+
+# FRONTEND
+
+Le frontend sera fait en nuxt.js avec les frameworks tailwind et daysiui.
+
+### Pour le prochain meeting (samedi le 21 mars 2026)
+- Bien faire la page de login et de registration (Rokib et Yvan)
+- Mieux gérer l'esperience utilisateur (Jean Yves).
 
 ## V2 de notre app
 

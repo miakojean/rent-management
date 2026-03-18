@@ -16,8 +16,8 @@ export default class AuthMiddleware {
       const authHeader = ctx.request.header('authorization')
       const tokenFromHeader = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined
       console.log('[AuthMiddleware] Token lu:', {
-        fromCookie: tokenFromCookie ? `${tokenFromCookie.slice(0, 30)}...` : null,
-        fromHeader: tokenFromHeader ? `${tokenFromHeader.slice(0, 30)}...` : null,
+        fromCookie: tokenFromCookie ? `${tokenFromCookie.slice(0, 40)}...` : null,
+        fromHeader: tokenFromHeader ? `${tokenFromHeader.slice(0, 40)}...` : null,
       })
 
       await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
