@@ -34,6 +34,12 @@ export default class AuthController {
 
     // Génération du token JWT
     const token = await auth.use('jwt').generate(user)
+    console.log('[AuthController.login] Token généré:', {
+      type: token.type,
+      token: token.token,
+      expiresIn: token.expiresIn,
+      refreshToken: token.refreshToken ? `${token.refreshToken.slice(0, 20)}...` : undefined,
+    })
 
     return response.ok({
       message: 'Connexion réussie',
