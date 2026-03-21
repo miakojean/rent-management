@@ -5,8 +5,8 @@
             <div class="title__section">
                 <h2>Formulaire d'ajout de bien</h2>
             </div>
-            <div class="">
-                
+            <div class="grid grid-cols-2">
+                <propertyForm/>
             </div>
         </div>
     </section>
@@ -15,11 +15,13 @@
 <script lang="ts">
 import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
+import propertyForm from '../forms/propertyForm.vue';
 export default {
     name: "IndexSection",
     components: {
         revenueCard,
-        operationsList
+        operationsList,
+        propertyForm
     }
 }
 </script>
