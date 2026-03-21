@@ -1,7 +1,7 @@
 <template>
   <div class="header__content">
     <div class="header__title">
-      <h3>Mon tableau de bord</h3>
+      <h3>{{ title }}</h3>
     </div>
     <div class="tools__framer flex gap-4 p-4">
       <moreButton btn_label="Nouveau"/>
@@ -17,7 +17,14 @@ export default {
   components: {
     moreButton,
     profileButton
-  } 
+  },
+
+  props: {
+    title: {
+      type: String,
+      default: 'Mon tableau de bord'
+    }
+  }
 }
 </script>
 

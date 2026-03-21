@@ -52,3 +52,5 @@ const usePropertyStore = defineStore("property", ()=> {
         addProperty,
     }
 })
+
+export { usePropertyStore }
