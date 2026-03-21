@@ -92,6 +92,9 @@ router.group(() => {
   // Route pour la déconnexion
   router.post('logout', [AuthController, 'logout'])
 
+  // Route pour récupérer le profil de l'utilisateur connecté
+  router.get('profile', [AuthController, 'getProfile']).use(middleware.auth({ guards: ['jwt'] }))
+
 }).prefix('rent-manager/auth') // Préfixe pour organiser vos URL
 
 // About the rent management

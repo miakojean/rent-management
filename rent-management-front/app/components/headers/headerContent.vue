@@ -3,17 +3,20 @@
     <div class="header__title">
       <h3>Mon tableau de bord</h3>
     </div>
-    <div class="tools__framer">
+    <div class="tools__framer flex gap-4 p-4">
       <moreButton btn_label="Nouveau clients"/>
+      <profileButton :user="{ firstName: 'Jean Yves ', lastName: 'MIAKO' }"/>
     </div>
   </div>
 </template>
 
 <script>
 import moreButton from '../buttons/moreButton.vue';
+import profileButton from '../buttons/profileButton.vue';
 export default {
   components: {
-    moreButton
+    moreButton,
+    profileButton
   } 
 }
 </script>

@@ -3,7 +3,7 @@
         <!-- Content for the index section goes here -->
         <div class="first__content flex flex-col gap-8">
             <div class="title__section">
-                <h2>Une idée sur vos chiffres</h2>
+                <h2>Résumé de mes comptes</h2>
             </div>
             <div class="cards__section">
                 <revenueCard v-for="i in 3"/>
@@ -43,11 +43,12 @@ export default {
 .first__content h2{
     font-size: large;
     font-weight: 700;
-    color: #215083;
+    color: var(--primary-color);
 }
 
 .cards__section{
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
 }
 </style>

@@ -63,4 +63,12 @@ export default class AuthController {
     await auth.use('jwt').revoke()
     return response.ok({ message: 'Logged out successfully' })
   }
+
+  async getProfile({auth, response}: HttpContext) {
+    const user = auth.user
+    if (!user) {
+      return response.unauthorized({ message: 'Unauthorized' })
+    }
+    return response.ok({ user: user.serialize() })
+  }
 }

@@ -32,18 +32,23 @@
         </div>
         <div class="error--message">
             <p class="error">{{ authStore.error }}</p>
+            <p class="error">{{ errors.email || errors.password }}</p>
         </div>
-        <mainButton type="submit" btn_label="connexion"/>
-        <p>Pas un compte? <span>Ouvrir un compte</span></p>
+        <mainButton type="submit" btn_label="connexion" :isloading="authStore.isLoading"/>
+        <p @click="router.push('/registration')" class="cursor-pointer">
+            Pas de compte ? <span>Inscrivez-vous</span>
+        </p>
     </form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { ref } from 'vue';
 import BaseInput from '../input/BaseInput.vue';
 import mainButton from '../buttons/mainButton.vue';
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import { useAuthStore } from '#imports';
+import { authMiddleware } from '~/middleware/auth';
+import { useRoute, useRouter } from 'vue-router';
 
 interface LoginForm {
     email: string; 
@@ -55,28 +60,60 @@ interface FormErrors {
   password?: string;
 }
 
-const authStore = useAuthStore();
+export default {
+    name: 'LoginForm',
+    components: {
+        BaseInput,
+        mainButton,
+        BaseCheckbox
+    },
+    setup() {
 
-const user = ref<LoginForm>({
-  email: '',
-  password: '' // Correction: Utiliser 'password' au lieu de 'name'
-});
+        // state
+        const authStore = useAuthStore();
+        const user = ref<LoginForm>({
+            email: '',
+            password: ''
+        });
+        const errors = ref<FormErrors>({});
+        const router = useRouter();
+        
+        // Getters
+        const validateForm = (): boolean => {
+            errors.value = {};
 
-const errors = ref<FormErrors>({
-  email: 'Format email invalide'
-});
+            if (!user.value.email) {
+                errors.value.email = 'L\'adresse email est requise.';
+            } else if (!/\S+@\S+\.\S+/.test(user.value.email)) {
+                errors.value.email = 'L\'adresse email n\'est pas valide.';
+            }
 
-// Ajout: Fonction de soumission manquante
-const submitForm = async () => {
-  try {
-    await authStore.login(user.value);
-    console.log("Connexion réussie", user.value)
-    // Redirection ou message de succès
-  } catch (err) {
-    // err contient le message d'erreur
-    // On peut le parser pour remplir errors.email ou errors.password
-  }
-};
+            if (!user.value.password) {
+                errors.value.password = 'Le mot de passe est requis.';
+            }
+
+            return Object.keys(errors.value).length === 0;
+        };
+
+        // Actions
+        const submitForm = () => {
+            if (validateForm()) {
+                authStore.login(user.value);
+                router.push('/'); // Redirige vers le dashboard après une connexion réussie
+            }
+        };
+
+        // lifecycle hooks
+
+        return {
+            user,
+            errors,
+            router,
+            submitForm,
+            authStore
+        };
+    }
+}
 </script>
 
 <style scoped>

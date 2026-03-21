@@ -81,10 +81,12 @@ export const useAuthStore = defineStore('auth', ()=>{
                 // Configurer le token pour les futures requêtes
                 api.defaults.headers.common['Authorization'] = `Bearer ${response.data.value}`;
             }
-            
+            console.log("login response", response.data);
+            isLoading.value = false;
             return response.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors de la connexion';
+            isLoading.value = false;
             // debugging
             console.log("error message", error.value)
             throw error.value;
