@@ -4,7 +4,7 @@
       <h3>Mon tableau de bord</h3>
     </div>
     <div class="tools__framer flex gap-4 p-4">
-      <moreButton btn_label="Nouveau clients"/>
+      <moreButton btn_label="Nouveau"/>
       <profileButton :user="{ firstName: 'Jean Yves ', lastName: 'MIAKO' }"/>
     </div>
   </div>

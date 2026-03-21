@@ -1,94 +1,45 @@
 import { defineStore } from "pinia";
-import { api } from "~/services/api";
-import { ref, reactive,computed } from "vue";
+import { api } from "~/services/api"; // Assure-toi que api a { withCredentials: true }
+import { ref, computed } from "vue";
 
 export interface User {
-    id?:number,
-    firstName:string,
-    lastName:string,
-    email:string,
-    username:string,
-    password?:string,
+    id?: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    username: string,
 }
 
-export interface AuthResponse {
-    type:'bearer',
-    value:string,
-    user: User
-}
-
-export const useAuthStore = defineStore('auth', ()=>{
-    // state of the store
+export const useAuthStore = defineStore('auth', () => {
+    // State
     const user = ref<User | null>(null);
-    const token = ref<string | null>(null)
     const isLoading = ref(false);
     const error = ref<string | null>(null);
 
-    // Getter
-    const isAuthenticated = computed(() => !!token.value && !!user.value);
+    // Getters
+    // On considère l'utilisateur authentifié si l'objet user est rempli
+    const isAuthenticated = computed(() => !!user.value);
+    
     const fullName = computed(() => 
         user.value ? `${user.value.firstName} ${user.value.lastName}` : ''
     );
 
-    // Action
-    async function register(userData: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        password: string;
-    }) {
+    // Actions
+    async function login(credentials: { email: string; password: string }) {
         isLoading.value = true;
         error.value = null;
         
         try {
-            const response = await api.post('/rent-manager/auth/register', userData);
+            // Ton backend pose le cookie 'auth_token' automatiquement ici
+            const response = await api.post('/rent-management/auth/login', credentials);
             
-            if (response.data.token) {
-                token.value = response.data.token;
-                user.value = response.data.user;
-                
-                // Optionnel : stocker dans localStorage pour persistance
-                localStorage.setItem('auth_token', response.data.token);
-            }
+            // On récupère les infos utilisateur renvoyées (si ton API les renvoie)
+            // Sinon, il faudra faire un appel à /me juste après
+            user.value = response.data.user; 
             
-            return response.data;
-        } catch (err: any) {
-            error.value = err.response?.data?.message || 'Erreur lors de l\'inscription';
-            //debugging
-            console.log(error.value);
-            throw error.value;
-        } finally {
-            isLoading.value = false;
-        }
-    }
-
-    async function login(credentials: {
-        email: string;
-        password: string;
-    }) {
-        isLoading.value = true;
-        error.value = null;
-        
-        try {
-            const response = await api.post('/rent-manager/auth/login', credentials);
-            
-            if (response.data.value) {  // Ton API renvoie { type, value, user }
-                token.value = response.data.value;
-                user.value = response.data.user;
-                
-                localStorage.setItem('auth_token', response.data.value);
-                
-                // Configurer le token pour les futures requêtes
-                api.defaults.headers.common['Authorization'] = `Bearer ${response.data.value}`;
-            }
-            console.log("login response", response.data);
-            isLoading.value = false;
             return response.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors de la connexion';
-            isLoading.value = false;
-            // debugging
-            console.log("error message", error.value)
             throw error.value;
         } finally {
             isLoading.value = false;
@@ -97,58 +48,42 @@ export const useAuthStore = defineStore('auth', ()=>{
 
     async function logout() {
         try {
-            await api.post('/rent-manager/auth/logout');
-        } catch (error) {
-            console.error('Erreur lors de la déconnexion:', error);
+            await api.post('rent-manager/auth/logout');
+        } catch (err) {
+            console.error('Erreur lors de la déconnexion:', err);
         } finally {
-            // Nettoyer le store même si la requête échoue
+            // On nettoie l'état local quoi qu'il arrive
             user.value = null;
-            token.value = null;
-            localStorage.removeItem('auth_token');
-            delete api.defaults.headers.common['Authorization'];
+            // Le cookie sera supprimé par le serveur ou expirera
         }
     }
 
-    // Restaurer la session au chargement
-    function initializeAuth() {
-        const savedToken = localStorage.getItem('auth_token');
-        if (savedToken) {
-            token.value = savedToken;
-            api.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-            
-            // Optionnel : vérifier que le token est valide
-            api.get('/rent-manager/auth/me')
-                .then(response => {
-                    user.value = response.data.user;
-                })
-                .catch(() => {
-                    // Token invalide, déconnecter
-                    logout();
-                });
+    /**
+     * Très important avec les cookies : 
+     * Au chargement de l'app, on demande au serveur "Qui suis-je ?"
+     * Si le cookie est valide, le serveur répond avec l'utilisateur.
+     */
+    async function initializeAuth() {
+        try {
+            isLoading.value = true;
+            const response = await api.get('/rent-management/auth/me');
+            user.value = response.data.user;
+        } catch (err) {
+            // Si erreur (401), le cookie est invalide ou absent
+            user.value = null;
+        } finally {
+            isLoading.value = false;
         }
     }
 
-    // Retourner tout ce qui doit être accessible
     return {
-        // State
         user,
-        token,
         isLoading,
         error,
-        
-        // Getters
         isAuthenticated,
         fullName,
-        
-        // Actions
-        register,
         login,
         logout,
         initializeAuth
     };
 });
-
-export function useAuth() {
-    const store = useAuthStore();
-    return store;
-}

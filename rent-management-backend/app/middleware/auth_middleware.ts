@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import type { Authenticators } from '@adonisjs/auth/types'
-import type { JwtGuard } from '@maximemrf/adonisjs-jwt/types'
 
 export default class AuthMiddleware {
   redirectTo = '/login'
@@ -11,49 +10,28 @@ export default class AuthMiddleware {
     next: NextFn,
     options: { guards?: (keyof Authenticators)[] } = {}
   ) {
+    // 1. Récupérer le token depuis le cookie (nommé 'auth_token' dans ton login)
+    const tokenFromCookie = ctx.request.cookie('auth_token')
+    
+    // 2. Si on a un cookie et pas de header, on remplit le header pour Adonis
+    if (tokenFromCookie && !ctx.request.header('authorization')) {
+      ctx.request.headers().authorization = `Bearer ${tokenFromCookie}`
+    }
+
     try {
-      const tokenFromCookie = ctx.request.cookie('token')
-      const authHeader = ctx.request.header('authorization')
-      const tokenFromHeader = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined
-      console.log('[AuthMiddleware] Token lu:', {
-        fromCookie: tokenFromCookie ? `${tokenFromCookie.slice(0, 40)}...` : null,
-        fromHeader: tokenFromHeader ? `${tokenFromHeader.slice(0, 40)}...` : null,
-      })
-
-      await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
-
-      const token = ctx.request.header('authorization')?.split(' ')[1]
-
-      if (token) {
-        const guard = ctx.auth.use('jwt') as unknown as JwtGuard<any>
-        const decoded = await guard.verify(token)
-
-        if (decoded.iss !== 'rent-management-backend') {
-          return ctx.response.unauthorized({
-            message: 'Token invalide : origine non reconnue',
-          })
-        }
-      }
-
+      // 3. Authentification automatique via Adonis
+      await ctx.auth.authenticateUsing(options.guards)
+      
       return next()
     } catch (error) {
-      const isJwtError =
-        error?.code === 'E_INVALID_JWT_TOKEN' ||
-        error?.code === 'E_JWT_TOKEN_EXPIRED' ||
-        error?.message?.includes('jwt')
-
-      if (isJwtError) {
-        return ctx.response.unauthorized({
-          message: 'Token invalide ou expiré',
-        })
-      }
-
-      if (ctx.request.accepts(['html', 'json']) === 'html') {
+      // 4. Gestion propre de l'échec (évite les boucles infinies)
+      if (ctx.request.accepts(['json', 'html']) === 'html') {
         return ctx.response.redirect(this.redirectTo)
       }
 
       return ctx.response.unauthorized({
-        message: 'Non authentifié',
+        message: 'Session expirée ou invalide',
+        code: 'E_UNAUTHORIZED'
       })
     }
   }

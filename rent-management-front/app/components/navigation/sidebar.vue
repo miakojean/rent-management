@@ -66,19 +66,32 @@
         </div>
 
         <div class="sidebar-footer">
-            <logoutButton/>
+            <logoutButton @click="handleLogout"/>
         </div>
     </aside>
 </template>
 
 <script lang="ts">
 import logoutButton from '../buttons/logoutButton.vue';
-
+import { useAuthStore } from '../../stores/authStore';
 export default {
     name: "Sidebar",
 
     components:{
         logoutButton
+    },
+
+    setup(){
+        const authStore = useAuthStore();
+        const handleLogout = () => {
+            authStore.logout();
+            console.log("User logged out");
+        }
+
+        return {
+            authStore,
+            handleLogout
+        }
     }
 }
 </script>

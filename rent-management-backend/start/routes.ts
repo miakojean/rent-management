@@ -20,59 +20,9 @@ const BailsController = ()=>import('#controllers/bails_controller')
 const RentPaymentsController = ()=>import('#controllers/rent_payments_controller')
 
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
-
 // Documentation OpenAPI / Swagger (spec générée par swagger-jsdoc, UI servie ici)
 router.get('/api-docs/spec', [DocsController, 'spec'])
 router.get('/api-docs', [DocsController, 'ui'])
-
-router.get('users', async ()=>{
-  try{
-    const users = await User.all()
-    return {
-      users: users
-    }
-  } catch (error) {
-    return{
-      error:'Une erreur a été rencontrée lors de la réccupération',
-    }
-  }
-})
-
-// routes.ts
-router.get('users/:id', async ({ params }) => {
-  try {
-    const user = await User.find(params.id)
-    
-    if (!user) {
-      return {
-        error: 'Utilisateur non trouvé'
-      }
-    }
-    
-    // Sérialisation manuelle pour contrôler l'affichage
-    return {
-      message: 'Utilisateur récupéré avec succès',
-      user: {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-        // password est intentionnellement omis
-      }
-    }
-  } catch (error) {
-    return {
-      error: 'Une erreur a été rencontrée lors de la récup',
-    }
-  }
-})
 
 /* 
   Authentication routes group
@@ -86,14 +36,22 @@ router.group(() => {
   // Route de connexion : POST /api/auth/login
   router.post('login', [AuthController, 'login'])
 
-  // Route de rafraichissement de token
-  router.post('refresh-token', [AuthController, 'refreshToken'])
+  // Pour l'authentificatio de token
+  router.post('/users/:id/tokens', async ({params}) => {
+    const user = await User.findOrFail(params.id)
+    const token = await User.accessTokens.create(user)
+
+    return {
+      type: 'bearer',
+      value: token.value!.release(),
+    }
+  })
 
   // Route pour la déconnexion
   router.post('logout', [AuthController, 'logout'])
 
   // Route pour récupérer le profil de l'utilisateur connecté
-  router.get('profile', [AuthController, 'getProfile']).use(middleware.auth({ guards: ['jwt'] }))
+  router.get('profile', [AuthController, 'getProfile']).use(middleware.auth({ guards: ['api'] }))
 
 }).prefix('rent-manager/auth') // Préfixe pour organiser vos URL
 
@@ -142,6 +100,6 @@ router.group(()=>{
   router.put('rent-payments/:id', [RentPaymentsController, 'update'])
   router.delete('rent-payments/:id', [RentPaymentsController, 'destroy'])
 }).prefix('rent-management').use([
-  middleware.auth({ guards: ['jwt'] }),
+  middleware.auth({ guards: ['api'] }),
   middleware.activeUser(),
 ])

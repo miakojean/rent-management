@@ -26,42 +26,44 @@ export default class AuthController {
   /**
    * Connexion et génération du token
    */
-  async login({ request, response, auth }: HttpContext) {
+  async login({ request, response }: HttpContext) { // On récupère response ici
     const { email, password } = await request.validateUsing(loginValidator)
 
     // Vérification des identifiants
     const user = await User.verifyCredentials(email, password)
 
-    // Génération du token JWT
-    const token = await auth.use('jwt').generate(user)
-    console.log('[AuthController.login] Token généré:', {
-      type: token.type,
-      token: token.token,
-      expiresIn: token.expiresIn,
-      refreshToken: token.refreshToken ? `${token.refreshToken.slice(0, 20)}...` : undefined,
+    // Création du token
+    const token = await User.accessTokens.create(user)  
+    
+    // Utilise directement 'response' (sans le préfixe ctx.)
+    response.cookie('auth_token', token.value!.release(), {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours
     })
 
-    return response.ok({
-      message: 'Connexion réussie',
-      user: user.serialize()
-    })
-  }
-
-  /**
-   * Rafraîchissement du token
-   */
-  async refreshToken({ auth, response }: HttpContext) {
-    // La méthode generateWithRefreshToken gère souvent la vérification du refresh token actuel
-    const token = await auth.use('jwt').generateWithRefreshToken()
-    return response.ok(token)
+    return { message: 'Connexion réussie' }
   }
 
   /**
    * Déconnexion
    */
   async logout({ auth, response }: HttpContext) {
-    await auth.use('jwt').revoke()
-    return response.ok({ message: 'Logged out successfully' })
+    try {
+      // On essaie de supprimer le token en BDD si possible
+      if (await auth.check()) {
+        const user = auth.user!
+        await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+      }
+    } catch {
+      // Si auth.check() échoue, on ignore l'erreur
+    }
+
+    // ON FORCE LA SUPPRESSION DU COOKIE
+    response.clearCookie('auth_token') 
+
+    return response.ok({ message: 'Déconnecté avec succès' })
   }
 
   async getProfile({auth, response}: HttpContext) {
