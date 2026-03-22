@@ -37,7 +37,7 @@
             <p class="error">{{ errors.email || errors.password }}</p>
         </div>
         <mainButton type="submit" btn_label="connexion" :isloading="authStore.isLoading"/>
-        <p @click="router.push('/registration')" class="cursor-pointer">
+        <p @click="()=> router.push('/registrayion')" class="cursor-pointer">
             Pas de compte ? <span>Inscrivez-vous</span>
         </p>
     </form>
@@ -48,9 +48,8 @@ import { ref } from 'vue';
 import BaseInput from '../input/BaseInput.vue';
 import mainButton from '../buttons/mainButton.vue';
 import BaseCheckbox from '../input/BaseCheckbox.vue';
-import { useAuthStore } from '#imports';
-import { authMiddleware } from '~/middleware/auth';
-import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '../../stores/authStore';
+import { useRouter } from 'vue-router';
 
 interface LoginForm {
     email: string; 
@@ -98,18 +97,28 @@ export default {
         };
 
         // Actions
-        const submitForm = () => {
+        const submitForm = async () => { // Ajout de async
             if (validateForm()) {
-                authStore.login(user.value);
+                try {
+                    // On attend la réponse du serveur
+                    await authStore.login(user.value);
+                    
+                    // Si on arrive ici, le login a réussi (pas d'exception levée)
+                    router.push('/dashboard');
+                } catch (err) {
+                    // En cas d'erreur (identifiants faux, etc.), le store capture l'erreur
+                    // et l'exception est re-jetée, donc on reste sur la page.
+                    console.error("Échec de la connexion :", err);
+                }
             }
         };
 
         // lifecycle hooks
 
         return {
+            router,
             user,
             errors,
-            router,
             submitForm,
             authStore
         };

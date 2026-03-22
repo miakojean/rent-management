@@ -20,11 +20,19 @@
 import headerContent from '../../components/headers/headerContent.vue';
 import sidebar from '../../components/navigation/sidebar.vue';
 import indexSection from '../../components/sections/indexSection.vue';
+import { useAuthStore } from '../../stores/authStore';
 export default {
     components:{
         sidebar,
         headerContent,
         indexSection
+    },
+    setup(){
+        const authStore = useAuthStore();
+
+        return{
+            authStore
+        }
     }
 }
 

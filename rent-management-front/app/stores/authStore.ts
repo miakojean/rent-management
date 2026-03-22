@@ -17,6 +17,9 @@ export const useAuthStore = defineStore('auth', () => {
     const isLoading = ref(false);
     const error = ref<string | null>(null);
     const router = useRouter()
+    const cachedUser = useCookie<User | null>('user_data', {
+        maxAge: 30 * 24 * 60 * 60, // 30 jours
+    })
 
     // Getters
     // On considère l'utilisateur authentifié si l'objet user est rempli
@@ -34,13 +37,8 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             // Ton backend pose le cookie 'auth_token' automatiquement ici
             const response = await api.post('/rent-manager/auth/login', credentials);
-            
-            // On récupère les infos utilisateur renvoyées (si ton API les renvoie)
             // Sinon, il faudra faire un appel à /me juste après
-            user.value = response.data.user; 
-            
-            // On rédirige vers le dashboard
-            router.push('/')
+            cachedUser.value = response.data.user;
             return response.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors de la connexion';
@@ -53,6 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function logout() {
         try {
             await api.post('rent-manager/auth/logout');
+            cachedUser.value = null;
         } catch (err) {
             console.error('Erreur lors de la déconnexion:', err);
         } finally {
@@ -68,12 +67,28 @@ export const useAuthStore = defineStore('auth', () => {
      * Si le cookie est valide, le serveur répond avec l'utilisateur.
      */
     async function initializeAuth() {
+        // 1. Si l'utilisateur est déjà présent (chargé depuis le cache/persistance)
+        if (user.value) {
+            // Optionnel : On rafraîchit les données en arrière-plan sans bloquer l'interface
+            // Cela permet de mettre à jour le profil si des changements ont eu lieu côté serveur
+            api.get('/rent-manager/auth/profile')
+                .then(response => {
+                    user.value = response.data.user;
+                })
+                .catch(() => {
+                    // Si l'appel échoue (ex: cookie expiré), on nettoie le cache
+                    user.value = null;
+                });
+            
+            return; // On sort immédiatement pour ne pas déclencher isLoading
+        }
+
+        // 2. Si aucun utilisateur n'est en cache, on fait l'appel classique
         try {
             isLoading.value = true;
-            const response = await api.get('/rent-management/auth/me');
+            const response = await api.get('/rent-manager/auth/profile');
             user.value = response.data.user;
         } catch (err) {
-            // Si erreur (401), le cookie est invalide ou absent
             user.value = null;
         } finally {
             isLoading.value = false;
@@ -87,6 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
         router,
         isAuthenticated,
         fullName,
+        cachedUser,
         login,
         logout,
         initializeAuth

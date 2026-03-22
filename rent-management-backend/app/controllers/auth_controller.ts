@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { loginValidator, registerValidator, messagesProvider } from '#validators/auth'
+import { loginValidator, registerValidator, messagesProvider, loginMessage } from '#validators/auth'
 
 export default class AuthController {
   
@@ -27,6 +27,7 @@ export default class AuthController {
    * Connexion et génération du token
    */
   async login({ request, response }: HttpContext) { // On récupère response ici
+    
     const { email, password } = await request.validateUsing(loginValidator)
 
     // Vérification des identifiants
@@ -43,7 +44,10 @@ export default class AuthController {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours
     })
 
-    return { message: 'Connexion réussie' }
+    return { 
+      message: 'Connexion réussie',
+      'user': user
+    }
   }
 
   /**
