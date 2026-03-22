@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
 
@@ -8,6 +9,7 @@
     --secondary-color: #6B7280;
     --background-color: #e4e6e7;
     --text-color: #111827;
+    --secondary-text-color: #595a5b;
     --card-background: #FFFFFF;
     --border-color: #E5E7EB;
     --error-color: red;
@@ -17,6 +19,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body{
     font-family: "Inter", sans-serif;
 }
 

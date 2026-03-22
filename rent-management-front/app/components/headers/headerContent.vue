@@ -37,8 +37,9 @@ export default {
 }
 
 .header__title h3{
-  font-size: medium;
+  font-size: x-large;
   font-weight: 600;
-  color: #215083;
+  color: var(--secondary-text-color);
+  font-family: "Cabin", sans-serif;
 }
 </style>

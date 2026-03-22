@@ -69,3 +69,9 @@ export const loginValidator = vine.compile(
       .string()
   })
 )
+
+export const loginMessage = new SimpleMessagesProvider({
+  'message':'Email ou mot de passe incorrect'
+})
+
+loginValidator.messagesProvider = loginMessage

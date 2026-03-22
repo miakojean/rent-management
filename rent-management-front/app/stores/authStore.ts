@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { api } from "~/services/api"; // Assure-toi que api a { withCredentials: true }
 import { ref, computed } from "vue";
+import { useRouter } from "#app";
 
 export interface User {
     id?: number,
@@ -15,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
     const user = ref<User | null>(null);
     const isLoading = ref(false);
     const error = ref<string | null>(null);
+    const router = useRouter()
 
     // Getters
     // On considère l'utilisateur authentifié si l'objet user est rempli
@@ -31,12 +33,14 @@ export const useAuthStore = defineStore('auth', () => {
         
         try {
             // Ton backend pose le cookie 'auth_token' automatiquement ici
-            const response = await api.post('/rent-management/auth/login', credentials);
+            const response = await api.post('/rent-manager/auth/login', credentials);
             
             // On récupère les infos utilisateur renvoyées (si ton API les renvoie)
             // Sinon, il faudra faire un appel à /me juste après
             user.value = response.data.user; 
             
+            // On rédirige vers le dashboard
+            router.push('/')
             return response.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors de la connexion';
@@ -80,6 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
         user,
         isLoading,
         error,
+        router,
         isAuthenticated,
         fullName,
         login,

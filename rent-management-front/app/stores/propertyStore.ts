@@ -18,6 +18,8 @@ const usePropertyStore = defineStore("property", ()=> {
     const loading = ref(false);
     const error = ref<string | null>(null);
 
+    // Guetters
+
     // Actions
     const fecthProperties = async () => {
         loading.value = true;
@@ -48,6 +50,9 @@ const usePropertyStore = defineStore("property", ()=> {
         properties,
         loading,
         error,
+        //
+        
+        //
         fecthProperties,
         addProperty,
     }

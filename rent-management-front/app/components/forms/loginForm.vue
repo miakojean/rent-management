@@ -14,6 +14,7 @@
             label="Adresse Email"
             type="email"
             placeholder="jean@example.com"
+            :error-message="errors.email"
             :required=true
         />
         <BaseInput 
@@ -21,6 +22,7 @@
             v-model="user.password"
             label="Mot de passe"
             placeholder="votre mot de passe"
+            :error-message="errors.password"
             :required="true"
             type="password"
         />
@@ -99,7 +101,6 @@ export default {
         const submitForm = () => {
             if (validateForm()) {
                 authStore.login(user.value);
-                router.push('/'); // Redirige vers le dashboard après une connexion réussie
             }
         };
 
