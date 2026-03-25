@@ -37,15 +37,18 @@
                             </span>
                         </div>
 
-                        <!-- Sous-sections -->
+                        <!-- Sous-sections avec arborescence -->
                         <ul class="sub-menu" :class="{ open: openSections.includes(item.path) }">
                             <li
-                                v-for="child in item.children"
+                                v-for="(child, index) in item.children"
                                 :key="child.path"
-                                :class="{ active: isActive(child.path) }"
+                                :class="{
+                                    active: isActive(child.path),
+                                    'last-child': index === item.children.length - 1
+                                }"
                                 @click.stop="navigate(child.path)"
                             >
-                                <span class="sub-dot"></span>
+                                <span class="tree-branch"></span>
                                 <span class="nav-label">{{ child.label }}</span>
                             </li>
                         </ul>
@@ -60,7 +63,6 @@
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from '#imports';
 import { useAuthStore } from '../../stores/authStore';
-import logoutButton from '../buttons/logoutButton.vue';
 
 const route  = useRoute();
 const router = useRouter();
@@ -103,8 +105,8 @@ const navItems = [
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                </svg>`,
         children: [
-            { path: '/locataires/liste',   label: 'Liste' },
-            { path: '/locataires/ajouter', label: 'Ajouter' },
+            { path: '/locataires/liste',    label: 'Liste' },
+            { path: '/locataires/ajouter',  label: 'Ajouter' },
             { path: '/locataires/archives', label: 'Archives' },
         ],
     },
@@ -151,17 +153,14 @@ const navItems = [
     },
 ];
 
-// Vérifie si une route est active (exacte)
 function isActive(path: string): boolean {
     return route.path === path;
 }
 
-// Vérifie si un parent a un enfant actif
 function isParentActive(item: typeof navItems[number]): boolean {
     return item.children?.some(child => route.path === child.path) ?? false;
 }
 
-// Ouvre/ferme une section, et auto-ouvre si un enfant est actif
 function toggleSection(path: string) {
     const idx = openSections.value.indexOf(path);
     if (idx === -1) {
@@ -171,14 +170,12 @@ function toggleSection(path: string) {
     }
 }
 
-// Auto-ouvre la section dont un enfant est actif au chargement
 navItems.forEach(item => {
     if (item.children && isParentActive(item)) {
         openSections.value.push(item.path);
     }
 });
 
-// Navigation
 function navigate(path: string) {
     router.push(path);
 }
@@ -190,7 +187,6 @@ function handleLogout() {
 
 <style scoped>
 .main-sidebar {
-    width: 250px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -214,15 +210,15 @@ function handleLogout() {
 }
 
 .sidebar-menu {
-    max-height: 600px;
     overflow-y: auto;
+    flex: 1;
 }
 
 .sidebar-menu ul {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0.5rem 0;
+    padding: 0.5rem 0 0 0; /* ← suppression du padding-bottom */
     list-style: none;
 }
 
@@ -322,28 +318,41 @@ function handleLogout() {
     transform: rotate(90deg);
 }
 
-/* Sous-menu */
+/* Sous-menu avec arborescence */
 .sub-menu {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
-    padding-left: 2.5rem;
+    gap: 0;
+    /* Ligne verticale de l'arbre, alignée avec le centre de .tree-branch */
+    padding-left: 2rem;
     overflow: hidden;
     max-height: 0;
     transition: max-height 0.3s ease, opacity 0.25s ease;
     opacity: 0;
     list-style: none;
+    position: relative;
+}
+
+/* Trait vertical gauche de l'arborescence */
+.sub-menu::before {
+    content: '';
+    position: absolute;
+    left: 1.35rem;
+    top: 0;
+    bottom: 0.9rem; /* s'arrête avant le dernier item */
+    width: 1.5px;
+    background: #d2deec;
 }
 
 .sub-menu.open {
     max-height: 300px;
     opacity: 1;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0; /* ← suppression du padding-bottom */
 }
 
 .sub-menu li {
-    padding: 0.5rem 0.75rem;
+    padding: 0.45rem 0.75rem;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-color);
@@ -353,6 +362,7 @@ function handleLogout() {
     cursor: pointer;
     border-radius: 0.4rem;
     transition: color 0.2s, background-color 0.2s;
+    position: relative;
 }
 
 .sub-menu li:hover {
@@ -364,18 +374,37 @@ function handleLogout() {
     color: white;
 }
 
-/* Point décoratif sous-menu */
-.sub-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
+/* Branche horizontale de l'arborescence (le ├ ou └) */
+.tree-branch {
+    display: inline-flex;
+    align-items: center;
     flex-shrink: 0;
-    opacity: 0.5;
+    width: 16px;
+    height: 1.5px;
+    background: #d2deec;
+    position: relative;
+    margin-right: 0.1rem;
 }
 
-.sub-menu li.active .sub-dot {
-    opacity: 1;
+/* Petit rond au bout de la branche */
+.tree-branch::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #94a3b8;
+    transition: background 0.2s;
+}
+
+.sub-menu li.active .tree-branch {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.sub-menu li.active .tree-branch::after {
     background: white;
 }
 
