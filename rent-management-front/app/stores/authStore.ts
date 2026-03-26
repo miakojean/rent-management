@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading.value = true;
         error.value = null;
         try {
-            const response = await api.post('/rent-manager/auth/login', credentials);
+            const response = await api.post('/rent-management/auth/login', credentials);
             user.value = response.data.user;
             cachedUser.value = response.data.user;
             return response.data;
@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function logout() {
         try {
-            await api.post('/rent-manager/auth/logout');
+            await api.post('/rent-management/auth/logout');
         } catch (err) {
             console.error('Erreur logout:', err);
         } finally {
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         try {
             isLoading.value = true;
-            const response = await api.get('/rent-manager/auth/profile');
+            const response = await api.get('/rent-management/auth/profile'); 
             user.value = response.data.user;
             cachedUser.value = response.data.user;
         } catch {

@@ -5,8 +5,9 @@
             <div class="title__section">
                 <h2>Formulaire d'ajout de bien</h2>
             </div>
-            <div class="grid grid-cols-2">
+            <div class="grid grid-cols-2 gap-8">
                 <propertyForm/>
+                <illustratorSection/>
             </div>
         </div>
     </section>
@@ -16,12 +17,15 @@
 import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
 import propertyForm from '../forms/propertyForm.vue';
+import illustratorSection from './illustratorSection.vue';
+
 export default {
     name: "IndexSection",
     components: {
         revenueCard,
         operationsList,
-        propertyForm
+        propertyForm,
+        illustratorSection
     }
 }
 </script>

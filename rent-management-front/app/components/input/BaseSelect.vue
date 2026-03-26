@@ -27,9 +27,13 @@
         <option value="" disabled selected v-if="placeholder">{{ placeholder }}</option>
         
         <slot>
-          <option value="cours commune">Cours commune</option>
-          <option value="immeuble">Immeuble</option>
-          <option value="residence">Résidence meublée</option>
+          <option
+            v-for="(opt, index) in options"
+            :key="opt.code ?? opt.value ?? index"
+            :value="opt.code ?? opt.value ?? opt.name"
+          >
+            {{ opt.name }}
+          </option>
         </slot>
       </select>
 
@@ -87,6 +91,13 @@ export default {
     required: {
       type: Boolean,
       default: false
+    },
+    options:{
+      type:Array,
+      default:()=>[
+        {name:"Abidjan"},
+        {name:"Daloa"}
+      ]
     }
   },
   emits: ['update:modelValue', 'blur', 'change'],
@@ -143,7 +154,7 @@ export default {
 .form-select {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   color: var(--text-color);
   background-color: #fff;

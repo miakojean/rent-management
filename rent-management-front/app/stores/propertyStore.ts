@@ -37,9 +37,16 @@ const usePropertyStore = defineStore("property", ()=> {
     }
 
     const addProperty = async (property: Property) => {
+        
         try {
             const response = await api.post('/rent-management/properties', property);
-            properties.value.push(response.data);
+            
+            if(response) {
+                properties.value.push(response.data);
+                console.log("Propriété ajoutée", properties.value)
+            } else {
+                error.value = response;
+            }
         } catch (err) {
             error.value = 'Failed to add property';
             console.error(err);

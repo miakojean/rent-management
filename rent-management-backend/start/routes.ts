@@ -43,7 +43,7 @@ router.group(() => {
 
     return {
       type: 'bearer',
-      value: token.value!.release(),
+      value: token.value!.release(), 
     }
   })
 
@@ -53,7 +53,7 @@ router.group(() => {
   // Route pour récupérer le profil de l'utilisateur connecté
   router.get('profile', [AuthController, 'getProfile']).use(middleware.auth({ guards: ['api'] }))
 
-}).prefix('rent-manager/auth') // Préfixe pour organiser vos URL
+}).prefix('rent-management/auth') // Préfixe pour organiser vos URL
 
 // About the rent management
 router.group(()=>{

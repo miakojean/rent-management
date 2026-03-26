@@ -13,17 +13,33 @@
         v-model="newProperty.type"
         label="Type de propriété"
         :error-message="errors.type"
+        :options="propertyTypes"
         required
       />
 
+      <!-- Sélection du pays via la liste ISO normalisée -->
       <BaseSelect 
         v-model="newProperty.country"
         label="Pays"
+        placeholder="Sélectionnez un pays"
         :error-message="errors.country"
+        :options="countryOptions"
         required
+        @change="onCountryChange"
       />
 
-      <BaseInput 
+      <!-- Ville : select si des villes connues existent, sinon input libre -->
+      <BaseSelect
+        v-if="cityOptions.length > 0"
+        v-model="newProperty.city"
+        label="Ville"
+        placeholder="Sélectionnez une ville"
+        :error-message="errors.city"
+        :options="cityOptions"
+        required
+      />
+      <BaseInput
+        v-else
         v-model="newProperty.city"
         label="Ville"
         :error-message="errors.city"
@@ -48,24 +64,88 @@
     </div>
 
     <div class="mt-4">
-      <mainButton type="submit">Enregistrer le bien</mainButton>
+      <mainButton type="submit" btn_label="ajouter la propriété"/>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { usePropertyStore } from '../../stores/propertyStore'; // Exemple de chemin
+import { ref, reactive, computed, watch } from 'vue';
+import { usePropertyStore } from '../../stores/propertyStore';
 import type { Property } from '../../stores/propertyStore';
+import { useCountries } from '~/plugins/countries';
 
-// component
+// Composants
 import BaseInput from '../input/BaseInput.vue';
 import BaseSelect from '../input/BaseSelect.vue';
 import BaseTextArea from '../input/BaseTextArea.vue';
 import mainButton from '../buttons/mainButton.vue';
 
-// State
+// ─── Pays ────────────────────────────────────────────────────────────────────
+
+const { getCountryList } = useCountries()
+
+/**
+ * Liste triée alphabétiquement, au format attendu par BaseSelect :
+ * { code: 'CI', name: 'Côte d\'Ivoire' }
+ * La valeur stockée dans newProperty.country sera le code ISO-2 (ex: 'CI').
+ */
+const countryOptions = computed(() =>
+  getCountryList().sort((a, b) => a.name.localeCompare(b.name, 'fr'))
+)
+
+// ─── Villes par pays ──────────────────────────────────────────────────────────
+
+/**
+ * Dictionnaire des villes connues par code pays ISO-2.
+ * Étendre selon les besoins métier. Les pays absents basculeront sur un input libre.
+ */
+const CITIES_BY_COUNTRY: Record<string, string[]> = {
+  CI: ['Abidjan', 'Bouaké', 'Daloa', 'Yamoussoukro', 'Korhogo', 'San-Pédro', 'Man', 'Divo', 'Gagnoa', 'Abengourou'],
+  SN: ['Dakar', 'Thiès', 'Kaolack', 'Saint-Louis', 'Ziguinchor', 'Touba', 'Mbour', 'Diourbel'],
+  CM: ['Douala', 'Yaoundé', 'Bafoussam', 'Garoua', 'Bamenda', 'Maroua', 'Ngaoundéré'],
+  ML: ['Bamako', 'Sikasso', 'Mopti', 'Koutiala', 'Kayes', 'Ségou', 'Gao'],
+  BF: ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou', 'Ouahigouya', 'Banfora'],
+  GN: ['Conakry', 'Nzérékoré', 'Kankan', 'Kindia', 'Labé'],
+  FR: ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Bordeaux', 'Lille', 'Rennes'],
+  MA: ['Casablanca', 'Rabat', 'Fès', 'Marrakech', 'Agadir', 'Tanger', 'Meknès', 'Oujda'],
+  TN: ['Tunis', 'Sfax', 'Sousse', 'Gabès', 'Kairouan', 'Bizerte'],
+  DZ: ['Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Sétif'],
+}
+
+/**
+ * Options de villes au format BaseSelect ({ code, name }).
+ * Retourne un tableau vide si le pays n'est pas dans le dictionnaire
+ * → le template bascule alors sur un <BaseInput> libre.
+ */
+const cityOptions = computed(() => {
+  const cities = CITIES_BY_COUNTRY[newProperty.value.country] ?? []
+  return cities.map(city => ({ code: city, name: city }))
+})
+
+/**
+ * Réinitialise la ville à chaque changement de pays
+ * pour éviter une valeur incohérente.
+ */
+const onCountryChange = () => {
+  newProperty.value.city = ''
+  errors.city = ''
+}
+
+// ─── Types de propriété ───────────────────────────────────────────────────────
+
+// Valeurs alignées sur PropertyTypes dans #models/property
+const propertyTypes = [
+  { code: 'villa',        name: 'Villa' },
+  { code: 'cour commune', name: 'Cour commune' },
+  { code: 'immeuble',     name: 'Immeuble' },
+  { code: 'autre',        name: 'Autre' },
+]
+
+// ─── Formulaire ───────────────────────────────────────────────────────────────
+
 const propertyStore = usePropertyStore();
+
 const newProperty = ref<Property>({
   title: '',
   description: '',
@@ -73,61 +153,62 @@ const newProperty = ref<Property>({
   address: '',
   city: '',
   country: '',
-});
+})
 
-// Gestion des erreurs par champ pour une meilleure UX
 const errors = reactive({
-  title: '',
+  title:       '',
   description: '',
-  type: '',
-  address: '',
-  city: '',
-  country: '',
-});
+  type:        '',
+  address:     '',
+  city:        '',
+  country:     '',
+})
 
-// Validation
+// ─── Validation ───────────────────────────────────────────────────────────────
+
 const validate = () => {
-  let isValid = true;
-  
-  // Réinitialisation des erreurs
-  Object.keys(errors).forEach(key => (errors[key as keyof typeof errors] = ''));
+  let isValid = true
+
+  Object.keys(errors).forEach(key => (errors[key as keyof typeof errors] = ''))
 
   if (!newProperty.value.title) {
-    errors.title = "Le nom est obligatoire";
-    isValid = false;
-  }
-  if (!newProperty.value.type) {
-    errors.type = "Veuillez choisir un type";
-    isValid = false;
-  }
-  if (!newProperty.value.address){
-    errors.type = "Entrer une addresse";
+    errors.title = 'Le nom est obligatoire'
     isValid = false
   }
-  if (!newProperty.value.city){
-    errors.city = "Entrer une ville";
-    isValid = false;
+  if (!newProperty.value.type) {
+    errors.type = 'Veuillez choisir un type'
+    isValid = false
   }
-  if(!newProperty.value.country){
-    errors.country = "Entrer un pays";
-    isValid = false;
+  if (!newProperty.value.country) {
+    errors.country = 'Veuillez sélectionner un pays'
+    isValid = false
+  }
+  if (!newProperty.value.city) {
+    errors.city = 'Veuillez saisir ou sélectionner une ville'
+    isValid = false
+  }
+  if (!newProperty.value.address) {
+    errors.address = 'Entrez une adresse'
+    isValid = false
+  }
+  if (!newProperty.value.description) {
+    errors.description = 'La description est obligatoire'
+    isValid = false
   }
 
-  return isValid;
-};
+  return isValid
+}
 
-// Actions
+// ─── Soumission ───────────────────────────────────────────────────────────────
+
 const submitform = async () => {
-  if (!validate()) return;
+  if (!validate()) return
 
   try {
-    // On passe la valeur brute (.value) au store
-    await propertyStore.addProperty({ ...newProperty.value });
-    
-    // Optionnel : Réinitialiser le formulaire après succès
-    // resetForm();
+    await propertyStore.addProperty({ ...newProperty.value })
+    // resetForm() si nécessaire
   } catch (err) {
-    console.error("Erreur lors de l'enregistrement", err);
+    console.error("Erreur lors de l'enregistrement", err)
   }
-};
+}
 </script>
