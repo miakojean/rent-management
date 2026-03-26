@@ -1,5 +1,5 @@
 <template>
-    <section class="ill-section flex flex-col gap-4 w-full h-full">
+    <section class="ill-section flex flex-col justify-center gap-4 w-full h-full">
         <h3 class="text-3xl font-extralight">
             Fournissez vos informations
         </h3>
@@ -10,7 +10,7 @@
         </p>
 
         <img 
-            class="w-full h-2/4"
+            class="svg--building"
             src="../../assets/svg/undraw_coming-home_jmbc.svg" 
             alt="immeuble"
         >
@@ -19,4 +19,11 @@
 
 <script lang="ts"></script>
 
-<style lang="css"></style>
+<style lang="css">
+
+.svg--building{
+    height: 300px;
+    width: 300px;
+}
+
+</style>

@@ -38,18 +38,28 @@ const usePropertyStore = defineStore("property", ()=> {
 
     const addProperty = async (property: Property) => {
         
+        // UX
+        error.value = "";
+        loading.value = true;
+
         try {
             const response = await api.post('/rent-management/properties', property);
             
             if(response) {
                 properties.value.push(response.data);
                 console.log("Propriété ajoutée", properties.value)
+                loading.value = false;
+                return response;
             } else {
-                error.value = response;
+                error.value = "Une erreur est intervenue lors de l'ajout de la propriété";
+                loading.value = false;
+                return;
             }
         } catch (err) {
             error.value = 'Failed to add property';
             console.error(err);
+            loading.value = false;
+            return;
         }
     };
 

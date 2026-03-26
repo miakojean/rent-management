@@ -63,8 +63,12 @@
       />
     </div>
 
+    <div class="error--message">
+      <p class="error">{{ propertyStore.error }}</p>
+    </div>
+
     <div class="mt-4">
-      <mainButton type="submit" btn_label="ajouter la propriété"/>
+      <mainButton type="submit" btn_label="ajouter la propriété" :isloading="propertyStore.loading"/>
     </div>
   </form>
 </template>
@@ -74,6 +78,7 @@ import { ref, reactive, computed, watch } from 'vue';
 import { usePropertyStore } from '../../stores/propertyStore';
 import type { Property } from '../../stores/propertyStore';
 import { useCountries } from '~/plugins/countries';
+import { useRouter } from 'vue-router';
 
 // Composants
 import BaseInput from '../input/BaseInput.vue';
@@ -131,6 +136,9 @@ const onCountryChange = () => {
   newProperty.value.city = ''
   errors.city = ''
 }
+
+// Router
+const router = useRouter();
 
 // ─── Types de propriété ───────────────────────────────────────────────────────
 
@@ -206,6 +214,15 @@ const submitform = async () => {
 
   try {
     await propertyStore.addProperty({ ...newProperty.value })
+    newProperty.value = {
+      title:"",
+      description:"",
+      address:"",
+      type:"",
+      city:"",
+      country:""
+    }
+    router.push("/")
     // resetForm() si nécessaire
   } catch (err) {
     console.error("Erreur lors de l'enregistrement", err)

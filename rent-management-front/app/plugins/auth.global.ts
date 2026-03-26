@@ -7,5 +7,4 @@ export default defineNuxtPlugin(async()=>{
 
     await authStore.initializeAuth();
 
-    console.log("Middleware a joué son rôle !!!")
 })
