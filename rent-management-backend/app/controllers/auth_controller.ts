@@ -41,7 +41,7 @@ export default class AuthController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours
+      maxAge: 30 * 24 * 60 * 60, // ← sans le * 1000 ✅
     })
 
     return { 

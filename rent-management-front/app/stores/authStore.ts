@@ -12,14 +12,14 @@ export interface User {
 
 export const useAuthStore = defineStore('auth', () => {
 
+    const cachedUser = useCookie<User | null>('user_data', {
+        maxAge: 30 * 24 * 60 * 60,
+    });
+
     const user = ref<User | null>(null);
     const isLoading = ref(false);
     const error = ref<string | null>(null);
     const isInitialized = ref(false); // ← flag ajouté
-
-    const cachedUser = useCookie<User | null>('user_data', {
-        maxAge: 30 * 24 * 60 * 60,
-    });
 
     const isAuthenticated = computed(() => !!user.value);
     const fullName = computed(() =>
@@ -54,21 +54,29 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    // Let's debug this function
+
     async function initializeAuth() {
+
+        console.log("Fonction enclenchée")
+
         if (isInitialized.value) return; // ← bloque les appels répétés
+
+        isLoading.value = true;
 
         if (cachedUser.value) {
             user.value = cachedUser.value;
         }
 
         try {
-            isLoading.value = true;
             const response = await api.get('/rent-management/auth/profile'); 
             user.value = response.data.user;
             cachedUser.value = response.data.user;
+            console.log("Utilisateur mis en cache")
         } catch {
             user.value = null;
             cachedUser.value = null;
+            console.log("Erreur sur la mise en cache")
         } finally {
             isLoading.value = false;
             isInitialized.value = true; // ← marqué comme fait, succès ou échec
@@ -76,8 +84,14 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     return {
-        user, isLoading, error, isInitialized,
-        isAuthenticated, fullName,
-        login, logout, initializeAuth
+        user, 
+        isLoading, 
+        error, 
+        isInitialized,
+        isAuthenticated, 
+        fullName,
+        login, 
+        logout, 
+        initializeAuth
     };
 });

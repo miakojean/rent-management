@@ -20,19 +20,11 @@
 import headerContent from '../../components/headers/headerContent.vue';
 import sidebar from '../../components/navigation/sidebar.vue';
 import indexSection from '../../components/sections/indexSection.vue';
-import { useAuthStore } from '../../stores/authStore';
 export default {
     components:{
         sidebar,
         headerContent,
         indexSection
-    },
-    setup(){
-        const authStore = useAuthStore();
-
-        return{
-            authStore
-        }
     }
 }
 
@@ -57,7 +49,7 @@ export default {
 
 .header-area {
     grid-area: header;
-    background-color: white;
+    background-color: none;
     color: #333;
     padding: 1rem;
     margin: 2px 8px;

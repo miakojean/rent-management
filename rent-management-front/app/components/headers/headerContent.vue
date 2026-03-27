@@ -1,10 +1,11 @@
 <template>
   <div class="header__content">
     <div class="header__title">
-      <!-- <h3>{{ title }}</h3> --> 
+      <BaseReseachBox/>
     </div>
     <div class="tools__framer flex gap-4 p-4">
       <moreButton btn_label="Nouveau"/>
+      <roundedButton/>
       <profileButton :user="{ firstName: 'Jean Yves ', lastName: 'MIAKO' }"/>
     </div>
   </div>
@@ -13,10 +14,14 @@
 <script>
 import moreButton from '../buttons/moreButton.vue';
 import profileButton from '../buttons/profileButton.vue';
+import roundedButton from '../buttons/roundedButton.vue';
+import BaseReseachBox from '../input/BaseReseachBox.vue';
 export default {
   components: {
     moreButton,
-    profileButton
+    profileButton,
+    roundedButton,
+    BaseReseachBox
   },
 
   props: {
@@ -34,12 +39,5 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.header__title h3{
-  font-size: x-large;
-  font-weight: 600;
-  color: var(--secondary-text-color);
-  font-family: "Cabin", sans-serif;
 }
 </style>

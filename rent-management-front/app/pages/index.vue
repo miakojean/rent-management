@@ -49,7 +49,7 @@ export default {
 
 .header-area {
     grid-area: header;
-    background-color: white;
+    background-color: none;
     color: #333;
     padding: 1rem;
     margin: 2px 8px;

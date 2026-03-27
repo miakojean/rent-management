@@ -1,5 +1,3 @@
-import { useAuthStore } from "#imports";
-
 export default defineNuxtPlugin(async()=>{
     const authStore = useAuthStore();
    // Évite les appels répétés

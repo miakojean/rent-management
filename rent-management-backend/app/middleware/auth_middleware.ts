@@ -5,34 +5,21 @@ import type { Authenticators } from '@adonisjs/auth/types'
 export default class AuthMiddleware {
   redirectTo = '/login'
 
-  async handle(
-    ctx: HttpContext,
-    next: NextFn,
-    options: { guards?: (keyof Authenticators)[] } = {}
-  ) {
-    // 1. Récupérer le token depuis le cookie (nommé 'auth_token' dans ton login)
-    const tokenFromCookie = ctx.request.cookie('auth_token')
+  async handle(ctx: HttpContext, next: NextFn, options: { guards?: (keyof Authenticators)[] } = {}) {
     
-    // 2. Si on a un cookie et pas de header, on remplit le header pour Adonis
+    const tokenFromCookie = ctx.request.cookie('auth_token')
+
     if (tokenFromCookie && !ctx.request.header('authorization')) {
-      ctx.request.headers().authorization = `Bearer ${tokenFromCookie}`
+        ctx.request.request.headers['authorization'] = `Bearer ${tokenFromCookie}`
     }
 
     try {
-      // 3. Authentification automatique via Adonis
-      await ctx.auth.authenticateUsing(options.guards)
-      
-      return next()
+        await ctx.auth.authenticateUsing(options.guards)
+        console.log('✅ Auth réussie')
+        return next()
     } catch (error) {
-      // 4. Gestion propre de l'échec (évite les boucles infinies)
-      if (ctx.request.accepts(['json', 'html']) === 'html') {
-        return ctx.response.redirect(this.redirectTo)
-      }
-
-      return ctx.response.unauthorized({
-        message: 'Session expirée ou invalide',
-        code: 'E_UNAUTHORIZED'
-      })
+        console.log('❌ Auth échouée:', error.message)
+        // ...
     }
   }
 }
