@@ -139,7 +139,7 @@ export default {
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
+  border-radius: 1.5rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 

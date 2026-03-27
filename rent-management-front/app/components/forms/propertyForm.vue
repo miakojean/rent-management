@@ -1,6 +1,10 @@
 <template>
   <form @submit.prevent="submitform" class="flex flex-col gap-6 p-4">
 
+    <h3 class=" sm:text-2xl md:text-3xl">
+      Ajouter un nouveau bien
+    </h3>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <BaseInput 
         v-model="newProperty.title"
@@ -229,3 +233,10 @@ const submitform = async () => {
   }
 }
 </script>
+
+<style scoped>
+h3{
+  color: var(--primary-color-dark);
+  font-weight: 500;
+}
+</style>

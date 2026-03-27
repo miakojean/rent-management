@@ -159,7 +159,7 @@ export default {
   color: var(--text-color);
   background-color: #fff;
   border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
+  border-radius: 1.5rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   appearance: none; /* Désactive le style par défaut du navigateur */
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
