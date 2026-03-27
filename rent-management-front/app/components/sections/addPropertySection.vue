@@ -10,6 +10,14 @@
                 <illustratorSection/>
             </div>
         </div>
+
+        <notification-popup
+            :visible="notificationVisible"
+            :message="message"
+            :type="notificationType"
+            :duration="10000"
+            @close="notificationVisible = false"
+        />
     </section>
 </template>
 
@@ -18,6 +26,8 @@ import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
 import propertyForm from '../forms/propertyForm.vue';
 import illustratorSection from './illustratorSection.vue';
+import notificationPopup from '../tools/notificationPopup.vue';
+import { ref } from 'vue';
 
 export default {
     name: "IndexSection",
@@ -25,7 +35,32 @@ export default {
         revenueCard,
         operationsList,
         propertyForm,
-        illustratorSection
+        illustratorSection,
+        notificationPopup
+    },
+
+    setup() {
+        const notificationVisible = ref(true)
+        const notificationMessage = ref('')
+        const notificationType = ref('success')
+
+
+        //message pour le fun
+        const message = ref<string>('Pour le test des notifications')
+        // Fonction pour afficher une notification
+        const showNotification = (message, type = 'success') => {
+        notificationMessage.value = message
+        notificationType.value = type
+        notificationVisible.value = true
+        }
+
+        return {
+        notificationVisible,
+        notificationMessage,
+        notificationType,
+        message,
+        showNotification
+        }
     }
 }
 </script>
