@@ -70,11 +70,8 @@ export default class AuthController {
     return response.ok({ message: 'Déconnecté avec succès' })
   }
 
-  async getProfile({auth, request, response}: HttpContext) {
-    const user = auth.user
-    if (!user) {
-      return response.unauthorized({ message: 'Unauthorized' })
-    }
-    return response.ok({ user: user.serialize() })
+  async getProfile({ auth, response }: HttpContext) {
+    // auth.user est garanti d'exister grâce au middleware !
+    return response.ok({ user: auth.user!.serialize() })
   }
 }
