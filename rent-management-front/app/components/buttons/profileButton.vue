@@ -20,10 +20,14 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '#imports'
+import { useRouter } from '#imports'
 
 // État local
 const isOpen = ref(false)
 const wrapperRef = ref(null)
+const authStore = useAuthStore();
+const router = useRouter()
 
 // Fonctions
 const toggleDropdown = () => {
@@ -42,7 +46,10 @@ const handleClickOutside = (event) => {
 }
 
 // Déconnexion (à remplacer par ta logique)
-const logout = () => {
+const logout = async() => {
+
+  await authStore.logout();
+  router.push('login')
   console.log('Déconnexion')
   // Appel API, redirection, etc.
   closeDropdown()

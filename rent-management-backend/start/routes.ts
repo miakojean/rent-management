@@ -48,10 +48,14 @@ router.group(() => {
   })
 
   // Route pour la déconnexion
-  router.post('logout', [AuthController, 'logout'])
+  router.post('logout', [AuthController, 'logout']).use(
+    [middleware.auth({guards:['api']})]
+  )
 
   // Route pour récupérer le profil de l'utilisateur connecté
-  router.get('profile', [AuthController, 'getProfile']).use(middleware.auth({ guards: ['api'] }))
+  router.get('profile', [AuthController, 'getProfile']).use(
+    middleware.auth({ guards: ['api'] })
+  )
 
 }).prefix('rent-management/auth') // Préfixe pour organiser vos URL
 

@@ -1,10 +1,6 @@
 <template>
   <form @submit.prevent="submitform" class="flex flex-col gap-6 p-4">
 
-    <h3 class=" sm:text-2xl md:text-3xl">
-      Ajouter un nouveau bien
-    </h3>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <BaseInput 
         v-model="newProperty.title"
@@ -217,26 +213,30 @@ const submitform = async () => {
   if (!validate()) return
 
   try {
-    await propertyStore.addProperty({ ...newProperty.value })
-    newProperty.value = {
-      title:"",
-      description:"",
-      address:"",
-      type:"",
-      city:"",
-      country:""
+    const store = await propertyStore.addProperty({ ...newProperty.value })
+    
+    if(store) {
+
+      newProperty.value = {
+        title:"",
+        description:"",
+        address:"",
+        type:"",
+        city:"",
+        country:""
+      };
+
+      router.push("/")
+
+    } else {
+      console.log(propertyStore.error);
+      return;
     }
-    router.push("/")
+    
     // resetForm() si nécessaire
   } catch (err) {
     console.error("Erreur lors de l'enregistrement", err)
   }
 }
-</script>
 
-<style scoped>
-h3{
-  color: var(--primary-color-dark);
-  font-weight: 500;
-}
-</style>
+</script>

@@ -72,16 +72,22 @@ export default class PropertiesController {
 
   async store({ request, response, auth }: HttpContext) {
     try {
-      // Validation des données
-      const data = await request.validateUsing(createPropertyValidator)
 
       // Vérification de l'authentification
       const user = auth.user
       if (!user) {
+        console.log('utilisateur non authentifié')
         return response.unauthorized({
           status: 'error',
           message: 'Vous devez être connecté pour créer une propriété',
         })
+      }
+      
+      // Validation des données
+      const data = await request.validateUsing(createPropertyValidator)
+      //debugging with data
+      if (!data){
+        console.log('Un soucis est intervenu lors de la validation', data)
       }
 
       const property = await Property.create({

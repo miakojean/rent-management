@@ -70,7 +70,7 @@ export default class AuthController {
     return response.ok({ message: 'Déconnecté avec succès' })
   }
 
-  async getProfile({auth, response}: HttpContext) {
+  async getProfile({auth, request, response}: HttpContext) {
     const user = auth.user
     if (!user) {
       return response.unauthorized({ message: 'Unauthorized' })

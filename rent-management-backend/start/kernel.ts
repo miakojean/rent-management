@@ -27,13 +27,18 @@ server.use([
   () => import('#middleware/force_json_response_middleware'),
   () => import('@adonisjs/cors/cors_middleware'),
   () => import('#middleware/request_logger_middleware'),
+  () => import('#middleware/cookie_token_middleware')
 ])
 
 /**
  * The router middleware stack runs middleware on all the HTTP
  * requests with a registered route.
  */
-router.use([() => import('@adonisjs/core/bodyparser_middleware'), () => import('@adonisjs/auth/initialize_auth_middleware')])
+router.use([
+  () => import('@adonisjs/core/bodyparser_middleware'), 
+  () => import('@adonisjs/auth/initialize_auth_middleware'),
+  () => import('#middleware/cookie_token_middleware')
+])
 
 /**
  * Named middleware collection must be explicitly assigned to
