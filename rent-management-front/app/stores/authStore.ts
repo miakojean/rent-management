@@ -2,14 +2,20 @@ import { defineStore } from "pinia";
 import { api } from "~/services/api";
 import { ref, computed } from "vue";
 
+// authStore.ts
 export interface User {
     id?: number,
     first_name: string,
     last_name: string,
     email: string,
     username: string,
-    title_category:string,
-    phone_number:string
+    title_category: string,
+    phone_number: string,
+    password?: string,
+    passwordConfirmation?:string,
+    address?: string,
+    city?: string,
+    country?: string
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -25,7 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const isAuthenticated = computed(() => !!user.value);
     const fullName = computed(() =>
-        user.value ? `${user.value.firstName} ${user.value.lastName}` : ''
+        user.value ? `${user.value.first_name} ${user.value.last_name}` : ''
     );
 
     async function registration(user:User) {

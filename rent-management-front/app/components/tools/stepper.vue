@@ -100,6 +100,7 @@ export default {
   display: flex;
   align-items: center;   /* centrage vertical parfait */
   width: 100%;
+  max-width: 500px;
 }
 
 /* ── Cercle ── */
