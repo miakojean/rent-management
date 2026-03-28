@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'http://localhost:3333',  // Ton backend AdonisJS
+    baseURL: 'http://localhost:8000',  // Ton backend AdonisJS
     withCredentials: true,  // Permet d'envoyer les cookies pour l'authentification
     headers: {
         'Content-Type': 'application/json',

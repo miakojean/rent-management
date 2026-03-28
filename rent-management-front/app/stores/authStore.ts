@@ -4,10 +4,12 @@ import { ref, computed } from "vue";
 
 export interface User {
     id?: number,
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     email: string,
     username: string,
+    title_category:string,
+    phone_number:string
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -25,6 +27,23 @@ export const useAuthStore = defineStore('auth', () => {
     const fullName = computed(() =>
         user.value ? `${user.value.firstName} ${user.value.lastName}` : ''
     );
+
+    async function registration(user:User) {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            const response = await api.post('/account/registry/', user);
+            console.log("Debug registration", response.data)
+            isLoading.value = false;
+            return response.data
+        } catch(e:any) {
+            error.value = e.response?.data?.message || 'Erreur lors de la création de compte'
+            isLoading.value = false;
+            throw error.value;
+        } finally {
+            isLoading.value = false;
+        }
+    }
 
     async function login(credentials: { email: string; password: string }) {
         isLoading.value = true;
@@ -90,6 +109,7 @@ export const useAuthStore = defineStore('auth', () => {
         isInitialized,
         isAuthenticated, 
         fullName,
+        registration,
         login, 
         logout, 
         initializeAuth

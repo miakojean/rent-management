@@ -11,7 +11,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
 
     # Registration
-    path('registry', CreateUserView.as_view(), name='registry'),
+    path('registry/', CreateUserView.as_view(), name='registry'),
 
     # Jwt Authentification
     path('token', TokenObtainPairView.as_view(), name='Token_obtain_pair'),
