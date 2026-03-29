@@ -193,7 +193,9 @@ export default {
 .step__label {
   flex: 0 0 var(--circle-size);
   width: var(--circle-size);
+  display: flex;
   text-align: center;
+  justify-content: center;
   font-size: 0.72rem;
   font-weight: 500;
   color: #9ca3af;
@@ -204,7 +206,7 @@ export default {
   /* Débordement du texte centré sur le cercle */
   overflow: visible;
   white-space: nowrap;
-  transform: translateX(-50%) translateX(calc(var(--circle-size) / 2));
+  /*transform: translateX(-50%) translateX(calc(var(--circle-size) / 2));*/
 }
 
 .step__label--active {

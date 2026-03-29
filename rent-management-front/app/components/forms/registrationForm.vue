@@ -14,13 +14,18 @@
                 </div>
                 <h3 class="success__title">Compte créé avec succès !</h3>
                 <p class="success__subtitle">
-                    Bienvenue <span>{{ user.first_name }} {{ user.last_name }}</span>.<br/>
+                    <template v-if="isEntreprise">
+                        Bienvenue <span>{{ user.username }}</span>.<br/>
+                    </template>
+                    <template v-else>
+                        Bienvenue <span>{{ user.first_name }} {{ user.last_name }}</span>.<br/>
+                    </template>
                     Vous serez redirigé vers la connexion dans <span>{{ countdown }}s</span>.
                 </p>
                 <mainButton
                     type="button"
                     btn_label="Se connecter maintenant"
-                    @handleClick="router.push('/login')"
+                    @handleClick="router.push('/auth/login')"
                 />
             </div>
         </template>
@@ -65,10 +70,11 @@
                     </p>
                 </div>
 
-                <!-- ÉTAPE 2 — Informations personnelles -->
+                <!-- ÉTAPE 2 — Informations -->
                 <div class="step w-full grid grid-cols-2 gap-4" v-if="step === 2">
 
-                    <div class="input-group">
+                    <!-- Nom — Propriétaire uniquement -->
+                    <div class="input-group" v-if="!isEntreprise">
                         <BaseInput
                             id="firstName"
                             v-model="user.first_name"
@@ -79,7 +85,8 @@
                         />
                     </div>
 
-                    <div class="input-group">
+                    <!-- Prénoms — Propriétaire uniquement -->
+                    <div class="input-group" v-if="!isEntreprise">
                         <BaseInput
                             id="lastName"
                             v-model="user.last_name"
@@ -90,18 +97,19 @@
                         />
                     </div>
 
-                    <div class="input-group">
+                    <!-- Nom d'utilisateur / Nom d'entreprise -->
+                    <div class="input-group" :class="{ 'col-span-2': isEntreprise }">
                         <BaseInput
                             id="username"
                             v-model="user.username"
-                            label="Nom d'utilisateur"
+                            :label="usernameLabel"
                             type="text"
-                            placeholder="Entrez un nom d'utilisateur"
+                            :placeholder="usernamePlaceholder"
                             :errorMessage="errors.username"
                         />
                     </div>
 
-                    <div class="input-group">
+                    <div class="input-group" :class="{ 'col-span-2': isEntreprise }">
                         <BaseInput
                             id="email"
                             v-model="user.email"
@@ -238,6 +246,17 @@ const errors = reactive<Partial<Record<keyof User, string>>>({})
 const step = ref(1)
 const authStore = useAuthStore()
 
+// ─── Type de compte ───────────────────────────────────────
+const isEntreprise = computed(() => user.value.title_category === 'ESE')
+
+const usernameLabel = computed(() =>
+    isEntreprise.value ? "Nom de l'entreprise" : "Nom d'utilisateur"
+)
+
+const usernamePlaceholder = computed(() =>
+    isEntreprise.value ? "Entrez le nom de votre entreprise" : "Entrez un nom d'utilisateur"
+)
+
 // ─── Succès & countdown ──────────────────────────────────
 const registrationSuccess = ref(false)
 const countdown = ref(5)
@@ -248,7 +267,7 @@ function startCountdown() {
         countdown.value--
         if (countdown.value <= 0) {
             clearInterval(countdownTimer!)
-            router.push('/login')
+            router.push('/auth/login')
         }
     }, 1000)
 }
@@ -256,7 +275,7 @@ function startCountdown() {
 // ─── Stepper ─────────────────────────────────────────────
 const stepItems = computed(() => [
     { id: 1, name: 'Type de compte',            isActive: step.value === 1 },
-    { id: 2, name: 'Informations personnelles',  isActive: step.value === 2 },
+    { id: 2, name: 'Informations',               isActive: step.value === 2 },
     { id: 3, name: 'Coordonnées',                isActive: step.value === 3 },
 ])
 
@@ -275,28 +294,35 @@ function validateStep1(): boolean {
 
 function validateStep2(): boolean {
     let valid = true
-    errors.first_name            = undefined
-    errors.last_name             = undefined
-    errors.username              = undefined
-    errors.email                 = undefined
-    errors.password              = undefined
-    errors.passwordConfirmation  = undefined
+    errors.first_name           = undefined
+    errors.last_name            = undefined
+    errors.username             = undefined
+    errors.email                = undefined
+    errors.password             = undefined
+    errors.passwordConfirmation = undefined
 
-    if (!user.value.first_name.trim()) {
-        errors.first_name = "Le nom est requis."
-        valid = false
+    // Nom & prénom uniquement pour les propriétaires
+    if (!isEntreprise.value) {
+        if (!user.value.first_name.trim()) {
+            errors.first_name = "Le nom est requis."
+            valid = false
+        }
+        if (!user.value.last_name.trim()) {
+            errors.last_name = "Le prénom est requis."
+            valid = false
+        }
     }
-    if (!user.value.last_name.trim()) {
-        errors.last_name = "Le prénom est requis."
-        valid = false
-    }
+
     if (!user.value.username.trim()) {
-        errors.username = "Le nom d'utilisateur est requis."
+        errors.username = isEntreprise.value
+            ? "Le nom de l'entreprise est requis."
+            : "Le nom d'utilisateur est requis."
         valid = false
     } else if (user.value.username.length < 3) {
         errors.username = "Minimum 3 caractères."
         valid = false
     }
+
     if (!user.value.email.trim()) {
         errors.email = "L'email est requis."
         valid = false
@@ -304,6 +330,7 @@ function validateStep2(): boolean {
         errors.email = "Adresse email invalide."
         valid = false
     }
+
     if (!user.value.password) {
         errors.password = "Le mot de passe est requis."
         valid = false
@@ -311,6 +338,7 @@ function validateStep2(): boolean {
         errors.password = "Minimum 8 caractères."
         valid = false
     }
+
     if (!user.value.passwordConfirmation) {
         errors.passwordConfirmation = "Veuillez confirmer le mot de passe."
         valid = false
@@ -318,6 +346,7 @@ function validateStep2(): boolean {
         errors.passwordConfirmation = "Les mots de passe ne correspondent pas."
         valid = false
     }
+
     return valid
 }
 
@@ -383,7 +412,6 @@ async function submitForm() {
         }
         await authStore.registration(payload)
 
-        // ✅ Succès : afficher l'écran de confirmation et lancer le countdown
         registrationSuccess.value = true
         startCountdown()
 
@@ -395,6 +423,12 @@ async function submitForm() {
 // ─── Sélection type ──────────────────────────────────────
 function selectType(selectedType: string) {
     user.value.title_category = user.value.title_category === selectedType ? "" : selectedType
+
+    // Nettoyer nom/prénom si passage en mode entreprise
+    if (user.value.title_category === 'ESE') {
+        user.value.first_name = ""
+        user.value.last_name  = ""
+    }
 }
 </script>
 
@@ -466,6 +500,10 @@ function selectType(selectedType: string) {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+}
+
+.col-span-2 {
+    grid-column: span 2;
 }
 
 .error {

@@ -20,14 +20,16 @@ class CreateUserView(APIView):
                 user = serializer.save()
                 return Response(
                     {
-                        'data' : serializer.data,
-                        'message' : _('Votre compte a été créé avec succès')
+                        'data': serializer.data,
+                        'message': _('Votre compte a été créé avec succès')
                     }, status=status.HTTP_201_CREATED
                 )
             else:
                 return Response(
-                    {'message': _('Erreur lors de la création de compte')},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {
+                        'errors': serializer.errors,   # ← détails des erreurs
+                        'message': _('Erreur lors de la création de compte')
+                    }, status=status.HTTP_400_BAD_REQUEST
                 )
         except serializers.ValidationError as e:
             return Response(

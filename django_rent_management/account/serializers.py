@@ -24,7 +24,8 @@ class CustomUserCreateSerializer(serializers.ModelSerializer):
             )
         return data
 
+    # Cette fonction va hasher le mot de passe
+    
     def create(self, validated_data):
-        user = CustomUser(**validated_data)
-        user.save()
+        user = CustomUser.objects.create_user(**validated_data)
         return user

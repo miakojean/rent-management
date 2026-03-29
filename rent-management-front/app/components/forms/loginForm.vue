@@ -32,12 +32,9 @@
             </p>
             <BaseCheckbox/>
         </div>
-        <div class="error--message">
-            <p class="error">{{ authStore.error }}</p>
-            <p class="error">{{ errors.email || errors.password }}</p>
-        </div>
+        <error-message v-if="authStore.error"/>
         <mainButton type="submit" btn_label="connexion" :isloading="authStore.isLoading"/>
-        <p @click="()=> router.push('/registrayion')" class="cursor-pointer">
+        <p @click="()=> router.push('/auth/registration')" class="cursor-pointer">
             Pas de compte ? <span>Inscrivez-vous</span>
         </p>
     </form>
@@ -50,6 +47,7 @@ import mainButton from '../buttons/mainButton.vue';
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import { useAuthStore } from '../../stores/authStore';
 import { useRouter } from 'vue-router';
+import errorMessage from './errorMessage.vue';
 
 interface LoginForm {
     email: string; 
@@ -66,7 +64,8 @@ export default {
     components: {
         BaseInput,
         mainButton,
-        BaseCheckbox
+        BaseCheckbox,
+        errorMessage
     },
     setup() {
 
@@ -134,6 +133,12 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+.login-form h3 {
+    color: var(--primary-color-dark);
+    font-size: 1.8rem;
+    font-weight: 600;
 }
 
 span{
