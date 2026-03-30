@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function logout() {
         try {
-            await api.post('/rent-management/auth/logout');
+            await api.post('/account/logout/');
         } catch (err) {
             console.error('Erreur logout:', err);
         } finally {

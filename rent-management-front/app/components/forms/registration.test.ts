@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach, nextTick } from 'vitest'
+import { describe, it, expect, vi, beforeEach} from 'vitest'
+import { nextTick } from 'vue'
 import { mount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import registrationForm from './registrationForm.vue'

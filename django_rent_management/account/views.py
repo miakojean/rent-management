@@ -127,3 +127,36 @@ class LoginView(APIView):
                 {'error': 'Email/Nom d\'utilisateur ou mot de passe incorrect.'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+class UserLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # 1. Récupérer le refresh token depuis le cookie
+            refresh_token = request.COOKIES.get("refresh_token")
+
+            if refresh_token:
+                # 2. Blacklister le token pour invalider la session côté serveur
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            
+            response = Response(
+                {'message': 'Déconnexion réussie'},
+                status=status.HTTP_200_OK
+            )
+
+            # 3. Supprimer les cookies côté client
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            
+            # Optionnel : si vous utilisez les domaines en prod
+            # response.delete_cookie('access_token', domain='votre-domaine.com')
+
+            return response
+        
+        except Exception as e:
+            return Response(
+                {'error': 'Une erreur est survenue lors de la déconnexion'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
