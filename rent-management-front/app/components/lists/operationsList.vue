@@ -58,5 +58,20 @@ tr:hover {
     background-color: #f9f9f9;
 }
 
+@media(prefers-color-scheme: dark){
+    .operations__list {
+        background-color: #2c2c2c;
+    }
+    th {
+        background-color: #3a3a3a;
+        color: #f3f3f3;
+    }
+    td {
+        color: #f3f3f3;
+    }
+    tr:hover {
+        background-color: #444;
+    }
+}
 
 </style>

@@ -60,9 +60,20 @@ export const useAuthStore = defineStore('auth', () => {
             cachedUser.value = response.data.user;
             return response.data;
         } catch (err: any) {
-            error.value = err.response?.data?.message || 'Email ou mot de passe incorrect';
+
+            if(!err.response){
+                error.value = 'Une erreur est survenue. Veuillez vérifier votre connexion.';
+            }
+
+            else if (err.response.status === 401){
+                error.value = 'Email ou mot de passe incorrect';
+            }
+            else{
+                error.value = err.response?.data?.message || 'Une erreur est survenue. veuillez réessayer.';
+            }
             throw error.value;
-        } finally {
+        } 
+        finally {
             isLoading.value = false;
         }
     }

@@ -9,7 +9,11 @@ export default {
     props:{
         message:{
             type:String,
-            default:"Une erreur est parvenue"
+            default:"Une erreur est survenue. Veuillez réessayer."
+        },
+        isNetworkError: {
+            type: Boolean,
+            default: false
         }
     },
     setup(){

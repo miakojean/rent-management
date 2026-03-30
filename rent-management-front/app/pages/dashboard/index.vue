@@ -76,4 +76,13 @@ export default {
     padding: 1rem;
     text-align: center;
 }
+@media(prefers-color-scheme: dark){
+    .app-container {
+        background: #1e1e1e;
+    }
+    .header-area, .main-area, .footer-area {
+        background-color: #2c2c2c;
+        color: #f3f3f3;
+    }
+}
 </style>
