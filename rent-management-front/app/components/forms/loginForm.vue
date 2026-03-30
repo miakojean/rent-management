@@ -32,7 +32,7 @@
             </p>
             <BaseCheckbox/>
         </div>
-        <error-message v-if="authStore.error"/>
+        <error-message v-if="authStore.error" :message="authStore.error"/>
         <mainButton type="submit" btn_label="connexion" :isloading="authStore.isLoading"/>
         <p @click="()=> router.push('/auth/registration')" class="cursor-pointer">
             Pas de compte ? <span>Inscrivez-vous</span>

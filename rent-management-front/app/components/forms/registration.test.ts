@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, nextTick } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import registrationForm from './registrationForm.vue'
@@ -74,7 +74,11 @@ function createWrapper() {
 async function selectAccountType(wrapper: VueWrapper, type: 'PT' | 'ESE') {
     const checkboxes = wrapper.findAll('input[type="checkbox"]')
     const index = type === 'PT' ? 0 : 1
-    await checkboxes[index].trigger('change', { target: { checked: true } })
+    const checkbox = checkboxes[index]
+    // On coche directement l'élément DOM avant de trigger
+    ;(checkbox.element as HTMLInputElement).checked = true
+    await checkbox.trigger('change')
+    await nextTick()
 }
 
 async function goNext(wrapper: VueWrapper) {

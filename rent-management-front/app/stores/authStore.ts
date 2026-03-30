@@ -55,12 +55,12 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading.value = true;
         error.value = null;
         try {
-            const response = await api.post('/rent-management/auth/login', credentials);
+            const response = await api.post('/account/login/', credentials);
             user.value = response.data.user;
             cachedUser.value = response.data.user;
             return response.data;
         } catch (err: any) {
-            error.value = err.response?.data?.message || 'Erreur de connexion';
+            error.value = err.response?.data?.message || 'Email ou mot de passe incorrect';
             throw error.value;
         } finally {
             isLoading.value = false;

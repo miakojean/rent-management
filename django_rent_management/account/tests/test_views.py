@@ -18,7 +18,7 @@ class UrlsTest(TestCase):
 
     def test_registry_url_resolves(self):
         url = reverse('registry')
-        self.assertIsNotNone(url)  # plus simple que tester le chemin exact
+        self.assertIsNotNone(url)
 
     def test_registry_url_maps_to_create_user_view(self):
         url = reverse('registry')
@@ -165,7 +165,7 @@ class CreateUserViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_token_refresh_with_valid_token(self):
-        user = CustomUser.objects.create_user(
+        CustomUser.objects.create_user(
             username='jwtuser2',
             email='jwt2@example.com',
             password='Pass123!',
@@ -184,3 +184,165 @@ class CreateUserViewTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('access', response.data)
+
+
+# ===========================================================================
+# Tests de la vue LoginView
+# ===========================================================================
+
+class LoginUserViewTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse('login')
+
+        # Création de l'utilisateur réutilisé dans tous les tests
+        self.user = CustomUser.objects.create_user(
+            username='newuser',
+            email='newuser@example.com',
+            password='StrongPass123!',
+            phone_number='+2250102030405',
+        )
+
+        self.valid_payload_username = {
+            'username': 'newuser',
+            'password': 'StrongPass123!',
+        }
+
+        self.valid_payload_email = {
+            'email': 'newuser@example.com',
+            'password': 'StrongPass123!',
+        }
+
+    # --- Méthode POST : succès par username ---
+
+    def test_post_with_valid_username_returns_200(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_with_valid_username_returns_user_data(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertIn('user', response.data)
+        self.assertEqual(response.data['user']['username'], 'newuser')
+
+    def test_post_with_valid_username_returns_success_message(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertIn('message', response.data)
+        self.assertIn('Connexion', response.data['message'])
+
+    # --- Méthode POST : succès par email ---
+
+    def test_post_with_valid_email_returns_200(self):
+        response = self.client.post(self.url, self.valid_payload_email, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_with_valid_email_returns_user_data(self):
+        response = self.client.post(self.url, self.valid_payload_email, format='json')
+        self.assertIn('user', response.data)
+        self.assertEqual(response.data['user']['email'], 'newuser@example.com')
+
+    # --- Cookies HttpOnly ---
+
+    def test_post_sets_access_token_cookie(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertIn('access_token', response.cookies)
+
+    def test_post_sets_refresh_token_cookie(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertIn('refresh_token', response.cookies)
+
+    def test_access_token_cookie_is_httponly(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertTrue(response.cookies['access_token']['httponly'])
+
+    def test_refresh_token_cookie_is_httponly(self):
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertTrue(response.cookies['refresh_token']['httponly'])
+
+    # --- Identifiants invalides ---
+
+    def test_post_with_wrong_password_returns_401(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'password': 'MauvaisMotDePasse!',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_with_unknown_username_returns_401(self):
+        response = self.client.post(self.url, {
+            'username': 'fantome',
+            'password': 'StrongPass123!',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_with_unknown_email_returns_401(self):
+        response = self.client.post(self.url, {
+            'email': 'inconnu@example.com',
+            'password': 'StrongPass123!',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_with_wrong_password_returns_error_key(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'password': 'MauvaisMotDePasse!',
+        }, format='json')
+        self.assertIn('error', response.data)
+
+    # --- Champs manquants ---
+
+    def test_post_without_password_returns_400(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_post_without_username_and_email_returns_400(self):
+        response = self.client.post(self.url, {
+            'password': 'StrongPass123!',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_post_with_empty_payload_returns_400(self):
+        response = self.client.post(self.url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_post_without_password_returns_error_key(self):
+        response = self.client.post(self.url, {'username': 'newuser'}, format='json')
+        self.assertIn('error', response.data)
+
+    # --- Compte désactivé ---
+
+    def test_post_with_inactive_user_returns_401(self):
+        self.user.is_active = False
+        self.user.save()
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_with_inactive_user_returns_error_key(self):
+        self.user.is_active = False
+        self.user.save()
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertIn('error', response.data)
+
+    # --- Méthodes non autorisées ---
+
+    def test_get_method_not_allowed(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_put_method_not_allowed(self):
+        response = self.client.put(self.url, self.valid_payload_username, format='json')
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_method_not_allowed(self):
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    # --- Permissions ---
+
+    def test_endpoint_accessible_without_authentication(self):
+        """AllowAny : aucun token ne doit être requis."""
+        response = self.client.post(self.url, self.valid_payload_username, format='json')
+        self.assertNotEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)

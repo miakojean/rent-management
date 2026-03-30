@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
+    <div class="app-container grid grid-cols-1 lg:grid-cols-2 h-screen over">
         <div class="left-side flex flex-col items-center justify-between p-4">
             <h3>Calim</h3>
             <loginForm/>
