@@ -92,7 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
 
         try {
-            const response = await api.get('/rent-management/auth/profile'); 
+            const response = await api.get('/account/profile/'); 
             user.value = response.data.user;
             cachedUser.value = response.data.user;
             console.log("Utilisateur mis en cache")

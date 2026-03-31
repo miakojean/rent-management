@@ -1,17 +1,17 @@
 <template>
   <div class="profile-wrapper" ref="wrapperRef">
     <button class="profile-button" @click="toggleDropdown" :class="{ active: isOpen }">
-      PR
+      {{ userInitials }}
     </button>
 
     <Transition name="dropdown">
       <div v-if="isOpen" class="dropdown">
         <!-- Header utilisateur -->
         <div class="dropdown-header">
-          <div class="avatar">PR</div>
+          <div class="avatar">{{ userInitials }}</div>
           <div class="user-info">
-            <span class="user-name">{{ ()=>{getFirstTwoInitials(authStore.user?.username)} }}</span>
-            <span class="user-role">{{ authStore.user.title_category }}</span>
+            <span class="user-name">{{ authStore.user?.username }}</span>
+            <span class="user-role">{{ authStore.user?.title_category }}</span>
           </div>
         </div>
 
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useAuthStore } from '#imports'
 import { useRouter } from '#imports'
 
@@ -60,14 +60,29 @@ const wrapperRef = ref(null)
 const authStore = useAuthStore()
 const router = useRouter()
 
-const getFirstTwoInitials = (name:string)=>{
-  if(!name) return '';
-  return name
-    .trim()
-    .split(/\s+/)
-    .map(word => word[0].toUpperCase())
-    .slice(0, 2)
-    .join('');
+const userInitials = computed(() => {
+  const user = authStore.user
+  if (!user) return '?' // Fallback si non connecté
+  
+  // On priorise le nom complet s'il existe, sinon on prend le username
+  const nameToProcess = (user.first_name && user.last_name) 
+    ? `${user.first_name} ${user.last_name}` 
+    : user.username
+
+  return getFirstTwoInitials(nameToProcess)
+})
+
+const getFirstTwoInitials = (name: string) => {
+  if (!name) return ''
+  const parts = name.trim().split(/\s+/)
+  
+  if (parts.length >= 2) {
+    // Cas "John Doe" -> "JD"
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  } else {
+    // Cas "John" -> "JO" (deux premières lettres)
+    return name.slice(0, 2).toUpperCase()
+  }
 }
 
 const toggleDropdown = () => { isOpen.value = !isOpen.value }

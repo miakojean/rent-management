@@ -71,7 +71,7 @@
     </div>
 
     <div class="error--message">
-      <p class="error">{{ propertyStore.error }}</p>
+      <p class="error" v-if="propertyStore.error">{{ propertyStore.error }}</p>
     </div>
 
     <div class="mt-4">

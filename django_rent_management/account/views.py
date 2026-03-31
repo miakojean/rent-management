@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import CustomUserCreateSerializer
+from .serializers import (CustomUserCreateSerializer, CustomerUserSerializer)
 from .models import CustomUser
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -98,6 +98,8 @@ class LoginView(APIView):
                    'user':user.id,
                     'username': user.username,
                     'email':user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name
                 },
                 'message':'Connexion Réussie.'
             }, status=status.HTTP_200_OK
@@ -160,3 +162,16 @@ class UserLogoutView(APIView):
                 {'error': 'Une erreur est survenue lors de la déconnexion'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+class UserProfileView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        serializer = CustomerUserSerializer(request.user)
+
+        return Response(
+            {'user': serializer.data},
+            status=status.HTTP_200_OK
+        )
