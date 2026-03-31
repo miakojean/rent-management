@@ -10,8 +10,8 @@
         <div class="dropdown-header">
           <div class="avatar">PR</div>
           <div class="user-info">
-            <span class="user-name">Pierre Robins</span>
-            <span class="user-role">Propriétaire</span>
+            <span class="user-name">{{ ()=>{getFirstTwoInitials(authStore.user?.username)} }}</span>
+            <span class="user-role">{{ authStore.user.title_category }}</span>
           </div>
         </div>
 
@@ -50,7 +50,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '#imports'
 import { useRouter } from '#imports'
@@ -59,6 +59,16 @@ const isOpen = ref(false)
 const wrapperRef = ref(null)
 const authStore = useAuthStore()
 const router = useRouter()
+
+const getFirstTwoInitials = (name:string)=>{
+  if(!name) return '';
+  return name
+    .trim()
+    .split(/\s+/)
+    .map(word => word[0].toUpperCase())
+    .slice(0, 2)
+    .join('');
+}
 
 const toggleDropdown = () => { isOpen.value = !isOpen.value }
 const closeDropdown  = () => { isOpen.value = false }

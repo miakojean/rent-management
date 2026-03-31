@@ -1,7 +1,7 @@
 <template>
     <form 
         @submit.prevent="submitForm"
-        class="login-form" 
+        class="login-form"  
     >   
 
         <h3>

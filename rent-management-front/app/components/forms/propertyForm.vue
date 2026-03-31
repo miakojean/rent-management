@@ -1,5 +1,12 @@
 <template>
-  <form @submit.prevent="submitform" class="flex flex-col gap-6 p-4">
+  <form 
+    @submit.prevent="submitform" 
+    class="flex flex-col gap-6 p-4 md:"
+  >
+    
+    <h3>
+      Ajouter une nouvelle propriété
+    </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <BaseInput 

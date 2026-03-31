@@ -1,7 +1,10 @@
 <template>
     <div class="app-container grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
         <div class="left-side flex flex-col items-center justify-between p-4">
-            <h3>Calim</h3>
+            <div class=" w-full flex justifiy-between">
+                <h3>Calim</h3>
+                <profileButton/>
+            </div>
             <propertyForm/>
             <p>Calim provided by Caladrius | conditions d'utilisations appliquées</p>
         </div>
@@ -27,10 +30,12 @@
 <script>
 import { ref } from 'vue';
 import propertyForm from '~/components/forms/propertyForm.vue';
+import profileButton from '~/components/buttons/profileButton.vue';
 export default {
 
     components:{
-        propertyForm
+        propertyForm,
+        profileButton
     }
 
 }

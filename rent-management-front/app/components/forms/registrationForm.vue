@@ -435,7 +435,6 @@ function selectType(selectedType: string) {
 <style scoped>
 .registration__form {
     width: 100%;
-    max-width: 600px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -520,5 +519,23 @@ function selectType(selectedType: string) {
 span {
     font-weight: 600;
     color: var(--primary-color);
+}
+
+@media (min-width:768px){
+    .registration__form{
+        max-width: 500px;
+    }
+}
+
+@media (min-width:1024px){
+    .registration__form{
+        max-width: 500px;
+    }
+}
+
+@media (min-width:1480px){
+    .registration__form{
+        max-width: 600px;
+    }
 }
 </style>

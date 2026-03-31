@@ -58,6 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await api.post('/account/login/', credentials);
             user.value = response.data.user;
             cachedUser.value = response.data.user;
+            console.log('userCached', user.value)
             return response.data;
         } catch (err: any) {
 
@@ -77,20 +78,6 @@ export const useAuthStore = defineStore('auth', () => {
             isLoading.value = false;
         }
     }
-
-    async function logout() {
-        try {
-            await api.post('/account/logout/');
-        } catch (err) {
-            console.error('Erreur logout:', err);
-        } finally {
-            user.value = null;
-            cachedUser.value = null;
-            isInitialized.value = false; // ← reset au logout
-        }
-    }
-
-    // Let's debug this function
 
     async function initializeAuth() {
 
@@ -116,6 +103,18 @@ export const useAuthStore = defineStore('auth', () => {
         } finally {
             isLoading.value = false;
             isInitialized.value = true; // ← marqué comme fait, succès ou échec
+        }
+    }
+
+    async function logout() {
+        try {
+            await api.post('/account/logout/');
+        } catch (err) {
+            console.error('Erreur logout:', err);
+        } finally {
+            user.value = null;
+            cachedUser.value = null;
+            isInitialized.value = false; // ← reset au logout
         }
     }
 

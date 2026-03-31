@@ -1,7 +1,7 @@
 <template>
   <div class="header__content">
     <div class="header__title">
-      <BaseReseachBox/>
+      <BaseReseachBox :model-value="inputResearch"/>
     </div>
     <div class="tools__framer flex gap-4 p-4">
       <moreButton btn_label="Nouveau"/>
@@ -11,7 +11,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { ref } from 'vue';
 import moreButton from '../buttons/moreButton.vue';
 import profileButton from '../buttons/profileButton.vue';
 import roundedButton from '../buttons/roundedButton.vue';
@@ -28,6 +29,14 @@ export default {
     title: {
       type: String,
       default: 'Mon tableau de bord'
+    }
+  },
+
+  setup(){
+    const inputResearch = ref('');
+
+    return{
+      inputResearch
     }
   }
 }
