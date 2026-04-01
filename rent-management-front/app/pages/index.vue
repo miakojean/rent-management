@@ -16,17 +16,11 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import headerContent from '../components/headers/headerContent.vue';
 import sidebar from '../components/navigation/sidebar.vue';
 import indexSection from '../components/sections/indexSection.vue';
-export default {
-    components:{
-        sidebar,
-        headerContent,
-        indexSection
-    }
-}
+
 
 </script>
 
