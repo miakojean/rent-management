@@ -31,3 +31,6 @@ The first model is `Account` and it's defined by the differents fields:
 ```
 Let's work to the next models; that consist in add the property.
 
+### Resolution dans les crud
+
+When we do a model, we have to specify all fields about that model. But for the Create we just provide some fields which can permits to create.

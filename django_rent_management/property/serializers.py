@@ -1,11 +1,20 @@
 from rest_framework import serializers
+from account.models import CustomUser
 from .models import Property
 
-class CreatePropertySerializer(serializers.ModelSerializer):
+class PropertySerializer(serializers.ModelSerializer):
+
+    # Relations
+    user = serializers.PrimaryKeyRelatedField(
+        queryset = CustomUser.objects.all(),
+        required = False,
+        allow_null = True
+    )
 
     class Meta:
         model = Property
         fields = [
+            'id',
             'title',
             'user',
             'description',
@@ -23,3 +32,4 @@ class CreatePropertySerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         ]
+        read_only_fields = ['id', 'created_at', 'updated_at']

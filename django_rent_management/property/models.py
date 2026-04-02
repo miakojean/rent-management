@@ -40,10 +40,10 @@ class Property(models.Model):
     # Localisation
     country = models.CharField(max_length=100, default="Côte d'Ivoire")
     city = models.CharField(max_length=100)
-    address = models.CharField(max_length=255) # Corrigé : CharField au lieu de ForeignKey
+    address = models.CharField(max_length=255) 
     
     # Détails financiers et techniques
-    price_per_month = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Loyer mensuel")
+    price_per_month = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Loyer mensuel", default=0.00)
     security_deposit = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Caution", default=0.00)
     
     bedrooms = models.PositiveIntegerField(default=1, verbose_name="Nombre de chambres")
