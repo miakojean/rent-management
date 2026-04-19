@@ -7,7 +7,7 @@
         </header>
 
         <main class="main-area">
-            <indexSection/>
+            <mainSectionDashboard/>
         </main>
 
         <footer class="footer-area">
@@ -20,11 +20,13 @@
 import headerContent from '../../components/headers/headerContent.vue';
 import sidebar from '../../components/navigation/sidebar.vue';
 import indexSection from '../../components/sections/indexSection.vue';
+import mainSectionDashboard from '../../components/sections/mainSectionDashboard.vue';
 export default {
     components:{
         sidebar,
         headerContent,
-        indexSection
+        indexSection,
+        mainSectionDashboard
     }
 }
 
@@ -62,7 +64,7 @@ export default {
 
 .main-area {
     grid-area: main;
-    background-color: #fff;
+    background-color: #f3f3f3;
     padding: 1rem;
     margin: 8px;
     border-radius: 12px;

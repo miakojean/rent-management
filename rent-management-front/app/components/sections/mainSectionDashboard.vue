@@ -3,13 +3,13 @@
         <!-- Content for the index section goes here -->
         <div class="first__content flex flex-col gap-8">
             <div class="title__section">
-                <h2>Résumé de mes comptes</h2>
+                <h2>{{ title }}</h2>
             </div>
             <div class="cards__section">
                 <revenueCard v-for="card in cardsData" 
                     :key="card.title" 
                     :label="card.title" 
-                    :_figures="card.amount"
+                    :amount="card.amount"
                 />
             </div>
             <div class="last__operations flex flex-col gap-8">
@@ -24,24 +24,42 @@
 </template>
 
 <script lang="ts">
+import { onMounted } from '#imports';
 import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
+import { usePropertyStore } from '#imports';
+import type { Property } from '#imports';
 export default {
-    name: "IndexSection",
+    name: "MainSectionProperty",
+    props: {
+        title: {
+            type: String,
+            required: false,
+            default: "Résumé de mes comptes"
+        }
+    },
     components: {
         revenueCard,
         operationsList
     },
     setup(){
 
+        const propertyStore = usePropertyStore();
+
+        // Logic for the main section can be added here
         const cardsData = [
-            { title: "Nombre de locataires", amount: 25 },
+            { title: "Revenu total", amount: "5000€" },
             { title: "Dépenses totales", amount: "2000€" },
             { title: "Bénéfice net", amount: "3000€" }
         ]
 
+        onMounted(() => {
+            propertyStore.fetchProperties();
+        })
+
         return {
-            cardsData
+            cardsData,
+            propertyStore
         }
     }
 }
@@ -54,6 +72,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: normal;
+    
 }
 
 .first__content h2{
@@ -66,5 +85,8 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
+    background: var(--card-background);
+    padding: 1rem;
+    border-radius: 0.5rem;
 }
 </style>

@@ -25,8 +25,9 @@ const usePropertyStore = defineStore("property", ()=> {
         loading.value = true;
         error.value = null;
         try {
-            const response = await api.get('/rent-management/properties');
+            const response = await api.get('/property/');
             properties.value = response.data;
+            console.log("Propriétés récupérées", properties.value)
         } catch (err) {
             error.value = 'Failed to fetch properties';
             console.error(err);

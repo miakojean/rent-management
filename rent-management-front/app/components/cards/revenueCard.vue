@@ -16,7 +16,7 @@
         
         <div class="figures w-full flex flex-col gap-4">
             <div class="flex justify-between items-center w-full gap-4">
-                <h2 class="text-4xl font-bold">24</h2>
+                <h2 class="text-4xl font-bold">{{ _figures }}</h2>
                 <p class="text-2xl">100%</p>
             </div>
             <div class="progress-container">
@@ -40,6 +40,10 @@ export default {
         label: {
             type: String,
             default: 'Revenue Card'
+        },
+        _figures:{
+            type: [String, Number],
+            default: '0€'
         }
     },
     components: {
