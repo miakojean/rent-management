@@ -1,5 +1,9 @@
 <template>
-  <form 
+  <succesForm 
+    v-if="isSuccess" 
+    message="Votre propriété a été ajoutée avec succès !" 
+  />
+  <form v-else
     @submit.prevent="submitform" 
     class="flex flex-col gap-6 p-4 md:"
   >
@@ -70,8 +74,8 @@
       />
     </div>
 
-    <div class="error--message">
-      <p class="error" v-if="propertyStore.error">{{ propertyStore.error }}</p>
+    <div class="error--message" v-if="propertyStore.error" >
+      <p class="error">{{ propertyStore.error }}</p>
     </div>
 
     <div class="mt-4">
@@ -92,6 +96,9 @@ import BaseInput from '../input/BaseInput.vue';
 import BaseSelect from '../input/BaseSelect.vue';
 import BaseTextArea from '../input/BaseTextArea.vue';
 import mainButton from '../buttons/mainButton.vue';
+import succesForm from './succesForm.vue';
+
+const isSuccess = ref(false);
 
 // ─── Pays ────────────────────────────────────────────────────────────────────
 
@@ -153,8 +160,12 @@ const router = useRouter();
 const propertyTypes = [
   { code: 'villa',        name: 'Villa' },
   { code: 'cour commune', name: 'Cour commune' },
-  { code: 'immeuble',     name: 'Immeuble' },
+  { code: 'APARTMENT',  name: 'Appartement' },
+  {code: 'STUDIO',     name: 'Studio' },
+  { code: 'OFFICE',      name: 'Bureau' },
+  { code: 'COMMERCIAL',  name: 'Local Commercial' },
   { code: 'autre',        name: 'Autre' },
+  {code: 'BUILDING', name: 'Immeuble'},
 ]
 
 // ─── Formulaire ───────────────────────────────────────────────────────────────
@@ -220,30 +231,20 @@ const submitform = async () => {
   if (!validate()) return
 
   try {
-    const store = await propertyStore.addProperty({ ...newProperty.value })
+    const success = await propertyStore.addProperty({ ...newProperty.value })
     
-    if(store) {
-
+    if(success) {
+      // 1. On active l'écran de succès
+      isSuccess.value = true;
+      
+      // 2. Optionnel : On réinitialise le formulaire
       newProperty.value = {
-        title:"",
-        description:"",
-        address:"",
-        type:"",
-        city:"",
-        country:""
+        title: "", description: "", address: "",
+        type: "", city: "", country: ""
       };
-
-      router.push("/")
-
-    } else {
-      console.log(propertyStore.error);
-      return;
     }
-    
-    // resetForm() si nécessaire
   } catch (err) {
     console.error("Erreur lors de l'enregistrement", err)
   }
 }
-
 </script>

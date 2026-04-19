@@ -10,6 +10,7 @@ class Property(models.Model):
         ('STUDIO', 'Studio'),
         ('OFFICE', 'Bureau'),
         ('COMMERCIAL', 'Local Commercial'),
+        ('BUILDING', 'Immeuble'),
     ]
 
     # Statuts de disponibilité

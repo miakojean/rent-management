@@ -43,7 +43,7 @@ const usePropertyStore = defineStore("property", ()=> {
         loading.value = true;
 
         try {
-            const response = await api.post('/rent-management/properties', property);
+            const response = await api.post('/property/', property);
             
             if(response) {
                 properties.value.push(response.data);

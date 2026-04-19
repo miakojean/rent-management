@@ -38,7 +38,7 @@ class PropertyView(APIView):
             context={'request': request}
         )
 
-        try:
+        try: 
             if serializer.is_valid():
                 serializer.save(user=request.user) 
 
