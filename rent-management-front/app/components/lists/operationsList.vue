@@ -4,32 +4,51 @@
         <table>
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Montant</th>
-                    <th>Type</th>
+                    <th><BaseCheckbox /></th>
+                    <th v-for="head in tableHeader" :key="head">{{ head }}</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Sample data rows -->
                 <tr>
+                    <td><BaseCheckbox /></td>
                     <td>2024-06-01</td>
                     <td>Loyer Juin</td>
                     <td>1200€</td>
                     <td>Revenu</td>
+                    <td><optionButton /></td>
                 </tr>
                 <tr>
+                    <td><BaseCheckbox /></td>
                     <td>2024-06-05</td>
                     <td>Réparation plomberie</td>
                     <td>-150€</td>
                     <td>Dépense</td>
+                    <td><optionButton /></td>
                 </tr>
             </tbody>
         </table>
     </div>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+import BaseCheckbox from '../input/BaseCheckbox.vue';
+import optionButton from '../buttons/optionButton.vue';
+export default {
+    name: 'OperationsList',
+    props:{
+        tableHeader: {
+            type: Array,
+            default: () => ['Date', 'Description', 'Montant', 'Type']
+        },
+    },
+    components:{
+        BaseCheckbox,
+        optionButton
+    }
+}
+</script>
 
 <style scoped>
 .operations__list{

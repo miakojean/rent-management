@@ -2,7 +2,7 @@
     <div class="app-container grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden">
         <div class="left-side flex flex-col items-center justify-between p-4">
             <div class=" w-full flex justifiy-between">
-                <h3>Calim</h3>
+                <h3 @click="() => router.push('/dashboard')">Calim</h3>
                 <profileButton/>
             </div>
             <propertyForm/>
@@ -27,8 +27,9 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from 'vue';
+import { useRouter } from '#app';
 import propertyForm from '~/components/forms/propertyForm.vue';
 import profileButton from '~/components/buttons/profileButton.vue';
 export default {
@@ -36,7 +37,15 @@ export default {
     components:{
         propertyForm,
         profileButton
-    }
+    },
+
+    setup(props, ctx) {
+        const router = useRouter();
+
+        return {
+            router
+        }
+    },
 
 }
 </script>
@@ -52,6 +61,7 @@ export default {
     font-weight: 600;
     width: 100%;
     text-align: start;
+    cursor: pointer;
 }
 
 .right-side{
