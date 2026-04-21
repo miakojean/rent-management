@@ -17,7 +17,9 @@
                 <div class="title__section">
                     <h2>Une idée sur vos chiffres</h2>
                 </div>
-                <operationsList/>
+                <operationsList 
+                    :tableBody="propertyStore.properties"
+                />
             </div>
         </div>
     </section>

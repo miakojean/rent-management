@@ -21,7 +21,7 @@ const usePropertyStore = defineStore("property", ()=> {
     // Guetters
 
     // Actions
-    const fecthProperties = async () => {
+    const fetchProperties = async () => {
         loading.value = true;
         error.value = null;
         try {
@@ -71,7 +71,7 @@ const usePropertyStore = defineStore("property", ()=> {
         //
         
         //
-        fecthProperties,
+        fetchProperties,
         addProperty,
     }
 })

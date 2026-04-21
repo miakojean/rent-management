@@ -5,7 +5,7 @@
             <thead>
                 <tr>
                     <th><BaseCheckbox /></th>
-                    <th v-for="head in tableHeader" :key="head">{{ head }}</th>
+                    <th v-for="(head, index) in tableHeader" :key="index">{{ head }}</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -13,18 +13,7 @@
                 <!-- Sample data rows -->
                 <tr>
                     <td><BaseCheckbox /></td>
-                    <td>2024-06-01</td>
-                    <td>Loyer Juin</td>
-                    <td>1200€</td>
-                    <td>Revenu</td>
-                    <td><optionButton /></td>
-                </tr>
-                <tr>
-                    <td><BaseCheckbox /></td>
-                    <td>2024-06-05</td>
-                    <td>Réparation plomberie</td>
-                    <td>-150€</td>
-                    <td>Dépense</td>
+                    <td v-for="(cell, index) in tableBody" :key="index">{{ cell }}</td>
                     <td><optionButton /></td>
                 </tr>
             </tbody>
@@ -42,6 +31,10 @@ export default {
             type: Array,
             default: () => ['Date', 'Description', 'Montant', 'Type']
         },
+        tableBody: {
+            type:Array,
+            default: () => ['2024-06-01', 'Loyer Juin', '1200€', 'Revenu']
+        }
     },
     components:{
         BaseCheckbox,
