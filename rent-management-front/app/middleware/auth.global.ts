@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
     const authStore = useAuthStore()
-    const publicRoutes = ['/auth/login', '/auth/registration', '/dashboard/property']
+    const publicRoutes = ['/auth/login', '/auth/registration']
 
     // 1. On attend l'initialisation complète (Cookie + Vérification API)
     // On utilise "await" pour que le middleware ne rende pas la page 

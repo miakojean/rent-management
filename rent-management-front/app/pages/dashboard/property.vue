@@ -7,7 +7,7 @@
         </header>
 
         <main class="main-area">
-            <mainSectionDashboard/>
+            <mainSectionDashboard title="Mes propriétés"/> 
         </main>
 
         <footer class="footer-area">

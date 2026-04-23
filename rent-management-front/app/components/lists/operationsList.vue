@@ -11,9 +11,14 @@
             </thead>
             <tbody>
                 <!-- Sample data rows -->
-                <tr>
+                <tr v-for="(cell, index) in tableBody" :key="index" >
                     <td><BaseCheckbox /></td>
-                    <td v-for="(cell, index) in tableBody" :key="index">{{ cell }}</td>
+                    <td >{{ cell.created_at }}</td>
+                    <td >{{ cell.title }}</td>
+                    <td >{{ cell.description }}</td>
+                    <td >{{ cell.city }}</td>
+                    <td >{{ cell.country }}</td>
+                    <td >{{ cell.type }}</td>
                     <td><optionButton /></td>
                 </tr>
             </tbody>
@@ -24,22 +29,33 @@
 <script lang="ts">
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import optionButton from '../buttons/optionButton.vue';
+import type { PropType } from 'vue';
+
+interface OperationRow {
+  created_at: string;
+  title: string;
+  description: string;
+  city: string;
+  country: string;
+  type: string;
+}
+
 export default {
-    name: 'OperationsList',
-    props:{
-        tableHeader: {
-            type: Array,
-            default: () => ['Date', 'Description', 'Montant', 'Type']
-        },
-        tableBody: {
-            type:Array,
-            default: () => ['2024-06-01', 'Loyer Juin', '1200€', 'Revenu']
-        }
+  name: 'OperationsList',
+  props: {
+    tableHeader: {
+      type: Array as PropType<string[]>,
+      default: () => ['Date d\'ajout', 'title', 'Description', 'Ville', 'Pays', 'Type']
     },
-    components:{
-        BaseCheckbox,
-        optionButton
+    tableBody: {
+      type: Array as PropType<OperationRow[]>,
+      default: () => []
     }
+  },
+  components: {
+    BaseCheckbox,
+    optionButton
+  }
 }
 </script>
 
