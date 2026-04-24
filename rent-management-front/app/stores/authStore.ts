@@ -4,7 +4,7 @@ import { ref, computed } from "vue";
 
 // authStore.ts
 export interface User {
-    id?: number,
+    id?: string,
     first_name: string,
     last_name: string,
     email: string,
@@ -82,7 +82,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function initializeAuth() {
 
         console.log("Fonction enclenchée")
-
+ 
         if (isInitialized.value) return; // ← bloque les appels répétés
 
         isLoading.value = true;
@@ -93,13 +93,13 @@ export const useAuthStore = defineStore('auth', () => {
 
         try {
             const response = await api.get('/account/profile/'); 
-            user.value = response.data.user;
-            cachedUser.value = response.data.user;
-            console.log("Utilisateur mis en cache")
+            user.value = response.data.user; // Ajoute .user ici
+            cachedUser.value = response.data.user; // Et ici aussi
+            console.log("Reponse du backend", user.value)
         } catch {
             user.value = null;
             cachedUser.value = null;
-            console.log("Erreur sur la mise en cache")
+            console.log("Erreur sur la mise en cache", cachedUser.value)
         } finally {
             isLoading.value = false;
             isInitialized.value = true; // ← marqué comme fait, succès ou échec

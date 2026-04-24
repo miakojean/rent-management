@@ -442,7 +442,7 @@ function selectType(selectedType: string) {
 
 .registration__form h3 {
     color: var(--primary-color-dark);
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 600;
 }
 

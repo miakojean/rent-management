@@ -4,7 +4,7 @@
         class="login-form"  
     >   
 
-        <h3>
+        <h3> 
             Se connecter
         </h3>
         
@@ -137,7 +137,7 @@ export default {
 
 .login-form h3 {
     color: var(--primary-color-dark);
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 600;
 }
 
