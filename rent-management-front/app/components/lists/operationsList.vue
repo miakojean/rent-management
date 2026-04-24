@@ -19,7 +19,7 @@
                     <td >{{ cell.city }}</td>
                     <td >{{ cell.country }}</td>
                     <td >{{ cell.type }}</td>
-                    <td><optionButton /></td>
+                    <td><optionButton @click="getTheSpecItem(cell)"/></td>
                 </tr>
             </tbody>
         </table>
@@ -41,21 +41,34 @@ interface OperationRow {
 }
 
 export default {
-  name: 'OperationsList',
-  props: {
-    tableHeader: {
-      type: Array as PropType<string[]>,
-      default: () => ['Date d\'ajout', 'title', 'Description', 'Ville', 'Pays', 'Type']
+    name: 'OperationsList',
+    props: {
+        tableHeader: {
+            type: Array as PropType<string[]>,
+            default: () => ['Date d\'ajout', 'title', 'Description', 'Ville', 'Pays', 'Type']
+        },
+        tableBody: {
+            type: Array as PropType<OperationRow[]>,
+            default: () => []
+        }
     },
-    tableBody: {
-      type: Array as PropType<OperationRow[]>,
-      default: () => []
+    components: {
+        BaseCheckbox,
+        optionButton
+    },
+    emits:['getSpecItem'],
+    setup(props, {emit}){
+
+        // Crud
+        function getTheSpecItem(item:object){
+            emit('getSpecItem'),
+            console.log('Evènement émis sur', item )
+        }
+
+        return{
+            getTheSpecItem
+        }
     }
-  },
-  components: {
-    BaseCheckbox,
-    optionButton
-  }
 }
 </script>
 

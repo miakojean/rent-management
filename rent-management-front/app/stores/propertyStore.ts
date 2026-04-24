@@ -14,6 +14,15 @@ export interface Property {
 
 const usePropertyStore = defineStore("property", ()=> {
     // State
+    const property = ref<Property>({
+        id:'',
+        title:'',
+        description:'',
+        type:'',
+        address:'',
+        city:'',
+        country:''
+    })
     const properties = ref<Property[]>([]);
     const loading = ref(false);
     const error = ref<string | null>(null);
@@ -35,6 +44,29 @@ const usePropertyStore = defineStore("property", ()=> {
             loading.value = false;
         }
         
+    }
+
+    const fetchSpecificProperty = async (propId:string) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const response = await api.get(`/property/${propId}`);
+            if(response){
+                loading.value = false;
+                property.value = response.data;
+                console.log('Votre propriété', property.value)
+                return response
+            } else {
+                error.value = "Une erreur est surevenue lors de la récupération"
+                loading.value = false
+                return error
+            }
+        } catch (err) {
+            error.value = 'Failed to add property';
+            console.error(err);
+            loading.value = false;
+            return;
+        }
     }
 
     const addProperty = async (property: Property) => {

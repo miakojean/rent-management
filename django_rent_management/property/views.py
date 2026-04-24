@@ -4,6 +4,7 @@ from rest_framework import status, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Property
 from .serializers import PropertySerializer
+from django.core.exceptions import ObjectDoesNotExist
 
 class PropertyView(APIView):
 
@@ -70,6 +71,29 @@ class PropertyView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+class SpecificPropertyView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, property_id):
+        try:
+            spec_property = Property.objects.get(user=request.user, id=property_id)
+        except ObjectDoesNotExist:
+            return Response(
+                {'message': 'Propriété non trouvée', 'status': 'error'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = PropertySerializer(spec_property)
+        return Response(
+            {
+                'message': 'Propriété récupérée avec succès',
+                'status': 'success',
+                'property': serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
+            
+
+            
 
             

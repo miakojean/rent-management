@@ -19,6 +19,7 @@
                 </div>
                 <operationsList 
                     :tableBody="propertyStore.properties"
+                    @get-spec-item=""
                 />
             </div>
         </div>
