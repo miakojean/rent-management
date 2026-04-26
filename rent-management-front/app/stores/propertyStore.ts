@@ -104,6 +104,7 @@ const usePropertyStore = defineStore("property", ()=> {
         
         //
         fetchProperties,
+        fetchSpecificProperty,
         addProperty,
     }
 })

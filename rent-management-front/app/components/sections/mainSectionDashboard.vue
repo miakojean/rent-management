@@ -17,7 +17,13 @@
                 <div class="title__section">
                     <h2>Une idée sur vos chiffres</h2>
                 </div>
+
+                <div class="w-full flex justify-center items-center" v-if="propertyStore.loading">
+                    <span class="loading loading-spinner loading-xl"></span>
+                </div>
+
                 <operationsList 
+                    v-if="!propertyStore.loading"
                     :tableBody="propertyStore.properties"
                 />
             </div>

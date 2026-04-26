@@ -1,6 +1,5 @@
 <template>
     <div class="operations__list">
-        <!-- Placeholder for operations list content -->
         <table>
             <thead>
                 <tr>
@@ -10,26 +9,36 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Sample data rows -->
-                <tr v-for="(cell, index) in tableBody" :key="index" >
-                    <td><BaseCheckbox /></td>
-                    <td >{{ cell.created_at }}</td>
-                    <td >{{ cell.title }}</td>
-                    <td >{{ cell.description }}</td>
-                    <td >{{ cell.city }}</td>
-                    <td >{{ cell.country }}</td>
-                    <td >{{ cell.type }}</td>
-                    <td><optionButton @click="getTheSpecItem(cell)"/></td>
+                <tr v-for="(cell, index) in tableBody" :key="index">
+                    <td><BaseCheckbox @click="getTheSpecItem(cell)"/></td>
+                    <td>{{ cell.created_at }}</td>
+                    <td>{{ cell.title }}</td>
+                    <td>{{ cell.description }}</td>
+                    <td>{{ cell.city }}</td>
+                    <td>{{ cell.country }}</td>
+                    <td>{{ cell.type }}</td>
+                    <td><optionButton /></td>
                 </tr>
             </tbody>
         </table>
+
+        <!-- Transition autour de la modale -->
+        <Transition name="modal">
+            <propModale
+                v-if="isModaleOpen"
+                :isOpen="isModaleOpen"
+                :selectedItem="selectedItem"
+                @closeModale="closeModale"
+            />
+        </Transition>
     </div>
 </template>
 
 <script lang="ts">
+import { ref, type PropType } from 'vue';  // ← ajouter ref
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import optionButton from '../buttons/optionButton.vue';
-import type { PropType } from 'vue';
+import propModale from '../modales/propModale.vue';
 
 interface OperationRow {
   created_at: string;
@@ -52,22 +61,30 @@ export default {
             default: () => []
         }
     },
-    components: {
-        BaseCheckbox,
-        optionButton
-    },
-    emits:['getSpecItem'],
-    setup(props, {emit}){
+    components: { BaseCheckbox, optionButton, propModale },
+    emits: ['getSpecItem'],
+    setup(props, { emit }) {
+        const isModaleOpen = ref(false);
+        const selectedItem = ref<OperationRow | null>(null);
 
-        // Crud
-        function getTheSpecItem(item:object){
-            emit('getSpecItem'),
-            console.log('Evènement émis sur', item )
+        function getTheSpecItem(item: OperationRow) {
+            selectedItem.value = item;       // stocke l'élément cliqué
+            isModaleOpen.value = true;       // ouvre la modale
+            emit('getSpecItem', item);
+            console.log('Évènement émis avec', item);
         }
 
-        return{
-            getTheSpecItem
+        function closeModale() {
+            isModaleOpen.value = false;
+            selectedItem.value = null;        // nettoie au cas où
         }
+
+        return {
+            isModaleOpen,
+            selectedItem,
+            getTheSpecItem,
+            closeModale
+        };
     }
 }
 </script>
