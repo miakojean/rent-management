@@ -72,6 +72,7 @@ class PropertyView(APIView):
             )
 
 class SpecificPropertyView(APIView):
+    
     permission_classes = [IsAuthenticated]
 
     def get(self, request, property_id):
@@ -92,8 +93,46 @@ class SpecificPropertyView(APIView):
             },
             status=status.HTTP_200_OK
         )
-            
+    
+    def put(self, request, property_id):
 
-            
+        try:
+            spec_property = Property.objects.get(id=property_id)
+        except ObjectDoesNotExist:
+            return Response(
+                {'message': 'Propriété non trouvée ou vous n\'avez pas le droit sur cette propriété'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        serializer = PropertySerializer(spec_property, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'message':'Propriété mise à jour avec succès',
+                    'statut':'succèes',
+                    'property':serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, property_id):
 
-            
+        try:
+            spec_property = Property.objects.get(user=request.user, id=property_id)
+            spec_property.delete()
+            return Response(
+                {
+                    "message": "Propriété supprimé avec succès",
+                    "status": "succes"
+                }, status=status.HTTP_200_OK
+            )
+
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "error":"Propriété non trouvé ou inexistante",
+                    "status":"error"
+                }, status=status.HTTP_400_BAD_REQUEST
+            ) # A attaquer demain au taffes

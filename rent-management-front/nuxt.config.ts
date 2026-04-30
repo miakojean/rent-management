@@ -10,7 +10,15 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       tailwindcss(),
-    ]
+    ],
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'i18n-iso-countries', // CJS
+        'axios',
+      ]
+    }
   },
 
   modules: ['@pinia/nuxt']
