@@ -17,7 +17,11 @@
                     <td>{{ cell.city }}</td>
                     <td>{{ cell.country }}</td>
                     <td>{{ cell.type }}</td>
-                    <td><optionButton /></td>
+                    <td>
+                        <optionButton 
+                            @delete="cell.id ? propertyStore.deleteProperty(cell.id) : undefined"
+                        />
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -39,6 +43,7 @@ import { ref, type PropType } from 'vue';  // ← ajouter ref
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import optionButton from '../buttons/optionButton.vue';
 import propModale from '../modales/propModale.vue';
+import { usePropertyStore } from '#imports';
 
 interface OperationRow {
   created_at: string;
@@ -47,6 +52,7 @@ interface OperationRow {
   city: string;
   country: string;
   type: string;
+  id?: string
 }
 
 export default {
@@ -66,6 +72,7 @@ export default {
     setup(props, { emit }) {
         const isModaleOpen = ref(false);
         const selectedItem = ref<OperationRow | null>(null);
+        const propertyStore = usePropertyStore();
 
         function getTheSpecItem(item: OperationRow) {
             selectedItem.value = item;       // stocke l'élément cliqué
@@ -82,6 +89,7 @@ export default {
         return {
             isModaleOpen,
             selectedItem,
+            propertyStore,
             getTheSpecItem,
             closeModale
         };

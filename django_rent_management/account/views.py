@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 class CreateUserView(APIView):
 
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request, *args, **kwargs):
         
@@ -43,7 +44,9 @@ class CreateUserView(APIView):
             )
 
 class LoginView(APIView):
+    
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
@@ -131,6 +134,7 @@ class LoginView(APIView):
             )
 
 class UserLogoutView(APIView):
+    
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

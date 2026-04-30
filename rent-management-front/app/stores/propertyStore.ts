@@ -99,6 +99,30 @@ const usePropertyStore = defineStore("property", ()=> {
         }
     };
 
+    const deleteProperty = async (propId:string) => {
+        // ux
+        error.value = "";
+        loading.value = true;
+
+        try {
+            const response = await api.delete(`/property/${propId}/`);
+            if(response){
+                loading.value = false;
+                return response
+            }
+            else {
+                error.value = "Une erreur est survenue lors de la suppression"
+                loading.value = false;
+                return error
+            }
+        } catch (err) {
+            error.value = 'Failed to add property';
+            console.error(err);
+            loading.value = false;
+            return;
+        }
+    }
+
     return {
         properties,
         loading,
@@ -109,6 +133,7 @@ const usePropertyStore = defineStore("property", ()=> {
         fetchProperties,
         fetchSpecificProperty,
         addProperty,
+        deleteProperty
     }
 })
 

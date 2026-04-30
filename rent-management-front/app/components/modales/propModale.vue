@@ -8,6 +8,11 @@
                 </div>
                 <!-- Affichage des détails de l'élément sélectionné -->
                 <div v-if="selectedItem" class="modal-body">
+
+                    <div class="prop-picture">
+
+                    </div>
+
                     <p><strong>Titre :</strong> {{ selectedItem.title }}</p>
                     <p><strong>Description :</strong> {{ selectedItem.description }}</p>
                     <p><strong>Ville :</strong> {{ selectedItem.city }}</p>
@@ -38,7 +43,7 @@ interface OperationRow {
 }
 
 export default {
-    name: 'PropModale',
+    name: 'PropModale', // C'est la modale de la propriété
     components: { closeButton },
     props: {
         isOpen: {
@@ -104,8 +109,25 @@ export default {
     background: #fff;
     padding: 1rem;
     border-radius: 8px;
-    min-height: 800px;
+    height: 95vh;
     width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-body{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-body .prop-picture {
+    background: #f3f3f3;
+    width: 100%;
+    height: 300px;
+    border-radius: 1rem;
 }
 
 /* dark mode non modifié */
