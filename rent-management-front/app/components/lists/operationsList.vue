@@ -38,11 +38,11 @@
 
         <Transition name="modal">
             <deleteModale
-                :is-open="isDeleteModaleOpen"
+                :isOpen="isDeleteModaleOpen"
                 :selected-item="selectedItem"
-                :is-loading="isDeleting"
+                :isLoading="propertyStore.loading"
                 @close="()=>{isDeleteModaleOpen = false}"
-                @confirm="handleDelete"
+                @confirm="propertyStore.deleteProperty(selectedItem?.id || '')"
             />
         </Transition>
     </div>
