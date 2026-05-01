@@ -35,6 +35,16 @@
                 @closeModale="closeModale"
             />
         </Transition>
+
+        <Transition name="modal">
+            <deleteModale
+                :is-open="isDeleteModaleOpen"
+                :selected-item="selectedItem"
+                :is-loading="isDeleting"
+                @close="closeDeleteModal"
+                @confirm="handleDelete"
+            />
+        </Transition>
     </div>
 </template>
 
@@ -43,6 +53,7 @@ import { ref, type PropType } from 'vue';  // ← ajouter ref
 import BaseCheckbox from '../input/BaseCheckbox.vue';
 import optionButton from '../buttons/optionButton.vue';
 import propModale from '../modales/propModale.vue';
+import deleteModale from '../modales/deleteModale.vue';
 import { usePropertyStore } from '#imports';
 
 interface OperationRow {
@@ -67,13 +78,17 @@ export default {
             default: () => []
         }
     },
-    components: { BaseCheckbox, optionButton, propModale },
+    components: { BaseCheckbox, optionButton, propModale, deleteModale },
     emits: ['getSpecItem'],
     setup(props, { emit }) {
+        
+        // component state
         const isModaleOpen = ref(false);
+        const isDeleteModaleOpen = ref(true);
         const selectedItem = ref<OperationRow | null>(null);
         const propertyStore = usePropertyStore();
-
+        
+        // component actions
         function getTheSpecItem(item: OperationRow) {
             selectedItem.value = item;       // stocke l'élément cliqué
             isModaleOpen.value = true;       // ouvre la modale
@@ -88,6 +103,7 @@ export default {
 
         return {
             isModaleOpen,
+            isDeleteModaleOpen,
             selectedItem,
             propertyStore,
             getTheSpecItem,

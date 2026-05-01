@@ -42,6 +42,12 @@
                 </ul>
             </div>
         </Transition>
+
+        <Transition name="modal">
+
+            <div class="modal-overlay"></div>
+
+        </Transition>
     </div>
 </template>
 

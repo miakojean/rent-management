@@ -3,6 +3,8 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+@import '../css/modal.css';
+
 :root{
     --primary-color: #168994;
     --primary-color-dark: #0D5C63;
@@ -13,6 +15,7 @@
     --card-background: #FFFFFF;
     --border-color: #E5E7EB;
     --error-color: red;
+    --variant-error-color: #c23535;
 }
 
 *{
