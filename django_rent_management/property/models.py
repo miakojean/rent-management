@@ -52,6 +52,9 @@ class Property(models.Model):
     bathrooms = models.PositiveIntegerField(default=1, verbose_name="Salles de bain")
     surface_area = models.DecimalField(max_digits=8, decimal_places=2, help_text="Surface en m²", blank=True, null=True)
 
+    # History
+    is_archived =models.BooleanField(default=False, help_text='La propriété est-elle archivé?')
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
