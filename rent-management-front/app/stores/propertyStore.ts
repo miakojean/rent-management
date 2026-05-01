@@ -99,6 +99,31 @@ const usePropertyStore = defineStore("property", ()=> {
         }
     };
 
+    const archiveProperty = async (propId:string, property:Property) => {
+        // Ux
+        error.value = "";
+        loading.value = true;
+
+        try {
+            const response = await api.put(`/property/${propId}`, property);
+
+            if(response){
+                loading.value = false;
+                console.log(response)
+                return response
+            } else {
+                error.value = "Une erreur est survenue lors de l'archivage"
+                loading.value = false;
+                return response
+            }
+        } catch(err){
+            error.value = 'Erreur serveur';
+            console.error(err);
+            loading.value = false;
+            return;
+        }
+    }
+
     const deleteProperty = async (propId:string) => {
         // ux
         error.value = "";

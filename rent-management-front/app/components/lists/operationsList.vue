@@ -19,7 +19,7 @@
                     <td>{{ cell.type }}</td>
                     <td>
                         <optionButton 
-                            @delete="cell.id ? propertyStore.deleteProperty(cell.id) : undefined"
+                            @delete="()=>{isDeleteModaleOpen = true}"
                         />
                     </td>
                 </tr>
@@ -41,7 +41,7 @@
                 :is-open="isDeleteModaleOpen"
                 :selected-item="selectedItem"
                 :is-loading="isDeleting"
-                @close="closeDeleteModal"
+                @close="()=>{isDeleteModaleOpen = false}"
                 @confirm="handleDelete"
             />
         </Transition>
@@ -84,7 +84,7 @@ export default {
         
         // component state
         const isModaleOpen = ref(false);
-        const isDeleteModaleOpen = ref(true);
+        const isDeleteModaleOpen = ref(false);
         const selectedItem = ref<OperationRow | null>(null);
         const propertyStore = usePropertyStore();
         
