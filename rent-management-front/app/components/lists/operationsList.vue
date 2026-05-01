@@ -19,7 +19,8 @@
                     <td>{{ cell.type }}</td>
                     <td>
                         <optionButton 
-                            @delete="()=>{isDeleteModaleOpen = true}"
+                            @get="getTheSpecItem(cell)"
+                            @delete="deleteTheSpecItme(cell)"
                         />
                     </td>
                 </tr>
@@ -36,15 +37,13 @@
             />
         </Transition>
 
-        <Transition name="modal">
-            <deleteModale
-                :isOpen="isDeleteModaleOpen"
-                :selected-item="selectedItem"
-                :isLoading="propertyStore.loading"
-                @close="()=>{isDeleteModaleOpen = false}"
-                @confirm="propertyStore.deleteProperty(selectedItem?.id || '')"
-            />
-        </Transition>
+        <deleteModale
+            :isOpen="isDeleteModaleOpen"
+            :selected-item="selectedItem"
+            :isLoading="propertyStore.loading" 
+            @close="isDeleteModaleOpen = false"
+            @confirm="confirmDeleting"
+        />
     </div>
 </template>
 
@@ -54,7 +53,7 @@ import BaseCheckbox from '../input/BaseCheckbox.vue';
 import optionButton from '../buttons/optionButton.vue';
 import propModale from '../modales/propModale.vue';
 import deleteModale from '../modales/deleteModale.vue';
-import { usePropertyStore } from '#imports';
+import { usePropertyStore } from '../../stores/propertyStore';
 
 interface OperationRow {
   created_at: string;
@@ -79,7 +78,7 @@ export default {
         }
     },
     components: { BaseCheckbox, optionButton, propModale, deleteModale },
-    emits: ['getSpecItem'],
+    emits: ['getSpecItem' , 'refreshTable'],
     setup(props, { emit }) {
         
         // component state
@@ -89,6 +88,12 @@ export default {
         const propertyStore = usePropertyStore();
         
         // component actions
+
+        function closeModale() {
+            isModaleOpen.value = false;
+            selectedItem.value = null;        // nettoie au cas où
+        }
+
         function getTheSpecItem(item: OperationRow) {
             selectedItem.value = item;       // stocke l'élément cliqué
             isModaleOpen.value = true;       // ouvre la modale
@@ -96,9 +101,27 @@ export default {
             console.log('Évènement émis avec', item);
         }
 
-        function closeModale() {
-            isModaleOpen.value = false;
-            selectedItem.value = null;        // nettoie au cas où
+        function deleteTheSpecItme(item:OperationRow){
+            selectedItem.value = item;
+            isDeleteModaleOpen.value = true
+        }
+
+        async function confirmDeleting() { 
+            if (!selectedItem.value?.id || propertyStore.loading) return;
+
+            try {
+                await propertyStore.deleteProperty(selectedItem.value.id);
+                
+                // ✅ Supprimer localement dans le store (mise à jour immédiate du tableau)
+                propertyStore.properties = propertyStore.properties.filter(
+                    (p) => p.id !== selectedItem.value?.id
+                );
+
+                isDeleteModaleOpen.value = false;
+                selectedItem.value = null; 
+            } catch (error) {
+                console.error("Erreur lors de la suppression :", error);
+            }
         }
 
         return {
@@ -106,8 +129,11 @@ export default {
             isDeleteModaleOpen,
             selectedItem,
             propertyStore,
+            // Actions
             getTheSpecItem,
-            closeModale
+            closeModale,
+            deleteTheSpecItme,
+            confirmDeleting
         };
     }
 }

@@ -52,7 +52,11 @@
           <!-- Actions -->
           <div class="modal-actions">
 
-            <deleteButton btn_label="Supprimer"/>
+            <deleteButton 
+              btn_label="Supprimer"
+              :isloading="isLoading"
+              @click="$emit('confirm')"
+            />
 
             <button
               class="btn btn-secondary"
@@ -72,7 +76,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, nextTick, type PropType } from 'vue'
 import deleteButton from '../buttons/deleteButton.vue'
-import { usePropertyStore } from '#imports'
+import { usePropertyStore } from '../../stores/propertyStore'
 
 interface OperationRow {
   created_at: string
@@ -195,7 +199,6 @@ export default defineComponent({
   max-width: 28rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
-  animation: modalEnter 0.2s ease-out;
 }
 
 /* En-tête */

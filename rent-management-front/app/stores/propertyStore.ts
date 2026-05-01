@@ -13,6 +13,7 @@ export interface Property {
     address: string;
     city: string;
     country: string;
+
 }
 
 const usePropertyStore = defineStore("property", ()=> {
@@ -103,6 +104,7 @@ const usePropertyStore = defineStore("property", ()=> {
         // Ux
         error.value = "";
         loading.value = true;
+
 
         try {
             const response = await api.put(`/property/${propId}`, property);

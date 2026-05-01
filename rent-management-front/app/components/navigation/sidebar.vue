@@ -89,6 +89,7 @@ const navItems = [
         children: [
             { path: '/dashboard/property',    label: 'Liste' },
             { path: '/dashboard/CreateProperty',  label: 'Ajouter' },
+            { path: '/dashboard/CreateProperty',  label: 'Archives' }
         ],
     },
     {

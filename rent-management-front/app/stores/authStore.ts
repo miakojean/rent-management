@@ -24,7 +24,8 @@ export const useAuthStore = defineStore('auth', () => {
         maxAge: 30 * 24 * 60 * 60,
     });
 
-    const user = ref<User | null>(null);
+    // Initialisez directement avec la valeur du cookie (lisible sur serveur et client)
+    const user = ref<User | null>(cachedUser.value || null);
     const isLoading = ref(false);
     const error = ref<string | null>(null);
     const isInitialized = ref(false); // ← flag ajouté

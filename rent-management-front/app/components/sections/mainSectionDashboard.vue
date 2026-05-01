@@ -25,6 +25,7 @@
                 <operationsList 
                     v-if="!propertyStore.loading"
                     :tableBody="propertyStore.properties"
+                    @refreshTable="()=>{propertyStore.fetchProperties()}"
                 />
             </div>
         </div>
