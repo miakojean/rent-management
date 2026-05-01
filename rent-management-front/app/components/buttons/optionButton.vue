@@ -115,8 +115,8 @@ svg{
 /* ── Dropdown ── */
 .dropdown {
   position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
+  bottom: 100%;
+  right: 120%;
   width: 220px;
   background: white;
   border-radius: 12px;

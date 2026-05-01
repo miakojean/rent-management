@@ -11,10 +11,9 @@ class PropertyView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        properties = Property.objects.filter(user=request.user)
+        properties = Property.objects.filter(user=request.user, is_archived=False)
         
         # On calcule le compte une seule fois ici[cite: 3]
         total_count = properties.count()
@@ -87,7 +86,7 @@ class SpecificPropertyView(APIView):
 
     def get(self, request, property_id):
         try:
-            spec_property = Property.objects.get(user=request.user, id=property_id)
+            spec_property = Property.objects.get(user=request.user, id=property_id, is_archived=False)
         except ObjectDoesNotExist:
             return Response(
                 {'message': 'Propriété non trouvée', 'status': 'error'},

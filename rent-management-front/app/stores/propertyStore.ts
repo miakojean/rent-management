@@ -30,6 +30,7 @@ const usePropertyStore = defineStore("property", ()=> {
     const properties = ref<Property[]>([]);
     const loading = ref(false);
     const error = ref<string | null>(null);
+    const propertyNum = ref<number | string>(0);
 
     // Guetters
 
