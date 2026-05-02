@@ -1,6 +1,6 @@
 <template>
     <div class="operations__list">
-        <table>
+        <table v-if="propertyStore.properties.length >=1">
             <thead>
                 <tr>
                     <th><BaseCheckbox /></th>
@@ -16,7 +16,6 @@
                     <td>{{ cell.description }}</td>
                     <td>{{ cell.city }}</td>
                     <td>{{ cell.country }}</td>
-                    <td>{{ cell.type }}</td>
                     <td>
                         <optionButton 
                             @get="getTheSpecItem(cell)"
@@ -26,6 +25,23 @@
                 </tr>
             </tbody>
         </table>
+
+        <div 
+            class="empty-content w-full flex flex-col justify-center items-center gap-4"
+            v-else
+            >
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+            </svg>
+
+            <h3 class=" text-2xl font-medium">Vous n'avez aucune propriété enregistrée.</h3>
+
+            <div class=" w-1/2">
+                <main-button btn_label="ajouter une propriété"/>
+            </div>
+
+        </div>
 
         <!-- Transition autour de la modale -->
         <Transition name="modal">
@@ -54,6 +70,7 @@ import optionButton from '../buttons/optionButton.vue';
 import propModale from '../modales/propModale.vue';
 import deleteModale from '../modales/deleteModale.vue';
 import { usePropertyStore } from '../../stores/propertyStore';
+import mainButton from '../buttons/mainButton.vue';
 
 interface OperationRow {
   created_at: string;
@@ -70,14 +87,14 @@ export default {
     props: {
         tableHeader: {
             type: Array as PropType<string[]>,
-            default: () => ['Date d\'ajout', 'title', 'Description', 'Ville', 'Pays', 'Type']
+            default: () => ['Date d\'ajout', 'title', 'Description', 'Ville', 'Pays']
         },
         tableBody: {
             type: Array as PropType<OperationRow[]>,
             default: () => []
         }
     },
-    components: { BaseCheckbox, optionButton, propModale, deleteModale },
+    components: { BaseCheckbox, optionButton, propModale, deleteModale, mainButton },
     emits: ['getSpecItem' , 'refreshTable'],
     setup(props, { emit }) {
         
