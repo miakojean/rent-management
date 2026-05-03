@@ -67,7 +67,7 @@
             :selected-item="selectedItem"
             :isLoading="propertyStore.loading" 
             @close="isAchiveModaleOpen = false"
-            @confirm="confirmDeleting"
+            @confirm="confirmArchiving"
         />
     </div>
 </template>
@@ -134,6 +134,23 @@ export default {
             emit('getSpecItem', item);
         }
 
+        async function confirmArchiving(){
+            if (!selectedItem.value?.id || propertyStore.loading) return
+
+            try {
+                await propertyStore.archiveProperty(selectedItem.value.id, selectedItem.value.title);
+
+                propertyStore.properties = propertyStore.properties.filter(
+                    (p) => p.id !== selectedItem.value?.id
+                );
+
+                isAchiveModaleOpen.value = false;
+                selectedItem.value = null;
+            } catch (error) {
+                console.error("Erreur lors de l'archivage:", error)
+            }
+        }
+
         function deleteTheSpecItme(item:OperationRow){
             selectedItem.value = item;
             isDeleteModaleOpen.value = true
@@ -167,6 +184,7 @@ export default {
             getTheSpecItem,
             closeModale,
             archiveTheSpecItem,
+            confirmArchiving,
             deleteTheSpecItme,
             confirmDeleting
         };

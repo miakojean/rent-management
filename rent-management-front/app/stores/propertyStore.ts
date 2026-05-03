@@ -101,13 +101,18 @@ const usePropertyStore = defineStore("property", ()=> {
         }
     };
 
-    const archiveProperty = async (propId:string, property:Property) => {
+    const archiveProperty = async (propId:string, property:string) => {
         // Ux
         error.value = "";
         loading.value = true;
 
+        const archiveForm = {
+            title: property,
+            is_archived: true
+        }
+
         try {
-            const response = await api.put(`/property/${propId}`, property);
+            const response = await api.put(`/property/${propId}/`, archiveForm);
 
             if(response){
                 loading.value = false;
@@ -131,7 +136,7 @@ const usePropertyStore = defineStore("property", ()=> {
         loading.value = true;
 
         try {
-            const response = await api.put(`/property/${propId}`, property);
+            const response = await api.put(`/property/${propId}/`, property);
 
             if(response){
                 loading.value = false;
