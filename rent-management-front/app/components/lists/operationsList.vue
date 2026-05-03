@@ -57,7 +57,8 @@
         <deleteModale
             :isOpen="isDeleteModaleOpen"
             :selected-item="selectedItem"
-            :isLoading="propertyStore.loading" 
+            :isLoading="propertyStore.loading"
+            :success="success" 
             @close="isDeleteModaleOpen = false"
             @confirm="confirmDeleting"
         />
@@ -164,12 +165,11 @@ export default {
             try {
                 await propertyStore.deleteProperty(selectedItem.value.id);
                 
+                success.value = true;
                 // ✅ Supprimer localement dans le store (mise à jour immédiate du tableau)
                 propertyStore.properties = propertyStore.properties.filter(
                     (p) => p.id !== selectedItem.value?.id
                 );
-
-                isDeleteModaleOpen.value = false;
                 selectedItem.value = null; 
             } catch (error) {
                 console.error("Erreur lors de la suppression :", error);
