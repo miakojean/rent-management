@@ -9,7 +9,7 @@
         aria-modal="true"
         :aria-label="`Confirmation de suppression - ${itemName}`"
       >
-      <div class="modal-container" ref="modalContainer">
+      <div class="modal-container" ref="modalContainer" v-if="!succes">
         <!-- En-tête -->
         <div class="modal-header">
           <h2 class="modal-title">{{ title }}</h2>
@@ -66,6 +66,12 @@
           </button>
         </div>
       </div>
+      <div class="modal-container">
+        <succesForm
+          v-if="succes"
+          message="L'élément a été archivé avec succès !"
+        />
+      </div>
     </div>
   </Teleport>
 </template>
@@ -74,6 +80,7 @@
 import { defineComponent, computed, ref, watch, nextTick, type PropType } from 'vue'
 import deleteButton from '../buttons/deleteButton.vue'
 import { usePropertyStore } from '../../stores/propertyStore'
+import succesForm from '../forms/succesForm.vue'
 
 interface OperationRow {
   created_at: string
@@ -106,7 +113,8 @@ export default defineComponent({
     }
   },
   components:{
-    deleteButton
+    deleteButton,
+    succesForm
   },
   emits: ['close', 'confirm'],
   setup(props, { emit }) {
@@ -114,6 +122,7 @@ export default defineComponent({
     const modalContainer = ref<HTMLElement | null>(null)
     const isDeleting = ref(false)
     const propertyStore = usePropertyStore();
+    const succes = ref(true)
 
     // Nom de l'élément à afficher (priorité au titre, sinon description)
     const itemName = computed(() => {
@@ -162,6 +171,7 @@ export default defineComponent({
       modalContainer,
       isDeleting,
       itemName,
+      succes,
       propertyStore,
       handleClose,
       handleConfirm,

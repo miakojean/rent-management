@@ -31,7 +31,7 @@ export default {
     },
     setup() {
         const router = useRouter();
-        const countdown = ref(5);
+        const countdown = ref(3);
         let countdownTimer: any = null;
 
         onMounted(() => {
