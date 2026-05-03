@@ -29,7 +29,8 @@ export default {
             default: 'Action effectuée avec succès !'
         }
     },
-    setup() {
+    emits:['succes'],
+    setup(props, {emit}) {
         const router = useRouter();
         const countdown = ref(3);
         let countdownTimer: any = null;
@@ -40,6 +41,7 @@ export default {
                 countdown.value--;
                 if (countdown.value <= 0) {
                     clearInterval(countdownTimer);
+                    emit('succes')
                     router.push('/'); // Redirection automatique
                 }
             }, 1000);

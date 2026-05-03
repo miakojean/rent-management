@@ -9,68 +9,70 @@
         aria-modal="true"
         :aria-label="`Confirmation de suppression - ${itemName}`"
       >
-      <div class="modal-container" ref="modalContainer" v-if="!succes">
-        <!-- En-tête -->
-        <div class="modal-header">
-          <h2 class="modal-title">{{ title }}</h2>
-          <button
-            class="close-button"
-            @click="handleClose"
-            aria-label="Fermer"
-            :disabled="isDeleting"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Corps -->
-        <div class="modal-body">
-          <!-- Icône danger -->
-          <div class="icon-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+      <div class="modal-container" ref="modalContainer" >
+        <template v-if="!success">
+          <!-- En-tête -->
+          <div class="modal-header">
+            <h2 class="modal-title">{{ title }}</h2>
+            <button
+              class="close-button"
+              @click="handleClose"
+              aria-label="Fermer"
+              :disabled="isDeleting"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
+            </button>
           </div>
 
-          <!-- Message principal -->
-          <p class="confirmation-message">
-            Êtes-vous certain de vouloir Archiver cet élément ?
-          </p>
+          <!-- Corps -->
+          <div class="modal-body">
+            <!-- Icône danger -->
+            <div class="icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                </svg>
+            </div>
 
-          <!-- Détail de l'élément (évite les erreurs) -->
-          <div v-if="itemName" class="item-details">
-            <span class="item-label">Élément concerné :</span>
-            <strong class="item-name">{{ itemName }}</strong>
+            <!-- Message principal -->
+            <p class="confirmation-message">
+              Êtes-vous certain de vouloir Archiver cet élément ?
+            </p>
+
+            <!-- Détail de l'élément (évite les erreurs) -->
+            <div v-if="itemName" class="item-details">
+              <span class="item-label">Élément concerné :</span>
+              <strong class="item-name">{{ itemName }}</strong>
+            </div>
           </div>
-        </div>
 
-        <!-- Actions -->
-        <div class="modal-actions">
+          <!-- Actions -->
+          <div class="modal-actions">
 
-          <deleteButton 
-            btn_label="Archiver"
-            :isloading="isLoading"
-            @click="$emit('confirm')"
+            <deleteButton 
+              btn_label="Archiver"
+              :isloading="isLoading"
+              @click="$emit('confirm')"
+            />
+
+            <button
+              class="btn btn-secondary"
+              @click="handleClose"
+              :disabled="isDeleting"
+              ref="cancelButton"
+            >
+              Annuler
+            </button>
+          </div>
+        </template>
+        <template v-if="success">
+          <succesForm
+            message="L'élément a été archivé avec succès !"
+            @succes="handleClose"
           />
-
-          <button
-            class="btn btn-secondary"
-            @click="handleClose"
-            :disabled="isDeleting"
-            ref="cancelButton"
-          >
-            Annuler
-          </button>
-        </div>
-      </div>
-      <div class="modal-container">
-        <succesForm
-          v-if="succes"
-          message="L'élément a été archivé avec succès !"
-        />
+        </template>
       </div>
     </div>
   </Teleport>
@@ -110,6 +112,10 @@ export default defineComponent({
     title:{
       type:String,
       default:"Confirmer l'archivage"
+    },
+    success:{
+      type:Boolean,
+      default: false
     }
   },
   components:{
@@ -122,7 +128,6 @@ export default defineComponent({
     const modalContainer = ref<HTMLElement | null>(null)
     const isDeleting = ref(false)
     const propertyStore = usePropertyStore();
-    const succes = ref(true)
 
     // Nom de l'élément à afficher (priorité au titre, sinon description)
     const itemName = computed(() => {
@@ -171,7 +176,6 @@ export default defineComponent({
       modalContainer,
       isDeleting,
       itemName,
-      succes,
       propertyStore,
       handleClose,
       handleConfirm,

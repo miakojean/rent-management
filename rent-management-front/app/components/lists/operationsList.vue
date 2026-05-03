@@ -65,7 +65,8 @@
         <archiveModale
             :isOpen="isAchiveModaleOpen"
             :selected-item="selectedItem"
-            :isLoading="propertyStore.loading" 
+            :isLoading="propertyStore.loading"
+            :success="success"
             @close="isAchiveModaleOpen = false"
             @confirm="confirmArchiving"
         />
@@ -114,7 +115,7 @@ export default {
         const isAchiveModaleOpen = ref(false);
         const selectedItem = ref<OperationRow | null>(null);
         const propertyStore = usePropertyStore();
-        
+        const success = ref(false);
         // component actions
 
         function closeModale() {
@@ -139,12 +140,13 @@ export default {
 
             try {
                 await propertyStore.archiveProperty(selectedItem.value.id, selectedItem.value.title);
+                
+                success.value = true;
 
                 propertyStore.properties = propertyStore.properties.filter(
                     (p) => p.id !== selectedItem.value?.id
                 );
-
-                isAchiveModaleOpen.value = false;
+                //isAchiveModaleOpen.value = false;
                 selectedItem.value = null;
             } catch (error) {
                 console.error("Erreur lors de l'archivage:", error)
@@ -180,6 +182,7 @@ export default {
             isAchiveModaleOpen,
             selectedItem,
             propertyStore,
+            success,
             // Actions
             getTheSpecItem,
             closeModale,
