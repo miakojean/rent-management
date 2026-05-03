@@ -20,6 +20,7 @@
                         <optionButton 
                             @get="getTheSpecItem(cell)"
                             @delete="deleteTheSpecItme(cell)"
+                            @archive="archiveTheSpecItem(cell)"
                         />
                     </td>
                 </tr>
@@ -60,6 +61,14 @@
             @close="isDeleteModaleOpen = false"
             @confirm="confirmDeleting"
         />
+
+        <archiveModale
+            :isOpen="isAchiveModaleOpen"
+            :selected-item="selectedItem"
+            :isLoading="propertyStore.loading" 
+            @close="isAchiveModaleOpen = false"
+            @confirm="confirmDeleting"
+        />
     </div>
 </template>
 
@@ -69,6 +78,7 @@ import BaseCheckbox from '../input/BaseCheckbox.vue';
 import optionButton from '../buttons/optionButton.vue';
 import propModale from '../modales/propModale.vue';
 import deleteModale from '../modales/deleteModale.vue';
+import archiveModale from '../modales/archiveModale.vue';
 import { usePropertyStore } from '../../stores/propertyStore';
 import mainButton from '../buttons/mainButton.vue';
 
@@ -94,13 +104,14 @@ export default {
             default: () => []
         }
     },
-    components: { BaseCheckbox, optionButton, propModale, deleteModale, mainButton },
+    components: { BaseCheckbox, optionButton, propModale, deleteModale, mainButton, archiveModale },
     emits: ['getSpecItem' , 'refreshTable'],
     setup(props, { emit }) {
         
         // component state
         const isModaleOpen = ref(false);
         const isDeleteModaleOpen = ref(false);
+        const isAchiveModaleOpen = ref(false);
         const selectedItem = ref<OperationRow | null>(null);
         const propertyStore = usePropertyStore();
         
@@ -115,7 +126,12 @@ export default {
             selectedItem.value = item;       // stocke l'élément cliqué
             isModaleOpen.value = true;       // ouvre la modale
             emit('getSpecItem', item);
-            console.log('Évènement émis avec', item);
+        }
+
+        function archiveTheSpecItem(item: OperationRow){
+            selectedItem.value = item;       // stocke l'élément cliqué
+            isAchiveModaleOpen.value = true;       // ouvre la modale
+            emit('getSpecItem', item);
         }
 
         function deleteTheSpecItme(item:OperationRow){
@@ -144,11 +160,13 @@ export default {
         return {
             isModaleOpen,
             isDeleteModaleOpen,
+            isAchiveModaleOpen,
             selectedItem,
             propertyStore,
             // Actions
             getTheSpecItem,
             closeModale,
+            archiveTheSpecItem,
             deleteTheSpecItme,
             confirmDeleting
         };

@@ -37,7 +37,6 @@ import { onMounted } from '#imports';
 import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
 import { usePropertyStore } from '#imports';
-import type { Property } from '#imports';
 export default {
     name: "MainSectionProperty",
     props: {
@@ -81,7 +80,6 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: normal;
-    
 }
 
 .first__content h2{

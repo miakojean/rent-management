@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { usePropertyStore } from '../../stores/propertyStore';
 import type { Property } from '../../stores/propertyStore';
 import { useCountries } from '~/plugins/countries';

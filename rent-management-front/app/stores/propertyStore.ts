@@ -106,6 +106,29 @@ const usePropertyStore = defineStore("property", ()=> {
         error.value = "";
         loading.value = true;
 
+        try {
+            const response = await api.put(`/property/${propId}`, property);
+
+            if(response){
+                loading.value = false;
+                console.log(response)
+                return response
+            } else {
+                error.value = "Une erreur est survenue lors de l'archivage"
+                loading.value = false;
+                return response
+            }
+        } catch(err){
+            error.value = 'Erreur serveur';
+            console.error(err);
+            loading.value = false;
+            return;
+        }
+    }
+
+    const editProperty = async(propId:string, property:Property) => {
+        error.value = "";
+        loading.value = true;
 
         try {
             const response = await api.put(`/property/${propId}`, property);
@@ -161,6 +184,8 @@ const usePropertyStore = defineStore("property", ()=> {
         fetchProperties,
         fetchSpecificProperty,
         addProperty,
+        archiveProperty,
+        editProperty,
         deleteProperty
     }
 })
