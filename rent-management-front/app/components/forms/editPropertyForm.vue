@@ -38,6 +38,7 @@ import { ref } from '#imports';
 import { usePropertyStore } from '#imports';
 import { useRouter } from 'vue-router';
 import { useCountries } from '~/plugins/countries';
+import { onMounted } from 'vue';
 
 interface Property {
     id?: string;
@@ -50,7 +51,6 @@ interface Property {
     address: string;
     city: string;
     country: string;
-
 }
 
 export default {
@@ -79,6 +79,12 @@ export default {
             country: '',
         })
         
+        onMounted(async (p:Property)=>{
+            if(!propertyStore.property){
+                return null
+            }
+            propertyStore.property = editForm
+        })
 
         return{
             propertyStore,

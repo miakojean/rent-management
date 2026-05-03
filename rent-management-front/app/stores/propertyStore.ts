@@ -180,6 +180,7 @@ const usePropertyStore = defineStore("property", ()=> {
     }
 
     return {
+        property,
         properties,
         loading,
         error,

@@ -21,6 +21,7 @@
                             @get="getTheSpecItem(cell)"
                             @delete="deleteTheSpecItme(cell)"
                             @archive="archiveTheSpecItem(cell)"
+                            @edit="editTheSpecItem(cell)"
                         />
                     </td>
                 </tr>
@@ -81,8 +82,9 @@ import optionButton from '../buttons/optionButton.vue';
 import propModale from '../modales/propModale.vue';
 import deleteModale from '../modales/deleteModale.vue';
 import archiveModale from '../modales/archiveModale.vue';
-import { usePropertyStore } from '../../stores/propertyStore';
 import mainButton from '../buttons/mainButton.vue';
+import { usePropertyStore } from '../../stores/propertyStore';
+import { useRouter } from 'vue-router';
 
 interface OperationRow {
   created_at: string;
@@ -92,6 +94,19 @@ interface OperationRow {
   country: string;
   type: string;
   id?: string
+}
+
+interface Property {
+    id?: string;
+    title: string;
+    description?: string;
+    propertyType: string;
+    status?:string;
+    pricePerMonth?: number;
+    surfaceArea?: number;
+    address: string;
+    city: string;
+    country: string;
 }
 
 export default {
@@ -117,6 +132,7 @@ export default {
         const selectedItem = ref<OperationRow | null>(null);
         const propertyStore = usePropertyStore();
         const success = ref(false);
+        const router = useRouter();
         // component actions
 
         function closeModale() {
@@ -154,7 +170,15 @@ export default {
             }
         }
 
-        function deleteTheSpecItme(item:OperationRow){
+        // Dans operationsList.vue, fonction editTheSpecItem
+        function editTheSpecItem(item: Property) {
+            // On suppose que item a un id
+            if (!item.id) return;
+            propertyStore.property = item
+            router.push(`/dashboard/Properties/editProperty/`);
+        }
+
+        function deleteTheSpecItme(item: OperationRow){
             selectedItem.value = item;
             isDeleteModaleOpen.value = true
         }
@@ -183,13 +207,15 @@ export default {
             selectedItem,
             propertyStore,
             success,
+            router,
             // Actions
             getTheSpecItem,
             closeModale,
             archiveTheSpecItem,
             confirmArchiving,
             deleteTheSpecItme,
-            confirmDeleting
+            confirmDeleting,
+            editTheSpecItem
         };
     }
 }
