@@ -31,8 +31,14 @@ const usePropertyStore = defineStore("property", ()=> {
     const loading = ref(false);
     const error = ref<string | null>(null);
     const propertyNum = ref<number | string>(0);
+    const currentPropertyId = ref<string>('');
 
     // Guetters
+
+    const defineAsCurrent = (item:string)=>{
+        console.log('La propriété en cours est', item)
+        return currentPropertyId.value = item;
+    }
 
     // Actions
     const fetchProperties = async () => {
@@ -184,8 +190,10 @@ const usePropertyStore = defineStore("property", ()=> {
         properties,
         loading,
         error,
+        propertyNum,
+        currentPropertyId,
         //
-        
+        defineAsCurrent,
         //
         fetchProperties,
         fetchSpecificProperty,

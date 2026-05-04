@@ -171,10 +171,10 @@ export default {
         }
 
         // Dans operationsList.vue, fonction editTheSpecItem
-        function editTheSpecItem(item: Property) {
+        function editTheSpecItem(item: OperationRow) {
             // On suppose que item a un id
             if (!item.id) return;
-            propertyStore.property = item
+            propertyStore.defineAsCurrent(item?.id)
             router.push(`/dashboard/Properties/editProperty/`);
         }
 
