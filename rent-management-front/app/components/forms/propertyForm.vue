@@ -79,7 +79,11 @@
     </div>
 
     <div class="mt-4">
-      <mainButton type="submit" btn_label="ajouter la propriété" :isloading="propertyStore.loading"/>
+      <mainButton 
+        type="submit" 
+        btn_label="ajouter la propriété" 
+        :isloading="propertyStore.loading"
+      />
     </div>
   </form>
 </template>
@@ -179,7 +183,7 @@ const newProperty = ref<Property>({
   address: '',
   city: '',
   country: '',
-  propertyType:''
+  property_type:''
 })
 
 const errors = reactive({
@@ -241,7 +245,7 @@ const submitform = async () => {
       // 2. Optionnel : On réinitialise le formulaire
       newProperty.value = {
         title: "", description: "", address: "",
-        type: "", city: "", country: "", propertyType:""
+        type: "", city: "", country: "", property_type:""
       };
     }
   } catch (err) {

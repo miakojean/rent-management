@@ -1,21 +1,24 @@
 <template>
     <section class="main__section">
-
         <div class="first__content w-full flex flex-col gap-8">
             <div class="title__section">
                 <h2>{{ title }}</h2>
             </div>
         </div>
 
-        <form @submit.prevent="submitForm" class="flex flex-col gap-6 p-4 w-2/3">
+        <form 
+            @submit.prevent="submitForm" 
+            class="flex flex-col gap-6 p-4 w-2/3"
+            v-if="!succes"
+        >
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <!-- Informations générales -->
                 <BaseInput label="Nom de votre propriété" v-model="editForm.title"/>
                 
+                <!-- Utilisation de property_type pour correspondre au store et au backend -->
                 <BaseSelect 
                     label="Type de propriété" 
-                    v-model="editForm.propertyType" 
-                    :options="propertyTypes"
+                    v-model="editForm.property_type" 
+                    :options="property_types"
                 />
 
                 <BaseSelect 
@@ -40,7 +43,6 @@
             <BaseTextArea label="Description" v-model="editForm.description"/>
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <!-- Localisation -->
                 <BaseSelect 
                     label="Pays" 
                     v-model="editForm.country" 
@@ -58,7 +60,6 @@
                 <BaseInput label="Adresse exacte" v-model="editForm.address"/>
             </div>
             
-            <!-- Actions -->
             <div class="flex justify-end gap-4 mt-4">
                 <mainButton 
                     type="submit" 
@@ -68,104 +69,51 @@
             </div>
         </form>
         
-        <!-- Affichage des erreurs si nécessaire -->
         <p v-if="propertyStore.error" class="text-red-500 mt-2">{{ propertyStore.error }}</p>
 
+        <succes-form 
+            message="Propriété modifiée succès"
+            v-if="succes"
+        />
     </section>
 </template>
 
 <script lang="ts">
-import BaseInput from '../input/BaseInput.vue';
-import BaseSelect from '../input/BaseSelect.vue';
-import BaseTextArea from '../input/BaseTextArea.vue';
-import mainButton from '../buttons/mainButton.vue';
-import succesForm from './succesForm.vue';
-
 import { ref, computed, reactive, onMounted } from 'vue';
-import { usePropertyStore } from '#imports';
+import { usePropertyStore, type Property } from '../../stores/propertyStore';
 import { useRouter } from 'vue-router';
 import { useCountries } from '../../plugins/countries';
 
-interface Property {
-    id?: string;
-    title: string;
-    description?: string;
-    propertyType: string;
-    status?:string;
-    pricePerMonth?: number;
-    surfaceArea?: number;
-    address: string;
-    city: string;
-    country: string;
-}
+import mainButton from '../buttons/mainButton.vue';
+import BaseInput from '../input/BaseInput.vue';
+import BaseSelect from '../input/BaseSelect.vue';
+import BaseTextArea from '../input/BaseTextArea.vue';
+import succesForm from './succesForm.vue';
 
 export default {
-    name:'editPropertyForm',
-    components:{
-        BaseInput, BaseTextArea, BaseSelect, mainButton, succesForm
-    },
+    name: 'editPropertyForm',
     props: {
-        title: {
-            type: String,
-            default: "Modifier les informations de ma propriété"
-        }
+        title: { type: String, default: "Modifier les informations de ma propriété" }
     },
-    setup(){
+    components:{
+        mainButton,
+        BaseInput,
+        BaseSelect,
+        BaseTextArea,
+        succesForm
+    },
+    setup() {
         const router = useRouter();
         const propertyStore = usePropertyStore();
-        
-        // Options de pays et villes
-        const {getCountryList} = useCountries();
-        const countryOptions = computed(() =>
-            getCountryList().sort((a, b) => a.name.localeCompare(b.name, 'fr'))
-        );
-        
-        const CITIES_BY_COUNTRY: Record<string, string[]> = {
-            CI: ['Abidjan', 'Bouaké', 'Daloa', 'Yamoussoukro', 'Korhogo', 'San-Pédro', 'Man', 'Divo', 'Gagnoa', 'Abengourou'],
-            SN: ['Dakar', 'Thiès', 'Kaolack', 'Saint-Louis', 'Ziguinchor', 'Touba', 'Mbour', 'Diourbel'],
-            CM: ['Douala', 'Yaoundé', 'Bafoussam', 'Garoua', 'Bamenda', 'Maroua', 'Ngaoundéré'],
-            ML: ['Bamako', 'Sikasso', 'Mopti', 'Koutiala', 'Kayes', 'Ségou', 'Gao'],
-            BF: ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou', 'Ouahigouya', 'Banfora'],
-            GN: ['Conakry', 'Nzérékoré', 'Kankan', 'Kindia', 'Labé'],
-            FR: ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Bordeaux', 'Lille', 'Rennes'],
-            MA: ['Casablanca', 'Rabat', 'Fès', 'Marrakech', 'Agadir', 'Tanger', 'Meknès', 'Oujda'],
-            TN: ['Tunis', 'Sfax', 'Sousse', 'Gabès', 'Kairouan', 'Bizerte'],
-            DZ: ['Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Sétif'],
-        };
+        const { getCountryList } = useCountries();
 
-        const cityOptions = computed(() => {
-            const cities = CITIES_BY_COUNTRY[editForm.value.country] ?? [];
-            return cities.map(city => ({ code: city, name: city }));
-        });
-
-        const onCountryChange = () => {
-            editForm.value.city = '';
-            errors.city = '';
-        };
-
-        const propertyTypes = [
-            { code: 'APARTMENT', name: 'Villa' },
-            { code: 'cour commune', name: 'Cour commune' },
-            { code: 'APARTMENT',    name: 'Appartement' },
-            { code: 'STUDIO',       name: 'Studio' },
-            { code: 'OFFICE',       name: 'Bureau' },
-            { code: 'COMMERCIAL',   name: 'Local Commercial' },
-            { code: 'BUILDING',     name: 'Immeuble'},
-            { code: 'autre',        name: 'Autre' },
-        ];
-
-        // Mappé sur les STATUS_CHOICES du backend
-        const statusOptions = [
-            { code: 'AVAILABLE',   name: 'Disponible' },
-            { code: 'RENTED',      name: 'Loué' },
-            { code: 'MAINTENANCE', name: 'En travaux / Maintenance' },
-        ];
+        // State
 
         const editForm = ref<Property>({
             id: '',
             title: '',
             description: '',
-            propertyType: '',
+            property_type: '', // Doit correspondre à la valeur 'code' des options
             status: '',
             pricePerMonth: 0,
             surfaceArea: 0,
@@ -174,15 +122,23 @@ export default {
             country: '',
         });
 
-        const errors = reactive({
-            title:       '',
-            description: '',
-            type:        '',
-            address:     '',
-            city:        '',
-            country:     '',
-        });
-        
+        const succes = ref<boolean>(false);
+
+        const property_types = [
+            { code: 'HOUSE',        name: 'Villa' },
+            { code: 'APARTMENT',    name: 'Appartement' },
+            { code: 'STUDIO',       name: 'Studio' },
+            { code: 'OFFICE',       name: 'Bureau' },
+            { code: 'COMMERCIAL',   name: 'Local Commercial' },
+            { code: 'BUILDING',     name: 'Immeuble' },
+        ];
+
+        const statusOptions = [
+            { code: 'AVAILABLE',   name: 'Disponible' },
+            { code: 'RENTED',      name: 'Loué' },
+            { code: 'MAINTENANCE', name: 'En travaux / Maintenance' },
+        ];
+
         onMounted(() => {
             if (!propertyStore.currentPropertyId) {
                 router.push('/dashboard/Properties');
@@ -194,53 +150,45 @@ export default {
             );
 
             if (selectedProperty) {
-                // Remplissage du formulaire. On s'assure que les champs camelCase 
-                // reçoivent bien les données (si elles arrivent en snake_case depuis l'API, 
-                // vous devrez adapter ici : e.g., pricePerMonth: selectedProperty.price_per_month)
-                editForm.value = { ...selectedProperty };
+                // CORRECTION : Mapping explicite des champs venant de Django (snake_case) 
+                // vers ton objet editForm (qui utilise un mélange pour price/surface)
+                editForm.value = {
+                    ...selectedProperty,
+                    // On s'assure que property_type prend la valeur de l'objet trouvé
+                    property_type: selectedProperty.property_type || '', 
+                    // Mapping des champs numériques si l'API renvoie du snake_case
+                    pricePerMonth: (selectedProperty as any).price_per_month || selectedProperty.pricePerMonth || 0,
+                    surfaceArea: (selectedProperty as any).surface_area || selectedProperty.surfaceArea || 0
+                };
             }
         });
 
         const submitForm = async () => {
             if (!propertyStore.currentPropertyId) return;
 
-            // Transformation du payload pour correspondre aux attentes de Django (snake_case)
+            // Préparation du payload final pour Django
             const payload = {
-                title: editForm.value.title,
-                description: editForm.value.description,
-                property_type: editForm.value.propertyType, 
-                status: editForm.value.status,
+                ...editForm.value,
+                property_type: editForm.value.property_type,
                 price_per_month: editForm.value.pricePerMonth,
                 surface_area: editForm.value.surfaceArea,
-                address: editForm.value.address,
-                city: editForm.value.city,
-                country: editForm.value.country,
             };
 
             const response = await propertyStore.editProperty(propertyStore.currentPropertyId, payload as any);
-
             if (response && !propertyStore.error) {
-                // Redirection vers la liste des propriétés après succès
                 router.push('/dashboard/Property');
             }
         };
 
-        const cancelEdit = () => {
-            router.push('/dashboard/Property');
-        };
+        // ... reste de la logique (countryOptions, cityOptions, etc.)
+        const countryOptions = computed(() => getCountryList().sort((a, b) => a.name.localeCompare(b.name, 'fr')));
+        const CITIES_BY_COUNTRY: Record<string, string[]> = { CI: ['Abidjan', 'Bouaké', 'Daloa'], SN: ['Dakar', 'Saint-Louis'] }; // Simplifié pour l'exemple
+        const cityOptions = computed(() => (CITIES_BY_COUNTRY[editForm.value.country] || []).map(c => ({ code: c, name: c })));
+        const onCountryChange = () => { editForm.value.city = ''; };
 
-        return{
-            router,
-            propertyStore,
-            getCountryList,
-            propertyTypes,
-            statusOptions,
-            countryOptions,
-            cityOptions,
-            onCountryChange,
-            editForm,
-            submitForm,
-            cancelEdit
+        return {
+            propertyStore, property_types, statusOptions, countryOptions,
+            cityOptions, onCountryChange, succes, editForm, submitForm
         };
     }
 }

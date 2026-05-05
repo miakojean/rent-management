@@ -6,7 +6,7 @@ export interface Property {
     id?: string;
     title: string;
     description?: string;
-    propertyType: string;
+    property_type: string;
     status?:string;
     type?:string,
     pricePerMonth?: number;
@@ -23,7 +23,7 @@ const usePropertyStore = defineStore("property", ()=> {
         id:'',
         title:'',
         description:'',
-        propertyType:'',
+        property_type:'',
         address:'',
         city:'',
         country:''

@@ -133,7 +133,7 @@ export default {
 }
 
 .input-label {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--label-color);
   margin-bottom: 0.4rem;
