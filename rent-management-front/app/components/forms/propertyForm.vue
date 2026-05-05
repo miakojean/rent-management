@@ -179,6 +179,7 @@ const newProperty = ref<Property>({
   address: '',
   city: '',
   country: '',
+  propertyType:''
 })
 
 const errors = reactive({
@@ -240,7 +241,7 @@ const submitform = async () => {
       // 2. Optionnel : On réinitialise le formulaire
       newProperty.value = {
         title: "", description: "", address: "",
-        type: "", city: "", country: ""
+        type: "", city: "", country: "", propertyType:""
       };
     }
   } catch (err) {

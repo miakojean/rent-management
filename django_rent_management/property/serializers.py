@@ -17,7 +17,7 @@ class PropertySerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'user', 'description',
             'country', 'city', 'address',
-            'price_per_month', 'security_deposit',
+            'price_per_month', 'security_deposit', 'status',
             'bedrooms', 'bathrooms', 'surface_area',
             'created_at', 'updated_at', 'is_archived'
         ]

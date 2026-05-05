@@ -8,6 +8,7 @@ export interface Property {
     description?: string;
     propertyType: string;
     status?:string;
+    type?:string,
     pricePerMonth?: number;
     surfaceArea?: number;
     address: string;
