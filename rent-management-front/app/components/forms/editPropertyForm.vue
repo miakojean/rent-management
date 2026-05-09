@@ -65,7 +65,7 @@
                     type="submit" 
                     btn_label="Enregistrer les modifications" 
                     :loading="propertyStore.loading"
-                    :disabled="true"
+                    :disabled="false"
                 />
             </div>
         </form>
@@ -160,7 +160,7 @@ export default {
 
             const response = await propertyStore.editProperty(propertyStore.currentPropertyId, payload as any);
             if (response && !propertyStore.error) {
-                router.push('/dashboard/Property');
+                succes.value = true;
             }
         };
 
