@@ -152,6 +152,7 @@ const usePropertyStore = defineStore("property", ()=> {
             } else {
                 error.value = "Une erreur est survenue lors de l'archivage"
                 loading.value = false;
+                console.log(response)
                 return response
             }
         } catch(err){

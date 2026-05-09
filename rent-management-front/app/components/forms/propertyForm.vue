@@ -21,9 +21,9 @@
       />
       
       <BaseSelect 
-        v-model="newProperty.type"
+        v-model="newProperty.property_type"
         label="Type de propriété"
-        :error-message="errors.type"
+        :error-message="errors.property_type"
         :options="propertyTypes"
         required
       />
@@ -162,7 +162,7 @@ const router = useRouter();
 
 // Valeurs alignées sur PropertyTypes dans #models/property
 const propertyTypes = [
-  { code: 'villa',        name: 'Villa' },
+  { code: 'HOUSE',        name: 'Villa' },
   { code: 'cour commune', name: 'Cour commune' },
   { code: 'APARTMENT',  name: 'Appartement' },
   {code: 'STUDIO',     name: 'Studio' },
@@ -189,7 +189,7 @@ const newProperty = ref<Property>({
 const errors = reactive({
   title:       '',
   description: '',
-  type:        '',
+  property_type: '',
   address:     '',
   city:        '',
   country:     '',
@@ -206,8 +206,8 @@ const validate = () => {
     errors.title = 'Le nom est obligatoire'
     isValid = false
   }
-  if (!newProperty.value.type) {
-    errors.type = 'Veuillez choisir un type'
+  if (!newProperty.value.property_type) {
+    errors.property_type = 'Veuillez choisir un type'
     isValid = false
   }
   if (!newProperty.value.country) {

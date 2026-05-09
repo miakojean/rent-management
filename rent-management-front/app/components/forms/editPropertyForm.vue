@@ -63,8 +63,9 @@
             <div class="flex justify-end gap-4 mt-4">
                 <mainButton 
                     type="submit" 
-                    text="Enregistrer les modifications" 
+                    btn_label="Enregistrer les modifications" 
                     :loading="propertyStore.loading"
+                    :disabled="true"
                 />
             </div>
         </form>
@@ -79,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted, watch } from 'vue';
 import { usePropertyStore, type Property } from '../../stores/propertyStore';
 import { useRouter } from 'vue-router';
 import { useCountries } from '../../plugins/countries';
@@ -139,29 +140,12 @@ export default {
             { code: 'MAINTENANCE', name: 'En travaux / Maintenance' },
         ];
 
-        onMounted(() => {
-            if (!propertyStore.currentPropertyId) {
-                router.push('/dashboard/Properties');
-                return;
-            }
-
-            const selectedProperty = propertyStore.properties.find(
-                (p) => p.id === propertyStore.currentPropertyId
-            );
-
-            if (selectedProperty) {
-                // CORRECTION : Mapping explicite des champs venant de Django (snake_case) 
-                // vers ton objet editForm (qui utilise un mélange pour price/surface)
-                editForm.value = {
-                    ...selectedProperty,
-                    // On s'assure que property_type prend la valeur de l'objet trouvé
-                    property_type: selectedProperty.property_type || '', 
-                    // Mapping des champs numériques si l'API renvoie du snake_case
-                    pricePerMonth: (selectedProperty as any).price_per_month || selectedProperty.pricePerMonth || 0,
-                    surfaceArea: (selectedProperty as any).surface_area || selectedProperty.surfaceArea || 0
-                };
-            }
-        });
+        const payload = ref({
+            ...editForm.value,
+            property_type: editForm.value.property_type,
+            price_per_month: editForm.value.pricePerMonth,
+            surface_area: editForm.value.surfaceArea
+        })
 
         const submitForm = async () => {
             if (!propertyStore.currentPropertyId) return;
@@ -185,6 +169,34 @@ export default {
         const CITIES_BY_COUNTRY: Record<string, string[]> = { CI: ['Abidjan', 'Bouaké', 'Daloa'], SN: ['Dakar', 'Saint-Louis'] }; // Simplifié pour l'exemple
         const cityOptions = computed(() => (CITIES_BY_COUNTRY[editForm.value.country] || []).map(c => ({ code: c, name: c })));
         const onCountryChange = () => { editForm.value.city = ''; };
+
+        onMounted(() => {
+            if (!propertyStore.currentPropertyId) {
+                router.push('/dashboard/Property');
+                return;
+            }
+
+            const selectedProperty = propertyStore.properties.find(
+                (p) => p.id === propertyStore.currentPropertyId
+            );
+
+            if (selectedProperty) {
+                // CORRECTION : Mapping explicite des champs venant de Django (snake_case) 
+                // vers ton objet editForm (qui utilise un mélange pour price/surface)
+                editForm.value = {
+                    ...selectedProperty,
+                    // On s'assure que property_type prend la valeur de l'objet trouvé
+                    property_type: selectedProperty.property_type || '', 
+                    // Mapping des champs numériques si l'API renvoie du snake_case
+                    pricePerMonth: (selectedProperty as any).price_per_month || selectedProperty.pricePerMonth || 0,
+                    surfaceArea: (selectedProperty as any).surface_area || selectedProperty.surfaceArea || 0
+                };
+            }
+        });
+
+        watch(editForm, ()=>{
+            console.log('Votre formulaire a changé')
+        })
 
         return {
             propertyStore, property_types, statusOptions, countryOptions,
