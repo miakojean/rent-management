@@ -65,7 +65,7 @@
                     type="submit" 
                     btn_label="Enregistrer les modifications" 
                     :loading="propertyStore.loading"
-                    :disabled="false"
+                    :disabled="!hasChanges"
                 />
             </div>
         </form>
@@ -140,22 +140,20 @@ export default {
             { code: 'MAINTENANCE', name: 'En travaux / Maintenance' },
         ];
 
-        const payload = ref({
-            ...editForm.value,
-            property_type: editForm.value.property_type,
-            price_per_month: editForm.value.pricePerMonth,
-            surface_area: editForm.value.surfaceArea
-        })
-
         const submitForm = async () => {
             if (!propertyStore.currentPropertyId) return;
 
             // Préparation du payload final pour Django
             const payload = {
-                ...editForm.value,
+                title: editForm.value.title,
+                description: editForm.value.description,
                 property_type: editForm.value.property_type,
-                price_per_month: editForm.value.pricePerMonth,
-                surface_area: editForm.value.surfaceArea,
+                status: editForm.value.status,
+                price_per_month: Number(editForm.value.pricePerMonth), // snake_case et conversion en number
+                surface_area: Number(editForm.value.surfaceArea),     // snake_case et conversion en number
+                address: editForm.value.address,
+                city: editForm.value.city,
+                country: editForm.value.country,
             };
 
             const response = await propertyStore.editProperty(propertyStore.currentPropertyId, payload as any);
@@ -169,6 +167,14 @@ export default {
         const CITIES_BY_COUNTRY: Record<string, string[]> = { CI: ['Abidjan', 'Bouaké', 'Daloa'], SN: ['Dakar', 'Saint-Louis'] }; // Simplifié pour l'exemple
         const cityOptions = computed(() => (CITIES_BY_COUNTRY[editForm.value.country] || []).map(c => ({ code: c, name: c })));
         const onCountryChange = () => { editForm.value.city = ''; };
+
+        // État initial du formulaire
+        const initialForm = ref<any>({});
+
+        // Computed pour vérifier si des changements ont été faits
+        const hasChanges = computed(() => {
+            return JSON.stringify(editForm.value) !== JSON.stringify(initialForm.value);
+        });
 
         onMounted(() => {
             if (!propertyStore.currentPropertyId) {
@@ -191,6 +197,23 @@ export default {
                     pricePerMonth: (selectedProperty as any).price_per_month || selectedProperty.pricePerMonth || 0,
                     surfaceArea: (selectedProperty as any).surface_area || selectedProperty.surfaceArea || 0
                 };
+            };
+
+            if (!propertyStore.currentPropertyId) {
+                router.push('/dashboard/Property');
+                return;
+            }
+
+            if (selectedProperty) {
+                editForm.value = {
+                    ...selectedProperty,
+                    property_type: selectedProperty.property_type || '',
+                    pricePerMonth: (selectedProperty as any).price_per_month || selectedProperty.pricePerMonth || 0,
+                    surfaceArea: (selectedProperty as any).surface_area || selectedProperty.surfaceArea || 0
+                };
+                
+                // Sauvegarde une copie de l'état initial
+                initialForm.value = JSON.parse(JSON.stringify(editForm.value));
             }
         });
 
@@ -199,7 +222,7 @@ export default {
         })
 
         return {
-            propertyStore, property_types, statusOptions, countryOptions,
+            propertyStore, property_types, statusOptions, countryOptions, hasChanges,
             cityOptions, onCountryChange, succes, editForm, submitForm
         };
     }
