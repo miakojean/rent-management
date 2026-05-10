@@ -10,11 +10,6 @@
     <p class="success__subtitle">
         Vous serez redirigé dans <span>{{ countdown }}s</span>.
     </p>
-    <mainButton
-        type="button"
-        btn_label="Retour à l'accueil"
-        @handleClick="router.push('/')"
-    />
   </div>
 </template>
 
