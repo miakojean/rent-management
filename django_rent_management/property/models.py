@@ -37,6 +37,7 @@ class Property(models.Model):
     description = models.TextField(blank=True, null=True)
     property_type = models.CharField(max_length=20, choices=PROPERTY_TYPE_CHOICES, default='APARTMENT')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='AVAILABLE')
+    picture = models.ImageField(upload_to='property_pictures/', blank=True, null=True)
 
     # Localisation
     country = models.CharField(max_length=100, default="Côte d'Ivoire")
@@ -71,3 +72,28 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.city}"
+    
+
+class Renter(models.Model):
+    id = models.UUIDField(
+        default=uuid.uuid4, unique=True,
+        primary_key=True, editable=False
+    )
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+        related_name='renters',
+        verbose_name="Gestionnaire"
+    )
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    occupation = models.CharField(max_length=100, blank=True, null=True)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

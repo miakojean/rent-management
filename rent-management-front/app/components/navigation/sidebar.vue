@@ -327,17 +327,6 @@ function handleLogout() {
     position: relative;
 }
 
-/* Trait vertical gauche de l'arborescence 
-.sub-menu::before {
-    content: '';
-    position: absolute;
-    left: 0.60rem;
-    top: 0;
-    bottom: 0.9rem; /* s'arrête avant le dernier item 
-    width: 1.5px;
-    background: #d2deec;
-}*/
-
 .sub-menu.open {
     max-height: 300px;
     opacity: 1;
@@ -367,32 +356,6 @@ function handleLogout() {
     background: var(--primary-color);
     color: white;
 }
-
-/* Branche horizontale de l'arborescence (le ├ ou └) 
-.tree-branch {
-    display: inline-flex;
-    align-items: center;
-    flex-shrink: 0;
-    width: 16px;
-    height: 1.5px;
-    background: #d2deec;
-    position: relative;
-    margin-right: 0.1rem;
-}*/
-
-/* Petit rond au bout de la branche 
-.tree-branch::after {
-    content: '';
-    position: absolute;
-    right: -3px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #94a3b8;
-    transition: background 0.2s;
-}*/
 
 .sub-menu li.active .tree-branch {
     background: rgba(255, 255, 255, 0.5);

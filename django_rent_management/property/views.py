@@ -13,9 +13,17 @@ class PropertyView(APIView):
 
 
     def get(self, request, *args, **kwargs):
-        properties = Property.objects.filter(user=request.user, is_archived=False)
+        # 1. Récupérer le paramètre depuis l'URL (?archived=true)
+        # Par défaut, on affiche les non-archivés (False)
+        archived_param = request.query_params.get('archived', 'false').lower()
+        is_archived = archived_param == 'true'
+
+        # 2. Appliquer le filtre dynamiquement
+        properties = Property.objects.filter(
+            user=request.user, 
+            is_archived=is_archived # Utilisation de la variable ici
+        )
         
-        # On calcule le compte une seule fois ici[cite: 3]
         total_count = properties.count()
 
         if not properties.exists():
@@ -23,19 +31,18 @@ class PropertyView(APIView):
                 {
                     'message': 'Aucune propriété trouvée',
                     'status': 'error',
-                    'total_count': 0 # On renvoie quand même le champ[cite: 3]
+                    'total_count': 0 #
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
         
         serializer = PropertySerializer(properties, many=True)
         
-        # On construit la réponse avec le champ à part[cite: 3]
         return Response(
             {
                 'message': 'Propriétés récupérées avec succès',
                 'status': 'success',
-                'total_count': total_count,  # Champ unique en haut de la réponse[cite: 3]
+                'total_count': total_count, #
                 'properties': serializer.data
             },
             status=status.HTTP_200_OK

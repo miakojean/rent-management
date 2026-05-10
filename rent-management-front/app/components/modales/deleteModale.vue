@@ -70,7 +70,7 @@
           </template>
           <template v-if="success">
             <succesForm 
-              message="L'élément a été archivé avec succès !"
+              message="L'élément a été supprimé avec succès !"
               @succes="handleClose"
             />
           </template>

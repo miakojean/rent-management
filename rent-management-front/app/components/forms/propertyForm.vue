@@ -92,7 +92,7 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { usePropertyStore } from '../../stores/propertyStore';
 import type { Property } from '../../stores/propertyStore';
-import { useCountries } from '~/plugins/countries';
+import { useCountries } from '../../plugins/countries';
 import { useRouter } from 'vue-router';
 
 // Composants

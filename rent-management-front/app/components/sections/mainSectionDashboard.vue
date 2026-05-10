@@ -25,7 +25,7 @@
                 <operationsList 
                     v-if="!propertyStore.loading"
                     :tableBody="propertyStore.properties"
-                    @refreshTable="()=>{propertyStore.fetchProperties()}"
+                    @refreshTable="()=>{propertyStore.fetchProperties(false)}"
                 />
             </div>
         </div>
@@ -33,10 +33,10 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from '#imports';
+import { onMounted } from 'vue';
 import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
-import { usePropertyStore } from '#imports';
+import { usePropertyStore } from '../../stores/propertyStore';
 export default {
     name: "MainSectionProperty",
     props: {
@@ -62,7 +62,7 @@ export default {
         ]
 
         onMounted(() => {
-            propertyStore.fetchProperties();
+            propertyStore.fetchProperties(false);
         })
 
         return {

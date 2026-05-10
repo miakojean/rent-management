@@ -42,11 +42,11 @@ const usePropertyStore = defineStore("property", ()=> {
     }
 
     // Actions
-    const fetchProperties = async () => {
+    const fetchProperties = async (is_archived:boolean) => {
         loading.value = true;
         error.value = null;
         try {
-            const response = await api.get('/property/');
+            const response = await api.get(`property/?is_archived=${is_archived}`);
             properties.value = response.data.properties;
             console.log("Propriétés récupérées", properties.value)
         } catch (err) {
@@ -94,10 +94,12 @@ const usePropertyStore = defineStore("property", ()=> {
                 properties.value.push(response.data);
                 console.log("Propriété ajoutée", properties.value)
                 loading.value = false;
+                console.log(response)
                 return response;
             } else {
                 error.value = "Une erreur est intervenue lors de l'ajout de la propriété";
                 loading.value = false;
+                console.log(response)
                 return;
             }
         } catch (err) {
@@ -128,6 +130,7 @@ const usePropertyStore = defineStore("property", ()=> {
             } else {
                 error.value = "Une erreur est survenue lors de l'archivage"
                 loading.value = false;
+                console.log(response)
                 return response
             }
         } catch(err){
