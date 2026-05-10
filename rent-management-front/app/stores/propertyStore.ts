@@ -52,6 +52,7 @@ const usePropertyStore = defineStore("property", ()=> {
         } catch (err) {
             error.value = 'Failed to fetch properties';
             console.error(err);
+            properties.value = []
         } finally {
             loading.value = false;
         }
@@ -110,14 +111,14 @@ const usePropertyStore = defineStore("property", ()=> {
         }
     };
 
-    const archiveProperty = async (propId:string, property:string) => {
+    const archiveProperty = async (propId:string, property:string, status:string) => {
         // Ux
         error.value = "";
         loading.value = true;
 
         const archiveForm = {
             title: property,
-            is_archived: true
+            is_archived: status === 'archived' ? true : false,
         }
 
         try {

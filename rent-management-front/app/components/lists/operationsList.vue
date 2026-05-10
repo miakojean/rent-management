@@ -17,7 +17,8 @@
                     <td>{{ cell.city }}</td>
                     <td>{{ cell.country }}</td>
                     <td>
-                        <optionButton 
+                        <optionButton
+                            :isArchived="cell.is_archived ? 'Désarchiver' : 'Archiver'"
                             @get="getTheSpecItem(cell)"
                             @delete="deleteTheSpecItme(cell)"
                             @archive="archiveTheSpecItem(cell)"
@@ -94,6 +95,7 @@ interface OperationRow {
   country: string;
   type: string;
   id?: string
+  is_archived?: string;
 }
 
 interface Property {
@@ -107,6 +109,7 @@ interface Property {
     address: string;
     city: string;
     country: string;
+    is_archived?: string;
 }
 
 export default {
@@ -144,6 +147,7 @@ export default {
             selectedItem.value = item;       // stocke l'élément cliqué
             isModaleOpen.value = true;       // ouvre la modale
             emit('getSpecItem', item);
+            console.log("Item sélectionné dans operationsList.vue:", item);
         }
 
         function archiveTheSpecItem(item: OperationRow){
@@ -156,7 +160,7 @@ export default {
             if (!selectedItem.value?.id || propertyStore.loading) return
 
             try {
-                await propertyStore.archiveProperty(selectedItem.value.id, selectedItem.value.title);
+                await propertyStore.archiveProperty(selectedItem.value.id, selectedItem.value.title, selectedItem.value.is_archived === 'archived' ? 'unarchived' : 'archived');
                 
                 success.value = true;
 
@@ -246,6 +250,10 @@ th {
 
 tr:hover {
     background-color: #f9f9f9;
+}
+
+.empty-content{
+    padding: 1rem;
 }
 
 @media(prefers-color-scheme: dark){
