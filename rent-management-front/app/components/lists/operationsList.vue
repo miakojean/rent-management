@@ -41,7 +41,7 @@
             <h3 class=" text-2xl font-medium">Vous n'avez aucune propriété enregistrée.</h3>
 
             <div class=" w-1/2">
-                <main-button btn_label="ajouter une propriété"/>
+                <main-button btn_label="ajouter une propriété" @click="router.push('/dashboard/createproperty')"/>
             </div>
 
         </div>
