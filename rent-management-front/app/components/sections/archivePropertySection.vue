@@ -17,8 +17,15 @@
                 <div class="title__section">
                     <h2>Une idée sur vos chiffres</h2>
                 </div>
+
+                <div class="w-full flex justify-center items-center" v-if="propertyStore.loading">
+                    <span class="loading loading-spinner loading-xl"></span>
+                </div>
+
                 <operationsList 
+                    v-if="!propertyStore.loading"
                     :tableBody="propertyStore.properties"
+                    @refreshTable="()=>{propertyStore.fetchProperties(true)}"
                 />
             </div>
         </div>
@@ -29,8 +36,7 @@
 import { onMounted } from 'vue';
 import revenueCard from '../cards/revenueCard.vue';
 import operationsList from '../lists/operationsList.vue';
-import { usePropertyStore } from '#imports';
-import type { Property } from '#imports';
+import { usePropertyStore } from '../../stores/propertyStore';
 export default {
     name: "MainSectionProperty",
     props: {
@@ -56,7 +62,7 @@ export default {
         ]
 
         onMounted(() => {
-            propertyStore.fetchProperties(false);
+            propertyStore.fetchProperties(true);
         })
 
         return {
@@ -74,7 +80,6 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: normal;
-    
 }
 
 .first__content h2{

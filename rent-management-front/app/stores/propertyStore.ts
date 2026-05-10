@@ -46,7 +46,7 @@ const usePropertyStore = defineStore("property", ()=> {
         loading.value = true;
         error.value = null;
         try {
-            const response = await api.get(`property/?is_archived=${is_archived}`);
+            const response = await api.get(`property/?archived=${is_archived}`);
             properties.value = response.data.properties;
             console.log("Propriétés récupérées", properties.value)
         } catch (err) {
